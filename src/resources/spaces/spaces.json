@@ -1,0 +1,48 @@
+[
+  {
+    "nom": "Savane africaine",
+    "description": "Un habitat naturel pour les lions, les éléphants, les girafes et autres animaux de la savane africaine.",
+    "images": [
+      "https://example.com/savane1.jpg",
+      "https://example.com/savane2.jpg"
+    ],
+    "type": "Zoo",
+    "capacite": 100,
+    "duree": 2,
+    "horaires": [
+      "9h00-17h00"
+    ],
+    "accessibleHandicape": true
+  },
+  {
+    "nom": "Forêt tropicale",
+    "description": "Un habitat naturel pour les singes, les oiseaux, les reptiles et autres animaux de la forêt tropicale.",
+    "images": [
+      "https://example.com/foret1.jpg",
+      "https://example.com/foret2.jpg"
+    ],
+    "type": "Zoo",
+    "capacite": 50,
+    "duree": 2,
+    "horaires": [
+      "10h00-16h00"
+    ],
+    "accessibleHandicape": false
+  },
+  {
+    "nom": "Nouveau nom de l'espace",
+    "description": "Nouvelle description de l'espace",
+    "images": [
+      "nouvelle_image1.jpg",
+      "nouvelle_image2.jpg"
+    ],
+    "type": "Nouveau type de l'espace",
+    "capacite": 20,
+    "duree": 90,
+    "horaires": [
+      "Lundi-Vendredi : 9h-20h",
+      "Samedi-Dimanche : 10h-18h"
+    ],
+    "accessibleHandicape": false
+  }
+]
