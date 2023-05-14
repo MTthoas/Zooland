@@ -1,74 +1,44 @@
-import { Router } from 'express'
-import * as fs from 'fs';
-import * as path from 'path';
-
-import { Space } from './spaces.class';
-
+import { ISpace } from './spaces.model';
+import SpaceModel from './spaces.model';
 
 class SpacesService {
-  private spaces: Space[] = [];
-  private dataFilePath: string = path.resolve(__dirname, 'spaces.json');
-
 
   constructor() {
-    this.loadSpacesFromDataFile();
+    // Connect to MongoDB here if you haven't done so in another file
   }
 
-  private loadSpacesFromDataFile(): void {
-    try {
-      const data = fs.readFileSync(this.dataFilePath, 'utf8');
-      const spaces = JSON.parse(data);
-      this.spaces = spaces.map((space: any) => new Space(
-        space.nom,
-        space.description,
-        space.images,
-        space.type,
-        space.capacite,
-        space.duree,
-        space.horaires,
-        space.accessibleHandicape,
-      ));
-    } catch (err) {
-      console.error(`Erreur lors de la lecture du fichier ${this.dataFilePath}: ${err}`);
+  async getSpaces(): Promise<ISpace[]> {
+    return await SpaceModel.find();
+  }
+
+  async getSpaceByName(nom: string): Promise<ISpace | null> {
+    return await SpaceModel.findOne({ nom });
+  }
+
+  async addSpace(space: ISpace): Promise<ISpace> {
+    const newSpace = new SpaceModel(space);
+    return await newSpace.save();
+  }
+
+  async updateSpace(nom: string, updatedSpace: ISpace): Promise<ISpace | null> {
+    return await SpaceModel.findOneAndUpdate({ nom }, updatedSpace, { new: true });
+  }
+
+  async deleteSpace(nom: string): Promise<ISpace | null> {
+    return await SpaceModel.findOneAndDelete({ nom });
+  }
+
+  async toggleMaintenanceStatus(nom: string, isAdmin: boolean): Promise<boolean> {
+    if (!isAdmin) {
+      return false; // user is not an admin
     }
-  }
-
-  private saveSpacesToDataFile(): void {
-    try {
-      const spacesData = JSON.stringify(this.spaces, null, 2);
-      fs.writeFileSync(this.dataFilePath, spacesData, 'utf8');
-    } catch (err) {
-      console.error(`Erreur lors de l'écriture dans le fichier ${this.dataFilePath}: ${err}`);
+    const space = await this.getSpaceByName(nom);
+    if (!space) {
+      return false; // space not found
     }
-  }
-
-  getSpaces(): Space[] {
-    return this.spaces;
-  }
-
-  getSpaceByName(nom: string): Space | undefined {
-    return this.spaces.find(space => space.nom === nom);
-  }
-
-  addSpace(space: Space): void {
-    this.spaces.push(space);
-    this.saveSpacesToDataFile();
-  }
-
-  updateSpace(nom: string, updatedSpace: Space): void {
-    const index = this.spaces.findIndex(space => space.nom === nom);
-    if (index !== -1) {
-      this.spaces[index] = updatedSpace;
-      this.saveSpacesToDataFile();
-    }
-  }
-
-  deleteSpace(nom: string): void {
-    const index = this.spaces.findIndex(space => space.nom === nom);
-    if (index !== -1) {
-      this.spaces.splice(index, 1);
-      this.saveSpacesToDataFile();
-    }
+    space.isMaintenance = !space.isMaintenance;
+    await space.save();
+    return true;
   }
 
 }
