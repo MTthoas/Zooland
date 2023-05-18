@@ -4,8 +4,7 @@ services:
     build:
       context: .
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./src:/app/src
     ports:
       - 3000:3000
     depends_on:
@@ -23,4 +22,3 @@ services:
       - 27017:27017
 volumes:
   mongodb_data:
-  node_modules:

@@ -1,8 +1,7 @@
-import { ISpace } from './spaces.model';
-import SpaceModel from './spaces.model';
+import { ISpace } from '../models/spaces.model';
+import SpaceModel from '../models/spaces.model';
 
 class SpacesService {
-
   constructor() {
     // Connect to MongoDB here if you haven't done so in another file
   }
@@ -28,19 +27,14 @@ class SpacesService {
     return await SpaceModel.findOneAndDelete({ nom });
   }
 
-  async toggleMaintenanceStatus(nom: string, isAdmin: boolean): Promise<boolean> {
-    if (!isAdmin) {
-      return false; // user is not an admin
+  async toggleMaintenanceStatus(nom: string): Promise<ISpace | null> {
+    const space = await SpaceModel.findOne({ nom });
+    if (space) {
+      space.isMaintenance = !space.isMaintenance;
+      return await space.save();
     }
-    const space = await this.getSpaceByName(nom);
-    if (!space) {
-      return false; // space not found
-    }
-    space.isMaintenance = !space.isMaintenance;
-    await space.save();
-    return true;
+    return null;
   }
-
 }
 
 export default new SpacesService();
