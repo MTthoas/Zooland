@@ -40,6 +40,18 @@ class SpacesController {
     }
   }
 
+  async getMaintenanceBestMonth(req: Request, res: Response): Promise<void> {
+    try {
+      const bestMonth = await SpacesService.getMaintenanceBestMonth();
+
+      res.status(200).json({ bestMonth });
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  
+
   async deleteSpace(req: Request, res: Response): Promise<void> {
     try {
       const nom: string = req.params.nom;
@@ -82,6 +94,63 @@ class SpacesController {
       res.status(500).json({ message: err.message });
     }
   }
+  
+  async setBestMonthForSpace(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+      const bestMonth: string = req.body.bestMonth;
+
+      const updatedSpace = await SpacesService.setBestMonthForSpace(nom, bestMonth);
+
+      if (updatedSpace) {
+        res.status(200).json(updatedSpace);
+      } else {
+        res.status(404).end();
+      }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  /**
+   * Add animal species to space
+   */
+
+  async addAnimalSpecies(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+      const species: string = req.body.species;
+  
+      const updatedSpace = await SpacesService.addAnimalSpecies(nom, species);
+  
+      if (updatedSpace) {
+        res.status(200).json(updatedSpace);
+      } else {
+        res.status(404).end();
+      }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+  
+  async addTreatmentToVeterinaryLog(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+      const treatment: string = req.body.treatment;
+  
+      const updatedSpace = await SpacesService.addTreatmentToVeterinaryLog(nom, treatment);
+  
+      if (updatedSpace) {
+        res.status(200).json(updatedSpace);
+      } else {
+        res.status(404).end();
+      }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+
 }
 
 export default new SpacesController();

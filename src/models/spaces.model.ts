@@ -10,6 +10,12 @@ export interface ISpace extends Document {
   horaires: string[];
   accessibleHandicape: boolean;
   isMaintenance: boolean;
+  maintenanceLog: {
+    bestMonth: string;
+    commentary: string;
+  }[];
+  animalSpecies: string[];
+  veterinaryLog: string[];
 }
 
 const SpaceSchema: Schema = new Schema({
@@ -22,6 +28,21 @@ const SpaceSchema: Schema = new Schema({
   horaires: { type: [String], required: true },
   accessibleHandicape: { type: Boolean, required: true },
   isMaintenance: { type: Boolean, required: true },
+  maintenanceLog: {
+    type: [
+      {
+        bestMonth: {
+          type: String,
+        },
+        commentary: {
+          type: String,
+        }
+      },
+    ],
+    required: false,
+  },
+  animalSpecies: { type: [String], required: false },
+  veterinaryLog: { type: [String], required: false },
 });
 
 export default mongoose.model<ISpace>('Space', SpaceSchema);

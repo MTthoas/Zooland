@@ -49,5 +49,34 @@ export default class AuthController {
           res.status(401).json({ message: 'Authentification requise.' });
         }
     }
+
+    static async ensureAdmin(req: CustomRequest, res: Response, next: NextFunction) {
+      try {
+        const decodedToken = AuthService.verifyToken(req);
+  
+        if (decodedToken.role !== 'admin') {
+          throw new Error('Vous n\'avez pas les droits d\'administrateur.');
+        }
+  
+        next();
+      } catch (error) {
+        res.status(401).json({ message: 'Authentification requise en tant qu\'administrateur.' });
+      }
+    }
+
+    static async ensureVeterinary(req: CustomRequest, res: Response, next: NextFunction) {
+      try {
+          const decodedToken = AuthService.verifyToken(req);
+
+          if (decodedToken.role !== 'veterinary') {
+              throw new Error('Vous n\'avez pas les droits de vétérinaire.');
+          }
+
+          next();
+      } catch (error) {
+          res.status(401).json({ message: 'Authentification requise en tant que vétérinaire.' });
+      }
+    }
+    
       
 }

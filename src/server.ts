@@ -22,10 +22,16 @@ app.get('/spaces/:nom', AuthController.ensureAuthenticated, SpacesController.get
 app.post('/spaces', AuthController.ensureAuthenticated, SpacesController.addSpace);
 app.delete('/spaces/:nom', AuthController.ensureAuthenticated, SpacesController.deleteSpace);
 app.put('/spaces/:nom', AuthController.ensureAuthenticated, SpacesController.updateSpace);
-app.patch('/spaces/:nom', AuthController.ensureAuthenticated, SpacesController.toggleMaintenanceStatus);
+app.patch('/spaces/:nom/maintenance', AuthController.ensureAdmin, SpacesController.toggleMaintenanceStatus);
 
-app.get('/users', AuthController.ensureAuthenticated, AuthController.getAllUsers);
-app.delete('/users/:userId', AuthController.ensureAuthenticated, AuthController.deleteUser);
+app.get('/users', AuthController.getAllUsers);
+app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
+
+app.get('/spaces/:nom/bestMonth', AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getMaintenanceBestMonth);
+app.patch('/spaces/:nom/bestMonth', AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.setBestMonthForSpace);
+
+app.post('/spaces/:nom/animals', AuthController.ensureVeterinary, SpacesController.addAnimalSpecies);
+app.post('/spaces/:nom/treatments', AuthController.ensureVeterinary, SpacesController.addTreatmentToVeterinaryLog);
 
 // Routes publiques
 
