@@ -12,7 +12,11 @@
     "horaires": [
       "9h00-17h00"
     ],
-    "accessibleHandicape": true
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "maintenanceLog": [],
+    "animalSpecies": [],
+    "veterinaryLog": []
   },
   {
     "nom": "Forêt tropicale",
@@ -27,7 +31,11 @@
     "horaires": [
       "10h00-16h00"
     ],
-    "accessibleHandicape": false
+    "accessibleHandicape": false,
+    "isMaintenance": false,
+    "maintenanceLog": [],
+    "animalSpecies": [],
+    "veterinaryLog": []
   },
   {
     "nom": "Nouveau nom de l'espace",
@@ -43,7 +51,10 @@
       "Lundi-Vendredi : 9h-20h",
       "Samedi-Dimanche : 10h-18h"
     ],
-    "accessibleHandicape": false
+    "accessibleHandicape": false,
+    "isMaintenance": false,
+    "maintenanceLog": [],
+    "animalSpecies": [],
+    "veterinaryLog": []
   }
-
 ]

@@ -132,6 +132,23 @@ class SpacesController {
       res.status(500).json({ message: err.message });
     }
   }
+
+  async getAnimalsInSpace(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+      const animals = await SpacesService.getAnimalsInSpace(nom);
+  
+      if (animals !== null) {
+        if (animals.length > 0) {
+          res.status(200).json(animals);
+        }
+      } else {
+        res.status(200).json({ message: 'Aucun animal trouvé dans cet espace.' });
+      }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
   
   async addTreatmentToVeterinaryLog(req: Request, res: Response): Promise<void> {
     try {

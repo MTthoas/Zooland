@@ -22,6 +22,7 @@ class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const role = (key === process.env.ADMIN_KEY) ? 'admin' : 'employee';
+    console.log(role)
     const user = new User({ username, password: hashedPassword, role });
     return await user.save();
   }
@@ -45,17 +46,15 @@ class AuthService {
 
   static verifyToken(req: Request): DecodedToken {
     const token = req.headers.authorization?.split(' ')[1];
+    console.log("Token: " + token)
     if (!token) throw new Error('Token non fourni.');
-
+  
     try {
       const decodedToken = jwt.verify(token, AuthService.JWT_SECRET) as DecodedToken;
-      if (decodedToken.role !== 'admin') {
-        throw new Error('Vous n\'avez pas les droits d\'administrateur.');
-      }
       console.log("there")
       return decodedToken;
     } catch (error) {
-      console.error(error); // Ajouter cette ligne pour afficher l'erreur dans la console
+      console.error(error);
       throw new Error('Token invalide ou expiré.');
     }
   }

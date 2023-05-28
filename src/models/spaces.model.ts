@@ -45,4 +45,5 @@ const SpaceSchema: Schema = new Schema({
   veterinaryLog: { type: [String], required: false },
 });
 
+export { SpaceSchema };
 export default mongoose.model<ISpace>('Space', SpaceSchema);

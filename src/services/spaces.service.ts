@@ -86,6 +86,22 @@ class SpacesService {
       throw new Error('Erreur lors de l\'ajout de l\'espèce animale à l\'espace.');
     }
   }
+
+  
+  async getAnimalsInSpace(nom: string): Promise<string[] | null> {
+    try {
+      const space = await SpaceModel.findOne({ nom });
+      if (space) {
+        if (space.animalSpecies.length > 0) {
+          return space.animalSpecies;
+        }
+      }
+      return null;
+    } catch (error) {
+      throw new Error('Erreur lors de la récupération des espèces animales pour l\'espace spécifié.');
+    }
+  }
+
   
   async addTreatmentToVeterinaryLog(nom: string, treatment: string): Promise<ISpace | null> {
     try {
