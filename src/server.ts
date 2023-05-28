@@ -66,9 +66,9 @@ mongoose
           const newZoo = new ZooModel({
             nom: 'LaFaille', // Nom de votre zoo
             adresse: '20 rue de la bagarre', // Adresse de votre zoo
-            ouvert: false,
-            tauxFrequentation: 0,
+            isOpen: false,
             espaces: [],
+            employees: []
           });
           newZoo.save().then(() => {
             console.log('Zoo créé avec succès.');
