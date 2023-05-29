@@ -132,12 +132,28 @@ class SpacesService {
 
   
   async addTreatmentToVeterinaryLog(nom: string, treatment: IVeterinaryLog): Promise<ISpace | null> {
-    const space = await SpaceModel.findOne({ nom });
-    if (space) {
-      space.veterinaryLog.push(treatment);
-      return await space.save();
-    }
-    return space;
+	const space = await SpaceModel.findOne({ nom });
+	const currentDate = new Date();
+	const day = currentDate.getDate();
+	const month = currentDate.toLocaleString('default', { month: 'long' });
+	const year = currentDate.getFullYear();
+	
+	if (space) {
+	  const treatmentDateStr = `${month} ${day}, ${year}`;
+
+	  space.veterinaryLog.push({
+		treatmentDate: treatmentDateStr,
+		treatmentBy: treatment.treatmentBy,
+		condition: treatment.condition,
+		treatmentDetails: treatment.treatmentDetails,
+		species: treatment.species
+	  });
+	
+	  return await space.save();
+	}
+	
+	return space;
+	
   }
 
 

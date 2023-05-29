@@ -139,7 +139,7 @@ class SpacesController {
       res.status(500).json({ message: err.message });
     }
   }
-  
+
 
   /**
    * Add animal species to space
@@ -185,9 +185,9 @@ class SpacesController {
       const treatment: IVeterinaryLog = req.body.treatment;
 
       // Ajouter la personne ayant fait le traitement avec AuthService.verifyToken
-      const adminId: string = AuthService.verifyToken(req).username;
+      const adminUsername: string = AuthService.verifyToken(req).username;
 
-      treatment.treatmentBy = adminId;
+      treatment.treatmentBy = adminUsername;
       
       const space = await SpacesService.addTreatmentToVeterinaryLog(nom, treatment);
       if (space) {
