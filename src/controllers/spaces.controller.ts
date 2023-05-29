@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
-import SpacesService from '../services/spaces.service';
 import { ISpace } from '../models/spaces.model';
+
 import AuthService from '../services/auth.service';
+import SpacesService from '../services/spaces.service';
+import TicketService from '../services/ticket.service';
 
 import { IVeterinaryLog } from '../models/veterinarylog.model';
 
@@ -120,6 +122,34 @@ class SpacesController {
       } else {
         res.status(404).end();
       }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  async buyTickets(req: Request, res: Response): Promise<void> {
+    try {
+      const spaceName: string = req.params.spaceName;
+      const userId: string = req.params.userId;
+
+      // Vérifier si l'espace existe
+      const space = await SpacesService.getSpaceByName(spaceName);
+      if (!space) {
+        res.status(404).json({ message: 'Space not found' });
+        return;
+      }
+
+      // Vérifier si l'utilisateur existe
+      const user = await AuthService.getSpaceByName(userId);
+      if (!user) {
+        res.status(404).json({ message: 'User not found' });
+        return;
+      }
+
+      // Créer un nouveau ticket
+      const ticket = await TicketService.createTicket(space, user);
+
+      res.status(201).json({ message: 'Ticket successfully created', ticket });
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
