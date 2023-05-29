@@ -3,6 +3,8 @@ import SpacesService from '../services/spaces.service';
 import { ISpace } from '../models/spaces.model';
 import AuthService from '../services/auth.service';
 
+import { IVeterinaryLog } from '../models/veterinarylog.model';
+
 class SpacesController {
   
   async getAllSpaces(req: Request, res: Response): Promise<void> {
@@ -19,8 +21,15 @@ class SpacesController {
   async addSpace(req: Request, res: Response): Promise<void> {
     try {
       const space: ISpace = req.body;
+
+      const spaceName = await SpacesService.getSpaceByName(space.nom);
+      if (spaceName) {
+        res.status(409).json({ message: 'Space already exists' });
+        return;
+      }
+      
       const newSpace = await SpacesService.addSpace(space);
-      res.status(201).json(newSpace);
+      res.status(201).json({ message: 'Space successfully added', newSpace});
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
@@ -40,15 +49,6 @@ class SpacesController {
     }
   }
 
-  async getMaintenanceBestMonth(req: Request, res: Response): Promise<void> {
-    try {
-      const bestMonth = await SpacesService.getMaintenanceBestMonth();
-
-      res.status(200).json({ bestMonth });
-    } catch (err: any) {
-      res.status(500).json({ message: err.message });
-    }
-  }
 
   
 
@@ -56,8 +56,10 @@ class SpacesController {
     try {
       const nom: string = req.params.nom;
       const space = await SpacesService.deleteSpace(nom);
-      if (space) {
-        res.status(200).json(space);
+
+      const getSpace = await SpacesService.getSpaces();
+      if (space && getSpace) {
+        res.status(200).json(getSpace);
       } else {
         res.status(404).end();
       }
@@ -70,6 +72,14 @@ class SpacesController {
     try {
       const nom: string = req.params.nom;
       const updatedSpace: ISpace = req.body;
+
+      const getSpace = await SpacesService.getSpaceByName(nom);
+      if (!getSpace) {
+        res.status(404).json({ message: 'Space not found' });
+        return;
+      }
+
+
       const space = await SpacesService.updateSpace(nom, updatedSpace);
       if (space) {
         res.status(200).json(space);
@@ -84,7 +94,10 @@ class SpacesController {
   async toggleMaintenanceStatus(req: Request, res: Response): Promise<void> {
     try {
       const nom: string = req.params.nom;
-      const space = await SpacesService.toggleMaintenanceStatus(nom);
+   
+      const adminUserName: string = AuthService.verifyToken(req).username;
+      
+      const space = await SpacesService.toggleMaintenanceStatus(nom, adminUserName);
       if (space) {
         res.status(200).json(space);
       } else {
@@ -111,6 +124,22 @@ class SpacesController {
       res.status(500).json({ message: err.message });
     }
   }
+
+  async getBestMonthForSpace(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+      const bestMonth = await SpacesService.getBestMonthForSpace(nom);
+
+      if (bestMonth) {
+        res.status(200).json(bestMonth);
+      } else {
+        res.status(404).end();
+      }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+  
 
   /**
    * Add animal species to space
@@ -150,15 +179,19 @@ class SpacesController {
     }
   }
   
-  async addTreatmentToVeterinaryLog(req: Request, res: Response): Promise<void> {
+   async addTreatmentToVeterinaryLog(req: Request, res: Response): Promise<void> {
     try {
       const nom: string = req.params.nom;
-      const treatment: string = req.body.treatment;
-  
-      const updatedSpace = await SpacesService.addTreatmentToVeterinaryLog(nom, treatment);
-  
-      if (updatedSpace) {
-        res.status(200).json(updatedSpace);
+      const treatment: IVeterinaryLog = req.body.treatment;
+
+      // Ajouter la personne ayant fait le traitement avec AuthService.verifyToken
+      const adminId: string = AuthService.verifyToken(req).username;
+
+      treatment.treatmentBy = adminId;
+      
+      const space = await SpacesService.addTreatmentToVeterinaryLog(nom, treatment);
+      if (space) {
+        res.status(200).json(space);
       } else {
         res.status(404).end();
       }

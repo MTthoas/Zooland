@@ -1,6 +1,10 @@
 import { ISpace } from '../models/spaces.model';
 import SpaceModel from '../models/spaces.model';
 
+import { IMaintenanceLog } from '../models/maintenancelog.model';
+import { IVeterinaryLog } from '../models/veterinarylog.model';
+
+
 class SpacesService {
   constructor() {
     // Connect to MongoDB here if you haven't done so in another file
@@ -14,27 +18,25 @@ class SpacesService {
     return await SpaceModel.findOne({ nom });
   }
 
-  async getMaintenanceBestMonth(): Promise<string | null> {
-    try {
-      const spaces = await SpaceModel.find();
-      const bestMonth = spaces.reduce((acc: string | null, space: ISpace) => {
-        if (space.maintenanceLog && space.maintenanceLog.length > 0) {
-          const currentBestMonth = space.maintenanceLog[0].bestMonth;
-          if (!acc) return currentBestMonth;
-          if (currentBestMonth < acc) return currentBestMonth;
-        }
-        return acc;
-      }, null);
-
-      return bestMonth;
-    } catch (err) {
-      throw new Error('Erreur lors de la récupération du meilleur mois dans le carnet de maintenance.');
-    }
-  }
 
   async addSpace(space: ISpace): Promise<ISpace> {
-    space.maintenanceLog = [{ bestMonth: 'Janvier', commentary:"Nouvelle espace" }]; // Assurez-vous d'ajouter la propriété maintenanceLog avec la valeur par défaut
     const newSpace = new SpaceModel(space);
+  
+    // Ajouter un log de maintenance initial
+    newSpace.maintenanceLog.push({
+      commentary: "Espace créé",
+      maintenanceBy: "null", // On suppose qu'il n'y a pas de maintenance lors de la création
+      month: new Date().toLocaleString('default', { month: 'long' }), // Ajoute le mois actuel
+      doesBestMonth: false
+    });
+
+    newSpace.isMaintenance = false;
+    newSpace.bestMonth = "null"; // On suppose qu'il n'y a pas de meilleur mois lors de la création
+  
+    // Assurez-vous que les logs vétérinaires et la liste des espèces animales sont initialisées vides
+    newSpace.veterinaryLog = [];
+    newSpace.animalSpecies = [];
+  
     return await newSpace.save();
   }
 
@@ -46,26 +48,52 @@ class SpacesService {
     return await SpaceModel.findOneAndDelete({ nom });
   }
 
-  async toggleMaintenanceStatus(nom: string): Promise<ISpace | null> {
+  async toggleMaintenanceStatus(nom: string, adminUserName: string): Promise<ISpace | null> {
     const space = await SpaceModel.findOne({ nom });
+    const month = new Date().toLocaleString('default', { month: 'long' });
     if (space) {
       space.isMaintenance = !space.isMaintenance;
+      space.maintenanceLog.push({
+        commentary: space.isMaintenance ? "Espace mis en maintenance" : "Espace sorti de maintenance",
+        maintenanceBy: adminUserName,
+        month: month, // Ajoute le mois actuel
+        doesBestMonth: space.bestMonth === month ? true : false
+      });
       return await space.save();
     }
     return space;
   }
+  
 
    async setBestMonthForSpace(nom: string, bestMonth: string): Promise<ISpace | null> {
     try {
       const updatedSpace = await SpaceModel.findOneAndUpdate(
         { nom },
-        { $set: { 'maintenanceLog.0.bestMonth': bestMonth } },
+        { $set: { 'bestMonth': bestMonth } },
         { new: true }
       );
 
       return updatedSpace;
     } catch (error) {
       throw new Error('Impossible de mettre à jour le meilleur mois pour réparer l\'espace.');
+    }
+  }
+
+  async getBestMonthForSpace(nom: string): Promise<any | null> {
+    try {
+
+      const updatedSpace = await SpaceModel.findOneAndUpdate(
+        { nom }
+      );
+
+      if (updatedSpace) {
+        
+        return { "bestMonth": updatedSpace.bestMonth }
+        
+      }
+      return null;
+    } catch (error) {
+      throw new Error('Impossible de récupérer le meilleur mois pour réparer l\'espace.');
     }
   }
 
@@ -103,18 +131,13 @@ class SpacesService {
   }
 
   
-  async addTreatmentToVeterinaryLog(nom: string, treatment: string): Promise<ISpace | null> {
-    try {
-      const space = await SpaceModel.findOneAndUpdate(
-        { nom },
-        { $push: { veterinaryLog: treatment } },
-        { new: true }
-      );
-  
-      return space;
-    } catch (err) {
-      throw new Error('Erreur lors de l\'ajout du traitement au carnet de suivi vétérinaire.');
+  async addTreatmentToVeterinaryLog(nom: string, treatment: IVeterinaryLog): Promise<ISpace | null> {
+    const space = await SpaceModel.findOne({ nom });
+    if (space) {
+      space.veterinaryLog.push(treatment);
+      return await space.save();
     }
+    return space;
   }
 
 

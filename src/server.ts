@@ -30,7 +30,7 @@ app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthControlle
 app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
 
-app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getMaintenanceBestMonth);
+app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getBestMonthForSpace);
 app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.setBestMonthForSpace);
 
 app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureVeterinary, SpacesController.addAnimalSpecies);
