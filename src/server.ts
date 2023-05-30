@@ -41,6 +41,10 @@ app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.
 // Routes publiques
 
 app.patch('/tickets/:userName/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
+app.get('/tickets', SpacesController.getAllTickets);
+app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
+
+
 app.get('/users', AuthController.getAllUsers);
 app.get('/spaces', ZooController.ensureZooOpen, SpacesController.getAllSpaces);
 

@@ -129,10 +129,45 @@ class SpacesController {
     }
   }
 
-  async buyTicket(req: Request, res: Response): Promise<void> {
+
+
+  
+async getAllTickets(req: Request, res: Response): Promise<void> {
+    try {
+      const tickets = await TicketService.getAllTickets();
+      res.json(tickets);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+async getTicketsFromSpace(req: Request, res: Response): Promise<void> {
+    try {
+        const nom: string = req.params.spaceName;
+
+        const space = await SpacesService.getSpaceByName(nom);
+        if (!space) {
+            res.status(404).json({ message: 'Space not found' });
+            return;
+        }
+
+        console.log(space)
+        const tickets = await TicketService.getAllTicketsFromASpace(space);
+        res.json(tickets);
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+
+
+
+
+async buyTicket(req: Request, res: Response): Promise<void> {
     try {
       const spaceNames: string[] = req.body.spaces;
       const userName: string = req.params.userName;
+      const type = req.body.type;
   
       // Vérifier si tous les espaces existent
       const spaces: ISpace[] = [];
@@ -156,7 +191,7 @@ class SpacesController {
       console.log(user)
   
       // Créer les tickets pour chaque espace disponible
-      const tickets: ITicket[] = await TicketService.createTicket(spaces, user);
+      const tickets: ITicket[] = await TicketService.createTicket(spaces, user, type);
 
       // Ajouter les tickets à l'utilisateur
       user.tickets = user.tickets ? [...user.tickets, ...tickets] : tickets;
@@ -166,7 +201,7 @@ class SpacesController {
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
-  }
+}
   
 
 
