@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { ISpace } from '../models/spaces.model';
+import { ITicket } from '../models/ticket.model';
+
 
 import AuthService from '../services/auth.service';
 import SpacesService from '../services/spaces.service';
@@ -127,33 +129,46 @@ class SpacesController {
     }
   }
 
-  async buyTickets(req: Request, res: Response): Promise<void> {
+  async buyTicket(req: Request, res: Response): Promise<void> {
     try {
-      const spaceName: string = req.params.spaceName;
-      const userId: string = req.params.userId;
-
-      // Vérifier si l'espace existe
-      const space = await SpacesService.getSpaceByName(spaceName);
-      if (!space) {
-        res.status(404).json({ message: 'Space not found' });
-        return;
+      const spaceNames: string[] = req.body.spaces;
+      const userName: string = req.params.userName;
+  
+      // Vérifier si tous les espaces existent
+      const spaces: ISpace[] = [];
+      for (const spaceName of spaceNames) {
+        const space = await SpacesService.getSpaceByName(spaceName);
+        if (space) {
+          spaces.push(space);
+        } else {
+          res.status(404).json({ message: `Space not found: ${spaceName}` });
+          return;
+        }
       }
-
+  
       // Vérifier si l'utilisateur existe
-      const user = await AuthService.getSpaceByName(userId);
+      const user = await AuthService.getUserByName(userName);
       if (!user) {
         res.status(404).json({ message: 'User not found' });
         return;
       }
 
-      // Créer un nouveau ticket
-      const ticket = await TicketService.createTicket(space, user);
+      console.log(user)
+  
+      // Créer les tickets pour chaque espace disponible
+      const tickets: ITicket[] = await TicketService.createTicket(spaces, user);
 
-      res.status(201).json({ message: 'Ticket successfully created', ticket });
+      // Ajouter les tickets à l'utilisateur
+      user.tickets = user.tickets ? [...user.tickets, ...tickets] : tickets;
+      await user.save();
+    
+      res.status(201).json({ message: 'Tickets successfully created', tickets });
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
   }
+  
+
 
   async getBestMonthForSpace(req: Request, res: Response): Promise<void> {
     try {

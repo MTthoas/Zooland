@@ -21,7 +21,7 @@ class AuthService {
     if (existingUser) throw new Error('Le nom d\'utilisateur existe déjà.');
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const role = (key === process.env.ADMIN_KEY) ? 'admin' : 'employee';
+    const role = (key === process.env.ADMIN_KEY) ? 'admin' : 'visitor';
     console.log(role)
     const user = new User({ username, password: hashedPassword, role });
     return await user.save();
@@ -58,6 +58,12 @@ class AuthService {
       throw new Error('Token invalide ou expiré.');
     }
   }
+
+  static async getUserByName(username: string): Promise<IUser | null> {
+		const user = await User.findOne({ username }, '-password');
+		return user;
+	}
+  
 }
 
 export default AuthService;

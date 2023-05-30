@@ -29,6 +29,7 @@ app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthControlle
 
 app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
+app.get('/users/:username', AuthController.ensureAuthenticated, AuthController.getUserByName);
 
 app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getBestMonthForSpace);
 app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.setBestMonthForSpace);
@@ -39,6 +40,7 @@ app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.
 
 // Routes publiques
 
+app.patch('/tickets/:userName/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
 app.get('/users', AuthController.getAllUsers);
 app.get('/spaces', ZooController.ensureZooOpen, SpacesController.getAllSpaces);
 

@@ -34,6 +34,16 @@ export default class AuthController {
         res.json(users);
     }
 
+	static async getUserByName(req: Request, res: Response) {
+		const nom: string = req.params.username;
+		const user = await AuthService.getUserByName(nom);
+		if (!user ) {
+			return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+		}
+		res.json(user);	
+	}
+
+
     static async deleteUser(req: Request, res: Response) {
         const { userId } = req.params;
         const user = await User.findByIdAndDelete(userId);
@@ -120,7 +130,7 @@ export default class AuthController {
 
     static async addAllUsers(req: Request, res: Response) {
       try {
-        const users: IUser[] = [
+		const users: Partial<IUser>[] = [
           {
             username: 'receptionist',
             password: 'password',
