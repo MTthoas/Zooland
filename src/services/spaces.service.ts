@@ -1,6 +1,9 @@
 import { ISpace } from '../models/spaces.model';
 import SpaceModel from '../models/spaces.model';
 
+import { IUser } from '../models/auth.model';
+import UserModel from '../models/auth.model';
+
 import { IMaintenanceLog } from '../models/maintenancelog.model';
 import { IVeterinaryLog } from '../models/veterinarylog.model';
 
@@ -18,7 +21,16 @@ class SpacesService {
 	async GoToSpace(nom: string): Promise<ISpace | null> {
 		return await SpaceModel.findOne({ nom });
 	}
-	
+
+	async updateUserCurrentSpace(userId: string, newSpace: string): Promise<IUser | null> {
+        const user = await UserModel.findById(userId);
+		
+        if (user) {
+            user.currentSpace = newSpace;
+            return user.save(); // Enregistre l'utilisateur avec la mise à jour currentSpace
+        }
+        return null;
+    }
 
   	async addSpace(space: ISpace): Promise<ISpace> {
 		const newSpace = new SpaceModel(space);

@@ -5,6 +5,9 @@ import jwt from 'jsonwebtoken';
 import { Request } from 'express';
 import User, { IUser } from '../models/auth.model';
 
+import ticketModel from '../models/ticket.model';
+import { ITicket } from '../models/ticket.model';
+
 export interface DecodedToken {
   userId: string;
   username: string;
@@ -68,6 +71,19 @@ class AuthService {
     const user = await User.findById(userId, '-password');
     return user;
   }
+
+  static getUserByTicketId = async (ticketId: string): Promise<IUser | null> => {
+
+    const ticket = await ticketModel.findById({ _id : ticketId});
+    if (!ticket) throw new Error('Ticket introuvable.');
+
+    const user = await User.findById(ticket._idOfUser, '-password');
+    if (!user) throw new Error('Utilisateur introuvable.');
+
+    return user;
+  }
+    
+
   
 }
 

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ISpace } from '../models/spaces.model';
 import { ITicket } from '../models/ticket.model';
 
+import ticketModel from '../models/ticket.model';
 
 import AuthService from '../services/auth.service';
 import SpacesService from '../services/spaces.service';
@@ -162,10 +163,10 @@ async getTicketsFromSpace(req: Request, res: Response): Promise<void> {
 
 async checkTicket(req: Request, res: Response): Promise<void> {
     try {
-        const userName: string = req.params.userName;
-        const spaceName : string = req.params.spaceName;
+        const ticketId: string = req.params.ticketId;
+        const spaceName: string = req.params.spaceName;
 
-        const user = await AuthService.getUserByName(userName);
+        const user = await AuthService.getUserByTicketId(ticketId);
 
         if (!user) {
             res.status(404).json({ message: 'User not found' });
@@ -178,31 +179,56 @@ async checkTicket(req: Request, res: Response): Promise<void> {
             return;
         }
 
-        const userTickets = await TicketService.getTicketsByUserId(user._id);
+        const ticket = await TicketService.getTicketById(ticketId);
 
-        if (!userTickets) {
-            res.status(404).json({ message: 'No tickets found for the user' });
+        if (!ticket) {
+            res.status(404).json({ message: 'No ticket found for the user' });
             return;
         }
 
-        const validTicket = userTickets.find(ticket => {
-            const hasAccess = ticket.spaces.includes(space._id);
-            const isValid = new Date(ticket.validUntil) > new Date();
+        const hasAccess = ticket.spaces.includes(space.nom);
+        const isValid = new Date(ticket.validUntil) > new Date();
 
-            return hasAccess && isValid;
-        });
-
-        if (!validTicket) {
-            res.status(403).json({ message: 'No valid ticket for the space' });
+        if (!hasAccess || !isValid) {
+            res.status(403).json({ message: 'Invalid or expired ticket' });
             return;
         }
 
-        res.status(200).json({ message: 'Access granted' });
+        if (ticket.type === 'escapegame' && user.currentSpace !== null) {
+
+            console.log(user.currentSpace)
+            const currentIndex = user.currentSpace ? ticket.escapeGameOrder?.indexOf(user.currentSpace) : -1;
+            const nextIndex = ticket.escapeGameOrder?.indexOf(space.nom);
+
+            if (currentIndex === undefined || nextIndex === undefined || currentIndex === -1) {
+                res.status(403).json({ message: 'Invalid ticket order' });
+                return;
+            }
+
+            if (nextIndex === currentIndex + 1) {
+                // Supprimer l'espace en cours dans le tableau spaces du ticket
+                ticket.spaces = ticket.spaces.filter(s => s !== space.nom);
+
+                // Supprimer l'espace en cours dans le tableau escapeGameOrder du ticket
+                if (ticket.escapeGameOrder) {
+                    ticket.escapeGameOrder = ticket.escapeGameOrder.filter(s => s !== space.nom);
+                }
+            } else {
+                res.status(403).json({ message: 'Invalid ticket order' });
+                return;
+            }
+        }
+
+        await SpacesService.updateUserCurrentSpace(user._id, space.nom);
+
+        res.status(200).json({ message: 'Access granted', user: user, ticket: ticket });
 
     } catch (err: any) {
         res.status(500).json({ message: err.message });
     }
 }
+
+
 
 async deleteTicket(req: Request, res: Response): Promise<void> {
     try {

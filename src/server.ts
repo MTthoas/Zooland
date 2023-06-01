@@ -46,7 +46,7 @@ app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['admin']), S
 app.patch('/tickets/:userId/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
 app.get('/tickets', SpacesController.getAllTickets);
 app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
-app.get('/checkTicket/:userName/:spaceName', SpacesController.checkTicket);
+app.get('/checkTicket/:ticketId/:spaceName', SpacesController.checkTicket);
 
 
 app.get('/users', AuthController.getAllUsers);

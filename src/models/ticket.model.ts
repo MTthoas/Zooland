@@ -5,7 +5,7 @@ export interface ITicket {
   _idOfUser: string;
   dateOfPurchase: Date; // Date d'achat du billet
   validUntil: Date; // Date à laquelle le billet expire
-  spaces: ISpace[]; // Espaces accessibles avec ce billet
+  spaces: string[]; // Espaces accessibles avec ce billet
   type: 'journee' | 'weekend' | 'annuel' | '1daymonth' | 'escapegame';
   escapeGameOrder?: string[]; 
 }
@@ -15,8 +15,8 @@ const TicketSchema: Schema = new Schema({
   dateOfPurchase: { type: Date, required: true },
   validUntil: { type: Date, required: true },
   spaces: { type: [], required: true },
-  type: { type: String, enum: ['journee', 'weekend', 'annuel', '1daymonth'], required: true },
-  escapeGameOrder: { type: [String], required: false },
+  type: { type: String, enum: ['journee', 'weekend', 'annuel', '1daymonth', 'escapegame'], required: true },
+  escapeGameOrder: { type: [String], required: false},
 });
 
 export { TicketSchema };

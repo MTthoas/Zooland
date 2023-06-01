@@ -20,6 +20,10 @@ class TicketService {
         return TicketModel.find({ _idOfUser: userId });
     }
 
+    async getTicketById(ticketId: string): Promise<ITicket | null> {
+        return TicketModel.findById(ticketId);
+    }
+
     async deleteTicketById(ticketId: string): Promise<ITicket | null> {
         return TicketModel.findByIdAndDelete({ _id : ticketId});
     }
@@ -36,6 +40,7 @@ class TicketService {
     async createTicket(spaces: ISpace[], user: IUser, type: 'journee' | 'weekend' | 'annuel' | '1daymonth'): Promise<ITicket> {
         const processedInput = TicketService.removeAccentsAndLowerCase(type);
         let validUntil: Date | undefined;
+        let escapeGameOrder: string[] | undefined;
     
         switch (processedInput) {
             case 'journee':
@@ -50,6 +55,9 @@ class TicketService {
             case '1daymonth':
                 validUntil = TicketService.getEndOfNextMonth(); // La validité est jusqu'à la fin du mois suivant pour le PASS 1daymonth
                 break;
+            case 'escapegame':
+                validUntil = TicketService.getEndOfWeek();
+                escapeGameOrder = spaces.map(space => space.nom);
             default:
                 break;
         }
@@ -59,7 +67,8 @@ class TicketService {
             dateOfPurchase: new Date(),
             validUntil: validUntil,
             spaces: spaces.map(space => space.nom), // assign the names of all spaces
-            type: processedInput
+            type: processedInput,
+            escapeGameOrder: escapeGameOrder,
         });
     
         const savedTicket = await ticket.save();
