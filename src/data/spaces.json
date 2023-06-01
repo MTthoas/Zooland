@@ -1,60 +1,64 @@
 [
   {
-    "nom": "Savane africaine",
-    "description": "Un habitat naturel pour les lions, les éléphants, les girafes et autres animaux de la savane africaine.",
-    "images": [
-      "https://example.com/savane1.jpg",
-      "https://example.com/savane2.jpg"
-    ],
-    "type": "Zoo",
-    "capacite": 100,
-    "duree": 2,
+    "nom": "Aquarium 1",
+    "description": "Un grand aquarium avec différentes espèces de poissons.",
+    "images": ["image1.jpg", "image2.jpg"],
+    "type": "Aquarium",
+    "capacite": 50,
+    "duration": 2,
     "horaires": [
-      "9h00-17h00"
+      {
+        "opening": "09:00",
+        "closing": "18:00"
+      }
     ],
     "accessibleHandicape": true,
-    "isMaintenance": false,
-    "maintenanceLog": [],
-    "animalSpecies": [],
-    "veterinaryLog": []
+    "isMaintenance": false
   },
   {
-    "nom": "Forêt tropicale",
-    "description": "Un habitat naturel pour les singes, les oiseaux, les reptiles et autres animaux de la forêt tropicale.",
-    "images": [
-      "https://example.com/foret1.jpg",
-      "https://example.com/foret2.jpg"
-    ],
-    "type": "Zoo",
-    "capacite": 50,
-    "duree": 2,
+    "nom": "Savane",
+    "description": "Un espace ouvert représentant la savane africaine avec divers animaux.",
+    "images": ["image_savane1.jpg", "image_savane2.jpg"],
+    "type": "Savane",
+    "capacite": 100,
     "horaires": [
-      "10h00-16h00"
+      {
+        "opening": "08:00",
+        "closing": "20:00"
+      }
     ],
-    "accessibleHandicape": false,
-    "isMaintenance": false,
-    "maintenanceLog": [],
-    "animalSpecies": [],
-    "veterinaryLog": []
+    "accessibleHandicape": true,
+    "isMaintenance": false
   },
   {
-    "nom": "Nouveau nom de l'espace",
-    "description": "Nouvelle description de l'espace",
-    "images": [
-      "nouvelle_image1.jpg",
-      "nouvelle_image2.jpg"
-    ],
-    "type": "Nouveau type de l'espace",
-    "capacite": 20,
-    "duree": 90,
+    "nom": "Volcan",
+    "description": "Un environnement chaud et sec représentant une région volcanique.",
+    "images": ["image_volcan1.jpg", "image_volcan2.jpg"],
+    "type": "Volcan",
+    "capacite": 70,
     "horaires": [
-      "Lundi-Vendredi : 9h-20h",
-      "Samedi-Dimanche : 10h-18h"
+      {
+        "opening": "09:00",
+        "closing": "19:00"
+      }
     ],
     "accessibleHandicape": false,
-    "isMaintenance": false,
-    "maintenanceLog": [],
-    "animalSpecies": [],
-    "veterinaryLog": []
+    "isMaintenance": true
+  },
+  {
+    "nom": "Forêt Tropicale",
+    "description": "Une forêt dense et humide avec diverses espèces de plantes et d'animaux.",
+    "images": ["image_foret1.jpg", "image_foret2.jpg"],
+    "type": "Forêt",
+    "capacite": 80,
+    "horaires": [
+      {
+        "opening": "10:00",
+        "closing": "18:00"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false
   }
+
 ]
