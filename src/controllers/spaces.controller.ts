@@ -152,11 +152,113 @@ async getTicketsFromSpace(req: Request, res: Response): Promise<void> {
         }
 
         console.log(space)
-        const tickets = await TicketService.getAllTicketsFromASpace(space);
+        
+        const tickets: ITicket[] = await TicketService.getAllTicketsFromASpace(space);
         res.json(tickets);
     } catch (err: any) {
         res.status(500).json({ message: err.message });
     }
+}
+
+async checkTicket(req: Request, res: Response): Promise<void> {
+    try {
+        const userName: string = req.params.userName;
+        const spaceName : string = req.params.spaceName;
+
+        const user = await AuthService.getUserByName(userName);
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const space = await SpacesService.getSpaceByName(spaceName);
+        if (!space) {
+            res.status(404).json({ message: 'Space not found' });
+            return;
+        }
+
+        const userTickets = await TicketService.getTicketsByUserId(user._id);
+
+        if (!userTickets) {
+            res.status(404).json({ message: 'No tickets found for the user' });
+            return;
+        }
+
+        const validTicket = userTickets.find(ticket => {
+            const hasAccess = ticket.spaces.includes(space._id);
+            const isValid = new Date(ticket.validUntil) > new Date();
+
+            return hasAccess && isValid;
+        });
+
+        if (!validTicket) {
+            res.status(403).json({ message: 'No valid ticket for the space' });
+            return;
+        }
+
+        res.status(200).json({ message: 'Access granted' });
+
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+async deleteTicket(req: Request, res: Response): Promise<void> {
+    try {
+        const ticketId: string = req.params.ticketId;
+
+        const ticket = await TicketService.deleteTicketById(ticketId);
+
+        if (ticket) {
+            // Get the user
+            const user = await AuthService.getUserById(ticket._idOfUser);
+
+            // Remove the ticket from the user's tickets
+            if (user && user.tickets) {
+                const index = user.tickets.indexOf(ticketId);
+                if (index > -1) {
+                    user.tickets.splice(index, 1);
+                }
+
+                await user.save();
+            }
+
+            res.status(200).json(ticket);
+        } else {
+            res.status(404).end();
+        }
+        
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+async deleteAllTicketdFromUserId(req: Request, res: Response): Promise<void> {
+    try {
+        const userId: string = req.params.userId;
+
+        const tickets = await TicketService.deleteAllTicketFromAnUser(userId);
+
+        if (tickets) {
+            // Get the user
+            const user = await AuthService.getUserById(userId);
+            
+            // Update the tickets field
+            if (user) {
+                user.tickets = [];
+                await user.save();
+            }
+
+            res.status(200).json(tickets);
+        } else {
+            res.status(404).end();
+        }
+
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
+    }
+
 }
 
 
@@ -166,7 +268,7 @@ async getTicketsFromSpace(req: Request, res: Response): Promise<void> {
 async buyTicket(req: Request, res: Response): Promise<void> {
     try {
       const spaceNames: string[] = req.body.spaces;
-      const userName: string = req.params.userName;
+      const userId: string = req.params.userId;
       const type = req.body.type;
   
       // Vérifier si tous les espaces existent
@@ -182,26 +284,26 @@ async buyTicket(req: Request, res: Response): Promise<void> {
       }
   
       // Vérifier si l'utilisateur existe
-      const user = await AuthService.getUserByName(userName);
+      const user = await AuthService.getUserById(userId);
       if (!user) {
         res.status(404).json({ message: 'User not found' });
         return;
       }
-
-      console.log(user)
   
-      // Créer les tickets pour chaque espace disponible
-      const tickets: ITicket[] = await TicketService.createTicket(spaces, user, type);
+      // Créer le ticket pour tous les espaces disponibles
+        const ticket: ITicket = await TicketService.createTicket(spaces, user, type);
 
-      // Ajouter les tickets à l'utilisateur
-      user.tickets = user.tickets ? [...user.tickets, ...tickets] : tickets;
-      await user.save();
-    
-      res.status(201).json({ message: 'Tickets successfully created', tickets });
+        // Ajouter le ticket à l'utilisateur
+        user.tickets = user.tickets ? [...user.tickets, ticket._idOfUser] : [ticket._idOfUser];
+        await user.save();
+
+        res.status(201).json({ message: 'Ticket successfully created', ticket });
+
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
 }
+
   
 
 

@@ -5,7 +5,7 @@ export interface IUser extends Document{
   username: string;
   password: string;
   role: 'admin' | 'visitor' | 'employee' | 'veterinary' | 'receptionist' | 'cleaner' | 'salesperson';
-  tickets?: ITicket[] | undefined;
+  tickets?: string[] | undefined;
 }
 
 export type IUserDocument = IUser & Document;
@@ -19,7 +19,7 @@ export const UserSchema = new Schema<IUserDocument>({
     default: 'visitor',
     required: true,
   },
-  tickets: { type: [TicketSchema], required: false },
+  tickets: { type: [Schema.Types.ObjectId], ref: 'Ticket', required: false },
 });
 
 export default model<IUserDocument>('User', UserSchema);

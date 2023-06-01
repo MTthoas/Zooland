@@ -29,7 +29,7 @@ app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthControlle
 
 app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
-app.get('/users/:username', AuthController.ensureAuthenticated, AuthController.getUserByName);
+app.get('/users/:userId',  AuthController.getUserById);
 
 app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getBestMonthForSpace);
 app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.setBestMonthForSpace);
@@ -38,11 +38,15 @@ app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ens
 app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.getAnimalsInSpace);
 app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureVeterinary, SpacesController.addTreatmentToVeterinaryLog);
 
+app.delete('/tickets/:ticketId', AuthController.ensureRole(['admin']), SpacesController.deleteTicket)
+app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['admin']), SpacesController.deleteAllTicketdFromUserId)
+
 // Routes publiques
 
-app.patch('/tickets/:userName/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
+app.patch('/tickets/:userId/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
 app.get('/tickets', SpacesController.getAllTickets);
 app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
+app.get('/checkTicket/:userName/:spaceName', SpacesController.checkTicket);
 
 
 app.get('/users', AuthController.getAllUsers);

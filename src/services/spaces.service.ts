@@ -15,6 +15,11 @@ class SpacesService {
     	return await SpaceModel.findOne({ nom });
   	}
 
+	async GoToSpace(nom: string): Promise<ISpace | null> {
+		return await SpaceModel.findOne({ nom });
+	}
+	
+
   	async addSpace(space: ISpace): Promise<ISpace> {
 		const newSpace = new SpaceModel(space);
 	

@@ -63,6 +63,11 @@ class AuthService {
 		const user = await User.findOne({ username }, '-password');
 		return user;
 	}
+
+  static async getUserById(userId: string): Promise<IUser | null> {
+    const user = await User.findById(userId, '-password');
+    return user;
+  }
   
 }
 

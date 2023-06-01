@@ -15,54 +15,58 @@ class TicketService {
     async getAllTicketsFromASpace(space: ISpace): Promise<ITicket[]> {
         return TicketModel.find({ spaces: space.nom });
     }
-    
 
-    // async getAllTicketsBySpace(space: ISpace): Promise<ITicket[]> {
-
-    //     const tickets = await TicketModel.find({ espace: space.nom });
-    //     return tickets;
-    // }
-
-
-
-    async createTicket(spaces: ISpace[], user: IUser, type: 'journee' | 'weekend' | 'annuel' | '1daymonth'): Promise<ITicket[]> {
-        const tickets = [];
-
-        const processedInput = TicketService.removeAccentsAndLowerCase(type);
-
-        let validUntil: Date | undefined;
-
-    switch (processedInput) {
-        case 'journee':
-        validUntil = TicketService.getEndOfDay();  // La validité est jusqu'à la date actuelle pour le PASS journée
-        break;
-        case 'weekend':
-        validUntil = TicketService.getEndOfWeek(); // La validité est jusqu'à la fin de la semaine pour le PASS Week-end
-        break;
-        case 'annuel':
-        validUntil = TicketService.getEndOfYear(); // La validité est jusqu'à la fin de l'année pour le PASS Annuel
-        break;
-        case '1daymonth':
-        validUntil = TicketService.getEndOfNextMonth(); // La validité est jusqu'à la fin du mois suivant pour le PASS 1daymonth
-        break;
-        default:
-        break;
+    async getTicketsByUserId(userId: string): Promise<ITicket[]> {
+        return TicketModel.find({ _idOfUser: userId });
     }
-        
-        for (const space of spaces) {
-            const ticket = new TicketModel({
-                user: user.username,
-                validUntil: validUntil,
-                spaces: [space.nom],
-                type: processedInput
-            });
+
+    async deleteTicketById(ticketId: string): Promise<ITicket | null> {
+        return TicketModel.findByIdAndDelete({ _id : ticketId});
+    }
+
+    async deleteAllTicketFromAnUser(userId: string): Promise<ITicket[]> {
+        const ticketsToDelete = await TicketModel.find({ _idOfUser: userId });
     
-            const savedTicket = await ticket.save();
-            tickets.push(savedTicket);
+        await TicketModel.deleteMany({ _idOfUser : userId });
+    
+        return ticketsToDelete;
+    }
+    
+
+    async createTicket(spaces: ISpace[], user: IUser, type: 'journee' | 'weekend' | 'annuel' | '1daymonth'): Promise<ITicket> {
+        const processedInput = TicketService.removeAccentsAndLowerCase(type);
+        let validUntil: Date | undefined;
+    
+        switch (processedInput) {
+            case 'journee':
+                validUntil = TicketService.getEndOfDay();  // La validité est jusqu'à la date actuelle pour le PASS journée
+                break;
+            case 'weekend':
+                validUntil = TicketService.getEndOfWeek(); // La validité est jusqu'à la fin de la semaine pour le PASS Week-end
+                break;
+            case 'annuel':
+                validUntil = TicketService.getEndOfYear(); // La validité est jusqu'à la fin de l'année pour le PASS Annuel
+                break;
+            case '1daymonth':
+                validUntil = TicketService.getEndOfNextMonth(); // La validité est jusqu'à la fin du mois suivant pour le PASS 1daymonth
+                break;
+            default:
+                break;
         }
     
-        return tickets;
+        const ticket = new TicketModel({
+            _idOfUser: user._id, 
+            dateOfPurchase: new Date(),
+            validUntil: validUntil,
+            spaces: spaces.map(space => space.nom), // assign the names of all spaces
+            type: processedInput
+        });
+    
+        const savedTicket = await ticket.save();
+    
+        return savedTicket;
     }
+
 
     static getEndOfDay(): Date {
         const today = new Date();

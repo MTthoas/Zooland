@@ -34,6 +34,17 @@ export default class AuthController {
         res.json(users);
     }
 
+    static async getUserById(req: Request, res: Response) {
+        const { userId } = req.params;
+
+        const user = await AuthService.getUserById(userId);
+        if (!user) {
+          return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+        } 
+        res.json(user);
+    }
+
+
 	static async getUserByName(req: Request, res: Response) {
 		const nom: string = req.params.username;
 		const user = await AuthService.getUserByName(nom);
