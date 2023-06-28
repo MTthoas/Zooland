@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
 import { ISpace } from '../models/spaces.model';
 import { ITicket } from '../models/ticket.model';
-
-import ticketModel from '../models/ticket.model';
-
 import AuthService from '../services/auth.service';
 import SpacesService from '../services/spaces.service';
 import TicketService from '../services/ticket.service';
+import StatsModel from '../models/stats.model';
 
 import { IVeterinaryLog } from '../models/veterinarylog.model';
 
@@ -54,8 +52,25 @@ class SpacesController {
     }
   }
 
-
+  async recordVisit(req: Request, res: Response) {
+    try {
+      const { spaceId } = req.params;
   
+      // Créez une nouvelle entrée de statistiques pour cette visite
+      const stats = new StatsModel({
+        date: new Date(),
+        visitors: 1,
+        hour: new Date().getHours(),
+        spaceId
+      });
+  
+      await stats.save();
+  
+      res.json({ message: 'Visite enregistrée avec succès.' });
+    } catch (error) {
+      res.status(500).json({ message: 'Erreur lors de l\'enregistrement de la visite.' });
+    }
+  }
 
   async deleteSpace(req: Request, res: Response): Promise<void> {
     try {
@@ -193,6 +208,16 @@ async checkTicket(req: Request, res: Response): Promise<void> {
             res.status(403).json({ message: 'Invalid or expired ticket' });
             return;
         }
+
+         // Enregistrez une visite
+         const stats = new StatsModel({
+          date: new Date(),
+          visitors: 1,
+          hour: new Date().getHours(),
+          spaceId: space._id
+        });
+
+        await stats.save();
 
         if (ticket.type === 'escapegame' && user.currentSpace !== null) {
 

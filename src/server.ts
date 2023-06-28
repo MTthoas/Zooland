@@ -8,6 +8,7 @@ import { Schema, model } from 'mongoose';
 import ZooModel, { IZoo } from './models/zoo.model';
 import { ISpace } from './models/spaces.model';
 
+
 require('dotenv').config();
 
 const app = express();
@@ -26,6 +27,7 @@ app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureAdmin, Spa
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.deleteSpace);
 app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.updateSpace);
 app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureAdmin, SpacesController.toggleMaintenanceStatus);
+app.post('/spaces/:spaceId/visit', SpacesController.recordVisit);
 
 app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
