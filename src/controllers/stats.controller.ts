@@ -51,4 +51,4 @@ class StatisticsController {
       }        
   }
   
-  export default StatisticsController;
+  export default new StatisticsController();

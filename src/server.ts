@@ -7,7 +7,7 @@ import AuthService from './services/auth.service';
 import { Schema, model } from 'mongoose';
 import ZooModel, { IZoo } from './models/zoo.model';
 import { ISpace } from './models/spaces.model';
-
+import StatisticsController from './controllers/stats.controller';
 
 require('dotenv').config();
 
@@ -27,11 +27,16 @@ app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureAdmin, Spa
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.deleteSpace);
 app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.updateSpace);
 app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureAdmin, SpacesController.toggleMaintenanceStatus);
+
 app.post('/spaces/:spaceId/visit', SpacesController.recordVisit);
+
+app.get('/stats/daily', StatisticsController.getDailyStatistics);
+app.get('/stats/weekly', StatisticsController.getWeeklyStatistics);
+
 
 app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
-app.get('/users/:userId',  AuthController.getUserById);
+app.get('/users/:userId', AuthController.getUserById);
 
 app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getBestMonthForSpace);
 app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.setBestMonthForSpace);
