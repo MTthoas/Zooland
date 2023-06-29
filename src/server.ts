@@ -30,8 +30,8 @@ app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthControlle
 
 app.post('/spaces/:spaceId/visit', SpacesController.recordVisit);
 
-app.get('/stats/daily', StatisticsController.getDailyStatistics);
-app.get('/stats/weekly', StatisticsController.getWeeklyStatistics);
+app.get('/stats/daily', AuthController.ensureRole(['admin', 'receptionist']),StatisticsController.getDailyStatistics);
+app.get('/stats/weekly', AuthController.ensureRole(['admin', 'receptionist']),StatisticsController.getWeeklyStatistics);
 
 
 app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);

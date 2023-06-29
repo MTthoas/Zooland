@@ -3,7 +3,7 @@ import StatsModel, { IStats } from '../models/stats.model';
 
 class StatisticsController {
   
-  static async getDailyStatistics(req: Request, res: Response) {
+   async getDailyStatistics(req: Request, res: Response) {
     try {
       // Récupère les statistiques des 7 derniers jours
       const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -28,7 +28,7 @@ class StatisticsController {
 
       
     
-      static async getWeeklyStatistics(req: Request, res: Response) {
+       async getWeeklyStatistics(req: Request, res: Response) {
         try {
           // Récupère les statistiques des 4 dernières semaines et les regroupe par semaine
           const lastMonth = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
