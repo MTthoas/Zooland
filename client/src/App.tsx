@@ -8,6 +8,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
+import Login from './pages/login';
 
 
 
@@ -21,6 +22,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/spaces" element={<Spaces />} />
           </Routes>
         </div>

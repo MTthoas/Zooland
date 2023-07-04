@@ -17,7 +17,9 @@ function Header() {
                     <p className="mr-5 font-medium hover:text-gray-900">Spaces</p>
                     </Link>
                     <p className="mr-5 font-medium hover:text-gray-900">Register</p>
+                    <Link to="/login">
                     <p className="mr-5 font-medium hover:text-gray-900">Login</p>
+                    </Link>
                 </nav>
         </div>
         </header>
