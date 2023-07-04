@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './login.css'; // Importez votre fichier CSS
+import { Link } from 'react-router-dom'; // Importez le composant Link
+import './login.css';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -31,6 +32,9 @@ function Login() {
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
         </label>
         <button type="submit">Se connecter</button>
+        <Link to="/register">
+          <button type="button">S'inscrire</button>
+        </Link>
       </form>
     </div>
   );
