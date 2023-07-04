@@ -8,7 +8,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
-import Login from './pages/login';
+import Login from './components/login';
 
 
 
