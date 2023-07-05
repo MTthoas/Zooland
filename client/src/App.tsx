@@ -9,26 +9,24 @@ import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
 import Login from './components/login';
-
-
+import PrivateComponent from './components/privateRoute';
 
 function App() {
-
   return (
-  <div className="App">
-    <Router>
+    <div className="App">
+      <Router>
         <div className="body mb-24">
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<PrivateComponent><Home /></PrivateComponent>} />
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/spaces" element={<Spaces />} />
+            <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
           </Routes>
         </div>
         {/* <Footer /> */}
       </Router>
-  </div>
+    </div>
   );
 }
 
