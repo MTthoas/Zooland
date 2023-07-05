@@ -10,6 +10,7 @@ import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
 import Login from './components/login';
 import PrivateComponent from './components/privateRoute';
+import Register from './components/register';
 
 function App() {
   return (
@@ -21,7 +22,9 @@ function App() {
             <Route path="/" element={<PrivateComponent><Home /></PrivateComponent>} />
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
+            <Route path="/register" element={<Register />} />
+            {/* <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} /> */}
+            <Route path="/spaces" element={<Spaces />} />
           </Routes>
         </div>
         {/* <Footer /> */}
