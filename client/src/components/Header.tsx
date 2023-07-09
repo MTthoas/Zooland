@@ -37,6 +37,16 @@ function Header() {
                             <p className="mr-5 font-medium hover:text-gray-900">Stats Weekly</p>
                         </Link>
                     )}
+                    {isLoggedIn && (
+                        <Link to="/users">
+                            <p className="mr-5 font-medium hover:text-gray-900">Users</p>
+                            </Link>
+                            )}
+                    {isLoggedIn && (
+                        <Link to="/management">
+                            <p className="mr-5 font-medium hover:text-gray-900">Management</p>
+                            </Link>
+                            )}
                     {isLoggedIn ? (
                         <button onClick={handleLogout} className="mr-5 font-medium hover:text-gray-900">
                             Déconnexion

@@ -16,7 +16,7 @@ function Login() {
       console.log(response.data.token);
 
       localStorage.setItem('token', token);
-      window.location.href = '../pages/Home';
+      window.location.href = '/home';
     } catch (error) {
       console.error(error);
     }
