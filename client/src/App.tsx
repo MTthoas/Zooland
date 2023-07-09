@@ -11,6 +11,8 @@ import Spaces from './pages/Spaces';
 import Login from './components/login';
 import PrivateComponent from './components/privateRoute';
 import Register from './components/register';
+import DailyStats from './pages/DailyStats';
+import WeeklyStats from './pages/WeeklyStats';
 
 function App() {
   useEffect(() => {
@@ -27,7 +29,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
-            {/* <Route path="/spaces" element={<Spaces />} /> */}
+            <Route path="/statsDaily" element={<PrivateComponent><DailyStats /></PrivateComponent>} />
+            <Route path="/statsWeekly" element={<PrivateComponent><WeeklyStats /></PrivateComponent>} />
           </Routes>
         </div>
         {/* <Footer /> */}

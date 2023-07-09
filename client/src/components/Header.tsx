@@ -27,6 +27,16 @@ function Header() {
                             <p className="mr-5 font-medium hover:text-gray-900">Spaces</p>
                         </Link>
                     )}
+                    {isLoggedIn && ( 
+                        <Link to="/statsDaily">
+                            <p className="mr-5 font-medium hover:text-gray-900">Stats Daily</p>
+                            </Link>
+                            )}
+                    {isLoggedIn && (
+                        <Link to="/statsWeekly">
+                            <p className="mr-5 font-medium hover:text-gray-900">Stats Weekly</p>
+                        </Link>
+                    )}
                     {isLoggedIn ? (
                         <button onClick={handleLogout} className="mr-5 font-medium hover:text-gray-900">
                             Déconnexion

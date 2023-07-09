@@ -44,7 +44,6 @@ function Spaces() {
         const fetchSpaces = async () => {
             try {
                 const response = await axios.get('/spaces');
-                console.log(response.data);
                 setSpaces(response.data);
             } catch (error) {
                 console.error(error);
