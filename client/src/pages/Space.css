@@ -1,0 +1,55 @@
+.spaces-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrer les éléments horizontalement */
+    align-items: start; /* Aligner les éléments au début verticalement */
+    padding: 20px;
+    gap: 20px;
+}
+
+.spaces-grid .ant-card {
+    flex: 0 0 calc(33.33% - 20px);
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    max-width: 300px; /* Limiter la largeur des cartes */
+}
+
+.spaces-grid .ant-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Pour les écrans plus petits, vous pouvez rendre les cartes plus larges */
+@media (max-width: 768px) {
+    .spaces-grid .ant-card {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .spaces-grid .ant-card {
+        flex: 0 0 100%;
+    }
+}
+
+/* Styles pour le carrousel d'images */
+.spaces-grid .ant-card .ant-carousel {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.spaces-grid .ant-card .ant-carousel img {
+    width: 100%;
+    height: auto;
+}
+
+/* Styles pour les listes d'espèces animales */
+.spaces-grid .ant-card .ant-list {
+    margin-bottom: 10px;
+}
+
+/* Styles pour la timeline des horaires */
+.spaces-grid .ant-card .ant-timeline {
+    margin-bottom: 10px;
+}

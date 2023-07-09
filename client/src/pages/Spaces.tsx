@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Card, List, Carousel, Timeline } from 'antd';
+import './Space.css';
 
 interface IMaintenanceLog {
     month: string;
@@ -53,60 +55,38 @@ function Spaces() {
     }, []);
 
     return (
-        <div>
+        <div className="spaces-grid">
             {spaces.map(space => (
-                <div key={space._id}>
-                    <h2>{space.nom}</h2>
+                <Card key={space._id} title={space.nom}>
+                    <Carousel autoplay>
+                        {space.images.map((image, index) => (
+                            <img key={index} src={image} alt={`Image ${index + 1}`} />
+                        ))}
+                    </Carousel>
                     <p>{space.description}</p>
                     <p>Type: {space.type}</p>
                     <p>Capacité: {space.capacite}</p>
                     <p>Accessible aux handicapés: {space.accessibleHandicape ? 'Oui' : 'Non'}</p>
                     <p>En maintenance: {space.isMaintenance ? 'Oui' : 'Non'}</p>
                     <p>Meilleur mois: {space.bestMonth}</p>
-                    <p>Espèces animales: {space.animalSpecies.join(', ')}</p>
+                    <p>Espèces animales:</p>
+                    <List
+                        size="small"
+                        dataSource={space.animalSpecies}
+                        renderItem={(item: string) => <List.Item>{item}</List.Item>}
+                    />
                     <p>Nombre de logs de maintenance: {space.maintenanceLog.length}</p>
                     <p>Nombre de logs vétérinaires: {space.veterinaryLog.length}</p>
                     <p>Horaires:</p>
-                    {space.horaires.map((horaire, index) => (
-                        <div key={index}>
-                            <p>Ouverture: {horaire.opening}</p>
-                            <p>Fermeture: {horaire.closing}</p>
-                        </div>
-                    ))}
-                    <p>Images:</p>
-                    {space.images.map((image, index) => (
-                        <div key={index}>
-                            <img src={image} alt={`Image ${index + 1}`} />
-                        </div>
-                    ))}
-                    <p>Logs de maintenance:</p>
-                    {space.maintenanceLog.length > 0 ? (
-                        space.maintenanceLog.map((log, index) => (
-                            <div key={index}>
-                                <p>Mois: {log.month}</p>
-                                <p>Commentaire: {log.commentary}</p>
-                                <p>Maintenance par: {log.maintenanceBy}</p>
-                                <p>Meilleur mois: {log.doesBestMonth ? 'Oui' : 'Non'}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Aucun log de maintenance disponible.</p>
-                    )}
-                    <p>Logs vétérinaires:</p>
-                    {space.veterinaryLog.length > 0 ? (
-                        space.veterinaryLog.map((log, index) => (
-                            <div key={index}>
-                                <p>Date du traitement: {log.treatmentDate}</p>
-                                <p>Traitement par: {log.treatmentBy}</p>
-                                <p>Condition de l'animal: {log.condition}</p>
-                                <p>Détails du traitement: {log.treatmentDetails}</p>
-                                <p>Espèce: {log.species}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>Aucun log vétérinaire disponible.</p>
-                    )}
-                </div>
+                    <Timeline>
+                        {space.horaires.map((horaire, index) => (
+                            <Timeline.Item key={index}>
+                                Ouverture: {horaire.opening}, Fermeture: {horaire.closing}
+                            </Timeline.Item>
+                        ))}
+                    </Timeline>
+                    {/* ... (autres informations) */}
+                </Card>
             ))}
         </div>
     );

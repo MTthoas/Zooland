@@ -19,6 +19,9 @@ function Header() {
                     <Link to="/login">
                     <p className="mr-5 font-medium hover:text-gray-900">Login</p>
                     </Link>
+                    <Link to="/register">
+                    <p className="mr-5 font-medium hover:text-gray-900">Register</p>
+                    </Link>
                 </nav>
         </div>
         </header>
