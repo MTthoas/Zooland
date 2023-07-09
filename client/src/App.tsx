@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './App.css';
@@ -13,6 +13,9 @@ import PrivateComponent from './components/privateRoute';
 import Register from './components/register';
 
 function App() {
+  useEffect(() => {
+    // localStorage.removeItem('token');
+}, []);
   return (
     <div className="App">
       <Router>
@@ -23,8 +26,8 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            {/* <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} /> */}
-            <Route path="/spaces" element={<Spaces />} />
+            <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
+            {/* <Route path="/spaces" element={<Spaces />} /> */}
           </Routes>
         </div>
         {/* <Footer /> */}

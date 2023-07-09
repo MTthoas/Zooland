@@ -13,8 +13,10 @@ function Login() {
     try {
       const response = await axios.post('/auth/login', { username, password });
       const token = response.data.token;
+      console.log(response.data.token);
 
       localStorage.setItem('token', token);
+      window.location.href = '../pages/Home';
     } catch (error) {
       console.error(error);
     }

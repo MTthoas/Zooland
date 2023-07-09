@@ -10,6 +10,7 @@ function PrivateComponent({ children }: PrivateComponentProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('token', token);
     if (!token) {
       navigate('/login');
     }
