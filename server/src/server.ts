@@ -62,7 +62,7 @@ app.get('/checkTicket/:ticketId/:spaceName', SpacesController.checkTicket);
 app.get('/users', AuthController.getAllUsers);
 app.get('/spaces', ZooController.ensureZooOpen, SpacesController.getAllSpaces);
 
-app.patch('/zoo/open',AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
+app.patch('/zoo/open', ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
 app.post('/users/add-all', AuthController.addAllUsers);
 
