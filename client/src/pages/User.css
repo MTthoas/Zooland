@@ -1,0 +1,54 @@
+.users-container {
+    margin: 20px;
+  }
+  
+  .users-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .search-container {
+    margin-bottom: 10px;
+  }
+  
+  .search-input {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .users-table th,
+  .users-table td {
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .users-table th {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  
+  .users-table th:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .users-table th:active {
+    background-color: #c2c2c2;
+  }
+  
+  .users-table td {
+    text-align: center;
+  }
+  
+  .empty-users {
+    font-style: italic;
+    color: #888;
+  }
+  

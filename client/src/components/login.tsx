@@ -13,8 +13,10 @@ function Login() {
     try {
       const response = await axios.post('/auth/login', { username, password });
       const token = response.data.token;
+      console.log(response.data.token);
 
       localStorage.setItem('token', token);
+      window.location.href = '/home';
     } catch (error) {
       console.error(error);
     }
@@ -32,9 +34,6 @@ function Login() {
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
         </label>
         <button type="submit">Se connecter</button>
-        <Link to="/register">
-          <button type="button">S'inscrire</button>
-        </Link>
       </form>
     </div>
   );

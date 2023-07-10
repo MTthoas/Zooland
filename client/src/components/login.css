@@ -22,6 +22,8 @@
     padding: 10px;
     border: none;
     border-radius: 5px;
+    color: #fff; 
+    background-color: #666;
   }
   
   .login-form button {
