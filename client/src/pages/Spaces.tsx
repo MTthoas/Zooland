@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, List, Carousel, Timeline, Button, Modal, Form, Input, Switch } from 'antd';
+import { Card, List, Carousel, Timeline, Button, Modal, Form, Input, Switch, message } from 'antd';
 import './Space.css';
 
 interface IMaintenanceLog {
@@ -19,7 +19,7 @@ interface IVeterinaryLog {
 }
 
 interface ISpace {
-    _id: string;
+    _id?: string;
     nom: string;
     description: string;
     images: string[];
@@ -40,10 +40,8 @@ interface ISpace {
 function Spaces() {
     const [spaces, setSpaces] = useState<ISpace[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [editingSpaceId, setEditingSpaceId] = useState<string | null>(null);
     const [editingSpace, setEditingSpace] = useState<ISpace | null>(null);
-
-
+    const [isCreating, setIsCreating] = useState(false);
 
     useEffect(() => {
         const fetchSpaces = async () => {
@@ -60,16 +58,49 @@ function Spaces() {
 
     const handleEdit = (space: ISpace) => {
         setEditingSpace(space);
+        setIsCreating(false);
+        setIsModalVisible(true);
+    };
+
+    const handleCreate = () => {
+        setEditingSpace({
+            nom: '',
+            description: '',
+            images: [],
+            type: '',
+            capacite: 0,
+            horaires: [],
+            accessibleHandicape: false,
+            isMaintenance: false,
+            bestMonth: '',
+            maintenanceLog: [],
+            animalSpecies: [],
+            veterinaryLog: [],
+        });
+        setIsCreating(true);
         setIsModalVisible(true);
     };
 
     const handleOk = async () => {
         if (editingSpace) {
-            try {
-                const response = await axios.put(`/spaces/${editingSpace.nom}`, editingSpace);
-                console.log(response.data);
-            } catch (error) {
-                console.error(error);
+            if (isCreating) {
+                try {
+                    const response = await axios.post('/spaces', editingSpace);
+                    console.log(response.data);
+                    message.success('Espace créé avec succès');
+                } catch (error) {
+                    console.error(error);
+                    message.error('Erreur lors de la création de l\'espace');
+                }
+            } else {
+                try {
+                    const response = await axios.put(`/spaces/${editingSpace.nom}`, editingSpace);
+                    console.log(response.data);
+                    message.success('Espace modifié avec succès');
+                } catch (error) {
+                    console.error(error);
+                    message.error('Erreur lors de la modification de l\'espace');
+                }
             }
         }
         setIsModalVisible(false);
@@ -126,9 +157,10 @@ function Spaces() {
                     <Button onClick={() => handleEdit(space)}>Modifier</Button>
                 </Card>
             ))}
+            <Button type="primary" onClick={handleCreate} style={{ backgroundColor: 'white', color: 'black' }}>Créer un nouvel espace</Button>
             {editingSpace && (
-                <Modal title="Modifier l'espace" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                    <Form>
+                <Modal title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                <Form>
                         <Form.Item label="Nom">
                             <Input name="nom" value={editingSpace.nom} onChange={handleInputChange} />
                         </Form.Item>
