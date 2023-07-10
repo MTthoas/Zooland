@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, List, Carousel, Timeline } from 'antd';
+import { Card, List, Carousel, Timeline, Button, Modal, Form, Input, Switch } from 'antd';
 import './Space.css';
 
 interface IMaintenanceLog {
@@ -18,7 +18,7 @@ interface IVeterinaryLog {
     species: string;
 }
 
-interface Space {
+interface ISpace {
     _id: string;
     nom: string;
     description: string;
@@ -38,7 +38,12 @@ interface Space {
 }
 
 function Spaces() {
-    const [spaces, setSpaces] = useState<Space[]>([]);
+    const [spaces, setSpaces] = useState<ISpace[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingSpaceId, setEditingSpaceId] = useState<string | null>(null);
+    const [editingSpace, setEditingSpace] = useState<ISpace | null>(null);
+
+
 
     useEffect(() => {
         const fetchSpaces = async () => {
@@ -52,6 +57,39 @@ function Spaces() {
 
         fetchSpaces();
     }, []);
+
+    const handleEdit = (space: ISpace) => {
+        setEditingSpace(space);
+        setIsModalVisible(true);
+    };
+
+    const handleOk = async () => {
+        if (editingSpace) {
+            try {
+                const response = await axios.put(`/spaces/${editingSpace.nom}`, editingSpace);
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (editingSpace) {
+            setEditingSpace({ ...editingSpace, [event.target.name]: event.target.value });
+        }
+    };
+
+    const handleSwitchChange = (name: string, value: boolean) => {
+        if (editingSpace) {
+            setEditingSpace({ ...editingSpace, [name]: value });
+        }
+    };
 
     return (
         <div className="spaces-grid">
@@ -85,8 +123,34 @@ function Spaces() {
                         ))}
                     </Timeline>
                     {/* ... (autres informations) */}
+                    <Button onClick={() => handleEdit(space)}>Modifier</Button>
                 </Card>
             ))}
+            {editingSpace && (
+                <Modal title="Modifier l'espace" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                    <Form>
+                        <Form.Item label="Nom">
+                            <Input name="nom" value={editingSpace.nom} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Description">
+                            <Input name="description" value={editingSpace.description} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Type">
+                            <Input name="type" value={editingSpace.type} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Capacité">
+                            <Input name="capacite" value={editingSpace.capacite} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Accessible aux handicapés">
+                            <Switch checked={editingSpace.accessibleHandicape} onChange={(value) => handleSwitchChange('accessibleHandicape', value)} />
+                        </Form.Item>
+                        <Form.Item label="En maintenance">
+                            <Switch checked={editingSpace.isMaintenance} onChange={(value) => handleSwitchChange('isMaintenance', value)} />
+                        </Form.Item>
+                        {/* ... (autres champs du formulaire) */}
+                    </Form>
+                </Modal>
+            )}
         </div>
     );
 }
