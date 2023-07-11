@@ -1,64 +1,96 @@
 [
   {
-    "nom": "Aquarium 1",
-    "description": "Un grand aquarium avec différentes espèces de poissons.",
-    "images": ["image1.jpg", "image2.jpg"],
-    "type": "Aquarium",
-    "capacite": 50,
-    "duration": 2,
-    "horaires": [
-      {
-        "opening": "09:00",
-        "closing": "18:00"
-      }
-    ],
-    "accessibleHandicape": true,
-    "isMaintenance": false
-  },
-  {
-    "nom": "Savane",
-    "description": "Un espace ouvert représentant la savane africaine avec divers animaux.",
-    "images": ["image_savane1.jpg", "image_savane2.jpg"],
-    "type": "Savane",
-    "capacite": 100,
-    "horaires": [
-      {
-        "opening": "08:00",
-        "closing": "20:00"
-      }
-    ],
-    "accessibleHandicape": true,
-    "isMaintenance": false
-  },
-  {
     "nom": "Volcan",
-    "description": "Un environnement chaud et sec représentant une région volcanique.",
-    "images": ["image_volcan1.jpg", "image_volcan2.jpg"],
-    "type": "Volcan",
-    "capacite": 70,
+    "description": "Un espace captivant avec une reconstitution réaliste d'un volcan en éruption.",
+    "images": ["volcan1.jpg", "volcan2.jpg", "volcan3.jpg"],
+    "type": "Espace naturel",
+    "capacite": 200,
     "horaires": [
       {
         "opening": "09:00",
-        "closing": "19:00"
-      }
-    ],
-    "accessibleHandicape": false,
-    "isMaintenance": true
-  },
-  {
-    "nom": "Forêt Tropicale",
-    "description": "Une forêt dense et humide avec diverses espèces de plantes et d'animaux.",
-    "images": ["image_foret1.jpg", "image_foret2.jpg"],
-    "type": "Forêt",
-    "capacite": 80,
-    "horaires": [
+        "closing": "17:00"
+      },
       {
         "opening": "10:00",
         "closing": "18:00"
       }
     ],
     "accessibleHandicape": true,
-    "isMaintenance": false
+    "isMaintenance": false,
+    "bestMonth": "Août",
+    "maintenanceLog": [],
+    "animalSpecies": ["Lézard de feu", "Araignée volcanique"],
+    "veterinaryLog": []
   }
-
+  ,
+  {
+    "nom": "Forêt Tropicale",
+    "description": "Une immersion totale au cœur d'une forêt tropicale luxuriante.",
+    "images": ["foret1.jpg", "foret2.jpg", "foret3.jpg"],
+    "type": "Espace naturel",
+    "capacite": 150,
+    "horaires": [
+      {
+        "opening": "08:30",
+        "closing": "17:30"
+      },
+      {
+        "opening": "09:30",
+        "closing": "18:30"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Juillet",
+    "maintenanceLog": [],
+    "animalSpecies": ["Toucan", "Paresseux", "Singe hurleur"],
+    "veterinaryLog": []
+  }
+  ,
+  {
+    "nom": "Savane",
+    "description": "Un vaste espace ouvert où l'on peut observer de près la faune de la savane africaine.",
+    "images": ["savane1.jpg", "savane2.jpg", "savane3.jpg"],
+    "type": "Espace naturel",
+    "capacite": 250,
+    "horaires": [
+      {
+        "opening": "08:00",
+        "closing": "18:00"
+      },
+      {
+        "opening": "09:00",
+        "closing": "17:00"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Septembre",
+    "maintenanceLog": [],
+    "animalSpecies": ["Lion", "Girafe", "Zèbre", "Éléphant"],
+    "veterinaryLog": []
+  },
+  {
+    "nom": "Aquarium",
+    "description": "Un monde sous-marin fascinant avec une grande variété d'espèces marines.",
+    "images": ["aquarium1.jpg", "aquarium2.jpg", "aquarium3.jpg"],
+    "type": "Espace aquatique",
+    "capacite": 300,
+    "horaires": [
+      {
+        "opening": "10:00",
+        "closing": "16:30"
+      },
+      {
+        "opening": "11:00",
+        "closing": "17:30"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Mai",
+    "maintenanceLog": [],
+    "animalSpecies": ["Poisson clown", "Requin", "Méduse", "Raie"],
+    "veterinaryLog": []
+  }
 ]

@@ -4,6 +4,7 @@ import axios from 'axios';
 import './User.css';
 
 interface IUser {
+  _id: string;
   username: string;
   role: string;
   tickets?: string[];
@@ -33,15 +34,43 @@ interface ITableState extends TableState<IUser> {
 function Users() {
     const [users, setUsers] = useState<IUser[]>([]);
   
+    const deleteUser = async (id: string) => {
+      try {
+        await axios.delete(`/users/${id}`);
+        setUsers(users.filter(user => user._id !== id));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const setUserRole = async (id: string, role: string) => {
+      try {
+        const newRole = role === 'admin' ? 'user' : 'admin';
+        const response = await axios.patch(`/users/${id}/role`, { role: newRole });
+        setUsers(users.map(user => user._id === id ? { ...user, role: response.data.role } : user));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     const columns: Column<IUser>[] = useMemo(
-        () => [
-          { Header: 'Username', accessor: 'username' },
-          { Header: 'Role', accessor: 'role' },
-          { Header: 'Tickets', accessor: 'tickets', Cell: CustomCell },
-          { Header: 'Current Space', accessor: 'currentSpace', Cell: CustomCellSpace },
-        ],
-        []
-      );;
+      () => [
+        { Header: 'Username', accessor: 'username' },
+        { Header: 'Role', accessor: 'role' },
+        { Header: 'Tickets', accessor: 'tickets', Cell: CustomCell },
+        { Header: 'Current Space', accessor: 'currentSpace', Cell: CustomCellSpace },
+        { 
+          Header: 'Actions', 
+          Cell: ({ row: { original } }: CellProps<IUser>) => (
+            <div>
+                <button className="button" onClick={() => deleteUser(original._id)}>Supprimer</button>
+                <button className="button" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</button>
+            </div>
+          )
+        },
+      ],
+      [users] // Mettez users dans le tableau des dépendances pour vous assurer que la colonne est mise à jour chaque fois que les users changent.
+    );
   
     const {
       getTableProps,

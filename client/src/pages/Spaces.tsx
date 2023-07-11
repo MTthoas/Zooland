@@ -122,6 +122,19 @@ function Spaces() {
         }
     };
 
+    const handleDelete = async (space: ISpace) => {
+        if (space._id) {
+            try {
+                await axios.delete(`/users/${space._id}`);
+                setSpaces(spaces.filter(s => s._id !== space._id));
+                message.success('Espace supprimé avec succès');
+            } catch (error) {
+                console.error(error);
+                message.error('Erreur lors de la suppression de l\'espace');
+            }
+        }
+    };
+
     return (
         <div className="spaces-grid">
             {spaces.map(space => (
@@ -155,6 +168,7 @@ function Spaces() {
                     </Timeline>
                     {/* ... (autres informations) */}
                     <Button onClick={() => handleEdit(space)}>Modifier</Button>
+                    <Button onClick={() => handleDelete(space)} type="primary" danger>Supprimer</Button>
                 </Card>
             ))}
             <Button type="primary" onClick={handleCreate} style={{ backgroundColor: 'white', color: 'black' }}>Créer un nouvel espace</Button>

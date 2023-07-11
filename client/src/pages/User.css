@@ -11,6 +11,35 @@
   .search-container {
     margin-bottom: 10px;
   }
+
+  .users-container button {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    margin: 5px;
+  }
+  
+  .users-container button:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+  }
+  
+  .users-container button:active {
+    color: #fff;
+    background-color: #0062cc;
+    border-color: #005cbf;
+  }
+  
+  .users-container button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, .5);
+  }
+  
   
   .search-input {
     width: 300px;
