@@ -15,6 +15,7 @@ import DailyStats from './pages/DailyStats';
 import WeeklyStats from './pages/WeeklyStats';
 import Users from './pages/User';
 import Management from './pages/Management';
+import Tickets from './pages/Ticket';
 
 function App() {
   useEffect(() => {
@@ -35,6 +36,7 @@ function App() {
             <Route path="/statsDaily" element={<PrivateComponent><DailyStats /></PrivateComponent>} />
             <Route path="/statsWeekly" element={<PrivateComponent><WeeklyStats /></PrivateComponent>} />
             <Route path="/users" element={<PrivateComponent><Users /></PrivateComponent>} />
+            <Route path="/tickets" element={<PrivateComponent><Tickets /></PrivateComponent>} />
             <Route path="/management" element={<PrivateComponent><Management /></PrivateComponent>} />
           </Routes>
         </div>

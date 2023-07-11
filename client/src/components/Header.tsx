@@ -43,6 +43,11 @@ function Header() {
                             </Link>
                             )}
                     {isLoggedIn && (
+                        <Link to="/tickets">
+                            <p className="mr-5 font-medium hover:text-gray-900">Tickets</p>
+                            </Link>
+                            )}
+                    {isLoggedIn && (
                         <Link to="/management">
                             <p className="mr-5 font-medium hover:text-gray-900">Management</p>
                             </Link>
