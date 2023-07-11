@@ -42,6 +42,16 @@ function Spaces() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingSpace, setEditingSpace] = useState<ISpace | null>(null);
     const [isCreating, setIsCreating] = useState(false);
+    const [isAnimalModalVisible, setIsAnimalModalVisible] = useState(false);
+    const [newAnimal, setNewAnimal] = useState("");
+    const [isTreatmentModalVisible, setIsTreatmentModalVisible] = useState(false);
+    const [newTreatment, setNewTreatment] = useState({
+        treatmentBy: '',
+        condition: '',
+        treatmentDetails: '',
+        species: ''
+      });
+      
 
     useEffect(() => {
         const fetchSpaces = async () => {
@@ -135,6 +145,59 @@ function Spaces() {
         }
     };
 
+    const handleAddAnimalSpecies = (space: ISpace) => {
+        setEditingSpace(space);
+        setIsAnimalModalVisible(true);
+    };
+
+    const handleAnimalOk = async () => {
+        if (editingSpace && editingSpace.nom && newAnimal) {
+            try {
+                const response = await axios.post(`/spaces/${editingSpace.nom}/animals`, { name: newAnimal });
+                console.log(response.data);
+                message.success('Espèce d\'animal ajoutée avec succès');
+                setNewAnimal("");  // Réinitialiser la valeur du nouvel animal
+                setIsAnimalModalVisible(false);  // Fermer la fenêtre contextuelle
+            } catch (error) {
+                console.error(error);
+                message.error('Erreur lors de l\'ajout d\'une espèce d\'animal');
+            }
+        }
+    };
+    
+    const handleAnimalCancel = () => {
+        setIsAnimalModalVisible(false);
+    };    
+
+    const handleAddTreatmentToVeterinaryLog = (space: ISpace) => {
+        setEditingSpace(space);
+        setIsTreatmentModalVisible(true);
+    };
+
+    const handleTreatmentOk = async () => {
+        if (editingSpace && editingSpace.nom && newTreatment) {
+          try {
+            const response = await axios.post(`/spaces/${editingSpace.nom}/treatments`, newTreatment);
+            console.log(response.data);
+            message.success('Traitement ajouté avec succès au journal vétérinaire');
+            setNewTreatment({
+              treatmentBy: '',
+              condition: '',
+              treatmentDetails: '',
+              species: ''
+            });  // Réinitialisez le formulaire
+            setIsTreatmentModalVisible(false);  // Fermez le modal
+          } catch (error) {
+            console.error(error);
+            message.error('Erreur lors de l\'ajout d\'un traitement au journal vétérinaire');
+          }
+        }
+      };
+      
+      const handleTreatmentCancel = () => {
+        setIsTreatmentModalVisible(false);
+      };
+
     return (
         <div className="spaces-grid">
             {spaces.map(space => (
@@ -156,8 +219,33 @@ function Spaces() {
                         dataSource={space.animalSpecies}
                         renderItem={(item: string) => <List.Item>{item}</List.Item>}
                     />
+                    <Button onClick={() => handleAddAnimalSpecies(space)} style={{ backgroundColor: 'grey', color: 'black' }} type="primary">Ajouter une espèce d'animal</Button>
+                    <Modal title="Ajouter une nouvelle espèce d'animal" visible={isAnimalModalVisible} onOk={handleAnimalOk} onCancel={handleAnimalCancel}>
+                        <Form>
+                            <Form.Item label="Nom de l'animal">
+                                <Input value={newAnimal} onChange={e => setNewAnimal(e.target.value)} />
+                            </Form.Item>
+                        </Form>
+                    </Modal>
                     <p>Nombre de logs de maintenance: {space.maintenanceLog.length}</p>
                     <p>Nombre de logs vétérinaires: {space.veterinaryLog.length}</p>
+                    <Button onClick={() => handleAddTreatmentToVeterinaryLog(space)} style={{ backgroundColor: 'grey', color: 'black' }} type="primary">Ajouter un traitement au journal</Button>
+                    <Modal title="Ajouter un nouveau traitement" visible={isTreatmentModalVisible} onOk={handleTreatmentOk} onCancel={handleTreatmentCancel}>
+                      <Form>
+                        <Form.Item label="Traitement par">
+                          <Input value={newTreatment.treatmentBy} onChange={e => setNewTreatment({ ...newTreatment, treatmentBy: e.target.value })} />
+                        </Form.Item>
+                        <Form.Item label="Condition">
+                          <Input value={newTreatment.condition} onChange={e => setNewTreatment({ ...newTreatment, condition: e.target.value })} />
+                        </Form.Item>
+                        <Form.Item label="Détails du traitement">
+                          <Input value={newTreatment.treatmentDetails} onChange={e => setNewTreatment({ ...newTreatment, treatmentDetails: e.target.value })} />
+                        </Form.Item>
+                        <Form.Item label="Espèce">
+                          <Input value={newTreatment.species} onChange={e => setNewTreatment({ ...newTreatment, species: e.target.value })} />
+                        </Form.Item>
+                      </Form>
+                    </Modal>
                     <p>Horaires:</p>
                     <Timeline>
                         {space.horaires.map((horaire, index) => (
