@@ -28,15 +28,11 @@ function Header() {
                         </Link>
                     )}
                     {isLoggedIn && ( 
-                        <Link to="/statsDaily">
-                            <p className="mr-5 font-medium hover:text-gray-900">Stats Daily</p>
+                        <Link to="/stats">
+                            <p className="mr-5 font-medium hover:text-gray-900">Stats </p>
                             </Link>
                             )}
-                    {isLoggedIn && (
-                        <Link to="/statsWeekly">
-                            <p className="mr-5 font-medium hover:text-gray-900">Stats Weekly</p>
-                        </Link>
-                    )}
+                   
                     {isLoggedIn && (
                         <Link to="/users">
                             <p className="mr-5 font-medium hover:text-gray-900">Users</p>
