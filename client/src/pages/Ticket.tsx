@@ -89,9 +89,13 @@ const Tickets = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={() => setIsModalVisible(true)}>
+      <Button style={{ backgroundColor: 'white', color: 'black' }} type="primary" onClick={() => setIsModalVisible(true)}>
         Acheter un billet
       </Button>
+      <hr />    
+        
+
+
       <Table
         dataSource={tickets}
         columns={columns}

@@ -9,7 +9,9 @@ interface IUser {
   role: string;
   tickets?: string[];
   currentSpace?: string;
+  countTickets: number;
 }
+
 
 // Updated ICellProps to accept string[] or string | undefined
 interface ICellPropsTickets extends CellProps<IUser, string[] | undefined> {}
@@ -59,7 +61,7 @@ function Users() {
       { Header: 'ID', accessor: '_id', Cell: CustomCellId },
       { Header: 'Username', accessor: 'username' },
       { Header: 'Role', accessor: 'role' },
-      { Header: 'Tickets', accessor: 'tickets', Cell: CustomCell },
+      { Header: 'Tickets', accessor: 'countTickets', Cell:  ({ value }) => <>{value}</> },
       { Header: 'Current Space', accessor: 'currentSpace', Cell: CustomCellSpace },
       { 
         Header: 'Actions', 
@@ -89,13 +91,16 @@ function Users() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/users');
-        setUsers(response.data);
+        const response = await axios.get<IUser[]>('/users');
+        const updatedUsers = response.data.map(user => ({
+          ...user,
+          countTickets: user.tickets ? user.tickets.length : 0
+        }));
+        setUsers(updatedUsers);
       } catch (error) {
         console.error(error);
       }
     };
-
     fetchUsers();
   }, []);
 

@@ -53,7 +53,7 @@ app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['admin']), S
 
 // Routes publiques
 
-app.patch('/tickets/:userId/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
+app.patch('/tickets/:userId/buy', SpacesController.buyTicket);
 app.get('/tickets', SpacesController.getAllTickets);
 app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
 app.get('/checkTicket/:ticketId/:spaceName', SpacesController.checkTicket);
