@@ -33,6 +33,9 @@ app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthControlle
 
 app.post('/spaces/:spaceId/visit', SpacesController.recordVisit);
 
+// Ajoutez une route pour les statistiques en temps réel
+app.get('/stats/live', StatisticsController.getLiveStats);
+
 app.get('/stats/daily', StatisticsController.getDailyStatistics);
 app.get('/stats/weekly', StatisticsController.getWeeklyStatistics);
 
@@ -57,7 +60,8 @@ app.patch('/tickets/:userId/buy', SpacesController.buyTicket);
 app.get('/tickets', SpacesController.getAllTickets);
 app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
 app.get('/checkTicket/:ticketId/:spaceName', SpacesController.checkTicket);
-
+// Ajoutez une route pour les sorties
+app.post('/checkout/:ticketId/:spaceName', SpacesController.checkOut);
 
 app.get('/users', AuthController.getAllUsers);
 app.get('/spaces', ZooController.ensureZooOpen, SpacesController.getAllSpaces);

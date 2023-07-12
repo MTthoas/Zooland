@@ -15,9 +15,15 @@ interface IWeeklyStats {
     spaceId: string;
 }
 
+interface ILiveStats {
+    _id: string;
+    totalVisitors: number;
+}
+
 function Stats() {
     const [dailyStats, setDailyStats] = useState<IDailyStats[]>([]);
     const [weeklyStats, setWeeklyStats] = useState<IWeeklyStats[]>([]);
+    const [liveStats, setLiveStats] = useState<ILiveStats[]>([]);
 
     useEffect(() => {
         const fetchDailyStats = async () => {
@@ -33,6 +39,15 @@ function Stats() {
             try {
                 const response = await axios.get<IWeeklyStats[]>('/stats/weekly');
                 setWeeklyStats(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const fetchLiveStats = async () => {
+            try {
+                const response = await axios.get<ILiveStats[]>('/stats/live');
+                setLiveStats(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -76,15 +91,21 @@ function Stats() {
                 </ul>
             )}
 
-
-
             <hr></hr>
             <h1 className="stats-heading">Live Statistics</h1>
-            <p className="no-stats-message">Reste à faire</p>
-
+            {liveStats.length === 0 ? (
+                <p className="no-stats-message">No live statistics available</p>
+            ) : (
+                <ul className="stats-list">
+                    {liveStats.map((stat, index) => (
+                        <li key={index} className="stats-item">
+                            <span className="stats-label">Space ID:</span> {stat._id}<br/>
+                            <span className="stats-label">Total Visitors:</span> {stat.totalVisitors}
+                        </li>
+                    ))}
+                </ul>
+            )}
             <hr></hr>
-
-
         </div>
     );
 }
