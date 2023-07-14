@@ -9,10 +9,13 @@ import ZooModel, { IZoo } from './models/zoo.model';
 import { ISpace } from './models/spaces.model';
 import StatisticsController from './controllers/stats.controller';
 
+var cors = require('cors')
+
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 8080;
+app.use(cors()) 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,12 +26,15 @@ app.post('/auth/register', AuthController.signup);
 // Middleware d'authentification pour les routes protégées
 
 app.get('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.getSpaceByName);
-app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureAdmin, SpacesController.addSpace);
+app.post('/spaces', ZooController.ensureZooOpen, SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.deleteSpace);
 app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.updateSpace);
 app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureAdmin, SpacesController.toggleMaintenanceStatus);
 
 app.post('/spaces/:spaceId/visit', SpacesController.recordVisit);
+
+// Ajoutez une route pour les statistiques en temps réel
+app.get('/stats/live', StatisticsController.getLiveStats);
 
 app.get('/stats/daily', StatisticsController.getDailyStatistics);
 app.get('/stats/weekly', StatisticsController.getWeeklyStatistics);
@@ -38,8 +44,8 @@ app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUs
 app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
 app.get('/users/:userId', AuthController.getUserById);
 
-app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.getBestMonthForSpace);
-app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, AuthController.ensureAdmin, SpacesController.setBestMonthForSpace);
+app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, SpacesController.getBestMonthForSpace);
+app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, SpacesController.setBestMonthForSpace);
 
 app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureVeterinary, SpacesController.addAnimalSpecies);
 app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.getAnimalsInSpace);
@@ -50,16 +56,17 @@ app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['admin']), S
 
 // Routes publiques
 
-app.patch('/tickets/:userId/buy', AuthController.ensureAuthenticated, SpacesController.buyTicket);
+app.patch('/tickets/:userId/buy', SpacesController.buyTicket);
 app.get('/tickets', SpacesController.getAllTickets);
 app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
 app.get('/checkTicket/:ticketId/:spaceName', SpacesController.checkTicket);
-
+// Ajoutez une route pour les sorties
+app.post('/checkout/:ticketId/:spaceName', SpacesController.checkOut);
 
 app.get('/users', AuthController.getAllUsers);
 app.get('/spaces', ZooController.ensureZooOpen, SpacesController.getAllSpaces);
 
-app.patch('/zoo/open',AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
+app.patch('/zoo/open', ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
 app.post('/users/add-all', AuthController.addAllUsers);
 

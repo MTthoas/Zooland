@@ -48,7 +48,35 @@ class StatisticsController {
               res.status(500).json({ message: 'Erreur lors de la récupération des statistiques hebdomadaires.' });
             }
           }
-      }        
+      }      
+      
+      
+      async getLiveStats(req: Request, res: Response) {
+        try {
+            // Récupère les statistiques depuis le début de la journée
+            const startOfDay = new Date();
+            startOfDay.setHours(0, 0, 0, 0);
+        
+            const liveStats = await StatsModel.aggregate([
+                { $match: { date: { $gte: startOfDay }}},
+                { $group: {
+                    _id: "$spaceId",
+                    totalVisitors: { $sum: "$visitorsLive" }
+                }}
+            ]);
+        
+            res.json(liveStats);
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(500).json({ message: `Erreur lors de la récupération des statistiques en direct : ${error.message}` });
+            } else {
+                res.status(500).json({ message: 'Erreur lors de la récupération des statistiques en direct.' });
+            }
+        }
+    }
+    
+
+    
   }
   
   export default new StatisticsController();

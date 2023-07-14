@@ -1,0 +1,26 @@
+.stats-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .stats-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .stats-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .stats-item {
+    margin-bottom: 10px;
+  }
+  
+  .stats-label {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+  
