@@ -3,16 +3,19 @@ import axios from 'axios';
 import './Stats.css';
 
 interface IDailyStats {
-    date: string;
-    visitors: number;
-    hour: number;
-    spaceId: string;
+    _id: {
+        day: number;
+        hour: number;
+    };
+    totalVisitors: number;
 }
 
 interface IWeeklyStats {
-    week: number;
-    visitors: number;
-    spaceId: string;
+    _id: {
+        week: number;
+        hour: number;
+    };
+    totalVisitors: number;
 }
 
 interface ILiveStats {
@@ -55,6 +58,7 @@ function Stats() {
 
         fetchDailyStats();
         fetchWeeklyStats();
+        fetchLiveStats();
     }, []);
 
     return (
@@ -66,10 +70,9 @@ function Stats() {
                 <ul className="stats-list">
                     {dailyStats.map((stat, index) => (
                         <li key={index} className="stats-item">
-                            <span className="stats-label">Date:</span> {stat.date}<br/>
-                            <span className="stats-label">Visitors:</span> {stat.visitors}<br/>
-                            <span className="stats-label">Hour:</span> {stat.hour}<br/>
-                            <span className="stats-label">Space ID:</span> {stat.spaceId}
+                            <span className="stats-label">Day:</span> {stat._id.day}<br/>
+                            <span className="stats-label">Hour:</span> {stat._id.hour}<br/>
+                            <span className="stats-label">Total Visitors:</span> {stat.totalVisitors}
                         </li>
                     ))}
                 </ul>
@@ -83,9 +86,9 @@ function Stats() {
                 <ul className="stats-list">
                     {weeklyStats.map((stat, index) => (
                         <li key={index} className="stats-item">
-                            <span className="stats-label">Week:</span> {stat.week}<br/>
-                            <span className="stats-label">Visitors:</span> {stat.visitors}<br/>
-                            <span className="stats-label">Space ID:</span> {stat.spaceId}
+                            <span className="stats-label">Week:</span> {stat._id.week}<br/>
+                            <span className="stats-label">Hour:</span> {stat._id.hour}<br/>
+                            <span className="stats-label">Total Visitors:</span> {stat.totalVisitors}
                         </li>
                     ))}
                 </ul>
