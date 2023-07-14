@@ -60,6 +60,7 @@ class SpacesController {
       const stats = new StatsModel({
         date: new Date(),
         visitors: 1,
+        visitorsLive: 1,
         hour: new Date().getHours(),
         spaceId
       });
@@ -213,6 +214,7 @@ async checkTicket(req: Request, res: Response): Promise<void> {
          const stats = new StatsModel({
           date: new Date(),
           visitors: 1,
+          visitorsLive: 1,
           hour: new Date().getHours(),
           spaceId: space._id
         });
@@ -289,7 +291,8 @@ async checkOut(req: Request, res: Response): Promise<void> {
       // Enregistrez une sortie
       const stats = new StatsModel({
           date: new Date(),
-          visitors: -1, // Utilisez -1 pour indiquer une sortie
+          visitors: 0,
+          visitorsLive: -1, // Utilisez -1 pour indiquer une sortie
           hour: new Date().getHours(),
           spaceId: space._id
       });
