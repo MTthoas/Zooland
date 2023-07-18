@@ -23,58 +23,64 @@ app.use(express.urlencoded({ extended: false }));
 app.post('/auth/login', AuthController.authenticate);
 app.post('/auth/register', AuthController.signup);
 
-// Middleware d'authentification pour les routes protégées
+// Accès dédié à tous
 
+app.get('/spaces', ZooController.ensureZooOpen,  AuthController.ensureAuthenticated, SpacesController.getAllSpaces);
 app.get('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.getSpaceByName);
-app.post('/spaces', ZooController.ensureZooOpen, SpacesController.addSpace);
-app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.deleteSpace);
-app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.updateSpace);
-app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureAdmin, SpacesController.toggleMaintenanceStatus);
 
-app.post('/spaces/:spaceId/visit', SpacesController.recordVisit);
+// Accès dédié aux visiteurs
 
-// Ajoutez une route pour les statistiques en temps réel
-app.get('/stats/live', StatisticsController.getLiveStats);
-
-app.get('/stats/daily', StatisticsController.getDailyStatistics);
-app.get('/stats/weekly', StatisticsController.getWeeklyStatistics);
+app.post('/spaces/:spaceId/visit', AuthController.ensureRole(['visitor']), SpacesController.recordVisit);
+app.patch('/tickets/:userId/buy', AuthController.ensureRole(['visitor']), SpacesController.buyTicket);
+app.get('/checkTicket/:ticketId/:spaceName', AuthController.ensureRole(['visitor']), SpacesController.checkTicket);
+app.post('/checkout/:ticketId/:spaceName', AuthController.ensureRole(['visitor']), SpacesController.checkOut);
 
 
-app.delete('/users/:userId', AuthController.ensureAdmin, AuthController.deleteUser);
-app.patch('/users/:userId/role', AuthController.ensureAdmin, AuthController.setUserRole);
-app.get('/users/:userId', AuthController.getUserById);
+// Accès dédié aux employés
 
-app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, SpacesController.getBestMonthForSpace);
-app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, SpacesController.setBestMonthForSpace);
-
-app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureVeterinary, SpacesController.addAnimalSpecies);
-app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureAuthenticated, SpacesController.getAnimalsInSpace);
-app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureVeterinary, SpacesController.addTreatmentToVeterinaryLog);
-
-app.delete('/tickets/:ticketId', AuthController.ensureRole(['admin']), SpacesController.deleteTicket)
-app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['admin']), SpacesController.deleteAllTicketdFromUserId)
-
-// Routes publiques
-
-app.patch('/tickets/:userId/buy', SpacesController.buyTicket);
-app.get('/tickets', SpacesController.getAllTickets);
-app.get('/tickets/:spaceName', SpacesController.getTicketsFromSpace);
-app.get('/checkTicket/:ticketId/:spaceName', SpacesController.checkTicket);
-// Ajoutez une route pour les sorties
-app.post('/checkout/:ticketId/:spaceName', SpacesController.checkOut);
-
-app.get('/users', AuthController.getAllUsers);
-app.get('/spaces', ZooController.ensureZooOpen, SpacesController.getAllSpaces);
-
-app.patch('/zoo/open', ZooController.openZoo);
+app.patch('/zoo/open',  AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
-app.post('/users/add-all', AuthController.addAllUsers);
 
+app.get('/users/:userId', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserById);
+// app.get('/users', AuthController.ensureRole(['receptionist, admin']), AuthController.getAllUsers);
+
+app.get('/tickets', AuthController.ensureRole(['salesperson', 'receptionist', 'admin']), SpacesController.getAllTickets);
+app.get('/tickets/:spaceName', AuthController.ensureRole(['salesperson', 'receptionist', 'admin']), SpacesController.getTicketsFromSpace);
+app.delete('/tickets/:ticketId', AuthController.ensureRole(['receptionist', 'admin']), SpacesController.deleteTicket)
+app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['receptionist', 'admin']), SpacesController.deleteAllTicketdFromUserId)
+
+// Accès dédié aux admins
+
+app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthController.deleteUser);
+app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
+
+app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
+app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
+app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.updateSpace);
+
+app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.toggleMaintenanceStatus);
+app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.getBestMonthForSpace);
+app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.setBestMonthForSpace);
+
+app.get('/stats/live', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getLiveStats);
+app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getDailyStatistics);
+app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsController.getWeeklyStatistics);
+
+
+// Accès dédié aux vétérinaires
+
+app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary']), SpacesController.addAnimalSpecies);
+app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary']), SpacesController.getAnimalsInSpace);
+app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary']), SpacesController.addTreatmentToVeterinaryLog);
+
+// Route de dev
+
+app.post('/users/add-all', AuthController.addAllUsers);
+app.get('/users', AuthController.getAllUsers);
 
 app.get('/', (req, res) => {
   res.send('Hello !');
 });
-
 
 mongoose
    .connect(process.env.MONGODB_URI as string, {

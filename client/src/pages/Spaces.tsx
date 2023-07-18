@@ -54,9 +54,20 @@ function Spaces() {
       
 
     useEffect(() => {
+
+        // get localStorage
+
+        const tokenId = localStorage.getItem('token');
+
+        let config = {
+            headers: {
+              'Authorization': 'Bearer ' + tokenId
+            }
+          }
+          
         const fetchSpaces = async () => {
             try {
-                const response = await axios.get('/spaces');
+                const response = await axios.get('/spaces', config);
                 setSpaces(response.data);
             } catch (error) {
                 console.error(error);
@@ -199,92 +210,10 @@ function Spaces() {
       };
 
     return (
-        <div className="spaces-grid">
-            {spaces.map(space => (
-                <Card key={space._id} title={space.nom}>
-                    <Carousel autoplay>
-                        {space.images.map((image, index) => (
-                            <img key={index} src={image} alt={`Image ${index + 1}`} />
-                        ))}
-                    </Carousel>
-                    <p>{space.description}</p>
-                    <p>Type: {space.type}</p>
-                    <p>Capacité: {space.capacite}</p>
-                    <p>Accessible aux handicapés: {space.accessibleHandicape ? 'Oui' : 'Non'}</p>
-                    <p>En maintenance: {space.isMaintenance ? 'Oui' : 'Non'}</p>
-                    <p>Meilleur mois: {space.bestMonth}</p>
-                    <p>Espèces animales:</p>
-                    <List
-                        size="small"
-                        dataSource={space.animalSpecies}
-                        renderItem={(item: string) => <List.Item>{item}</List.Item>}
-                    />
-                    <Button onClick={() => handleAddAnimalSpecies(space)} style={{ backgroundColor: 'grey', color: 'black' }} type="primary">Ajouter une espèce d'animal</Button>
-                    <Modal title="Ajouter une nouvelle espèce d'animal" visible={isAnimalModalVisible} onOk={handleAnimalOk} onCancel={handleAnimalCancel}>
-                        <Form>
-                            <Form.Item label="Nom de l'animal">
-                                <Input value={newAnimal} onChange={e => setNewAnimal(e.target.value)} />
-                            </Form.Item>
-                        </Form>
-                    </Modal>
-                    <p>Nombre de logs de maintenance: {space.maintenanceLog.length}</p>
-                    <p>Nombre de logs vétérinaires: {space.veterinaryLog.length}</p>
-                    <Button onClick={() => handleAddTreatmentToVeterinaryLog(space)} style={{ backgroundColor: 'grey', color: 'black' }} type="primary">Ajouter un traitement au journal</Button>
-                    <Modal title="Ajouter un nouveau traitement" visible={isTreatmentModalVisible} onOk={handleTreatmentOk} onCancel={handleTreatmentCancel}>
-                      <Form>
-                        <Form.Item label="Traitement par">
-                          <Input value={newTreatment.treatmentBy} onChange={e => setNewTreatment({ ...newTreatment, treatmentBy: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="Condition">
-                          <Input value={newTreatment.condition} onChange={e => setNewTreatment({ ...newTreatment, condition: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="Détails du traitement">
-                          <Input value={newTreatment.treatmentDetails} onChange={e => setNewTreatment({ ...newTreatment, treatmentDetails: e.target.value })} />
-                        </Form.Item>
-                        <Form.Item label="Espèce">
-                          <Input value={newTreatment.species} onChange={e => setNewTreatment({ ...newTreatment, species: e.target.value })} />
-                        </Form.Item>
-                      </Form>
-                    </Modal>
-                    <p>Horaires:</p>
-                    <Timeline>
-                        {space.horaires.map((horaire, index) => (
-                            <Timeline.Item key={index}>
-                                Ouverture: {horaire.opening}, Fermeture: {horaire.closing}
-                            </Timeline.Item>
-                        ))}
-                    </Timeline>
-                    {/* ... (autres informations) */}
-                    <Button onClick={() => handleEdit(space)}>Modifier</Button>
-                    <Button onClick={() => handleDelete(space)} type="primary" danger>Supprimer</Button>
-                </Card>
-            ))}
-            <Button type="primary" onClick={handleCreate} style={{ backgroundColor: 'white', color: 'black' }}>Créer un nouvel espace</Button>
-            {editingSpace && (
-                <Modal title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                <Form>
-                        <Form.Item label="Nom">
-                            <Input name="nom" value={editingSpace.nom} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Description">
-                            <Input name="description" value={editingSpace.description} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Type">
-                            <Input name="type" value={editingSpace.type} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Capacité">
-                            <Input name="capacite" value={editingSpace.capacite} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Accessible aux handicapés">
-                            <Switch checked={editingSpace.accessibleHandicape} onChange={(value) => handleSwitchChange('accessibleHandicape', value)} />
-                        </Form.Item>
-                        <Form.Item label="En maintenance">
-                            <Switch checked={editingSpace.isMaintenance} onChange={(value) => handleSwitchChange('isMaintenance', value)} />
-                        </Form.Item>
-                        {/* ... (autres champs du formulaire) */}
-                    </Form>
-                </Modal>
-            )}
+        <div className="h-screen pt-24 bg-base100">
+
+            
+           
         </div>
     );
 }

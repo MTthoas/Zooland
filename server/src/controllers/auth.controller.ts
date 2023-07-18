@@ -73,6 +73,7 @@ export default class AuthController {
         } catch (error) {
           res.status(401).json({ message: 'Authentification requise.' });
         }
+
     }
 
     static async ensureAdmin(req: CustomRequest, res: Response, next: NextFunction) {
@@ -128,13 +129,20 @@ export default class AuthController {
         try {
           const decodedToken = AuthService.verifyToken(req);
   
-          if (!roles.includes(decodedToken.role)) {
+          // Nettoyez et normalisez le rôle du token
+          const tokenRole = decodedToken.role.trim().toLowerCase();
+
+          // Nettoyez et normalisez les rôles
+          const cleanedRoles = roles.map(role => role.trim().toLowerCase());
+      
+          console.log(tokenRole, cleanedRoles)
+          if (!cleanedRoles.includes(tokenRole)) {
             throw new Error(`Vous n'avez pas les droits requis.`);
           }
-  
+      
           next();
-        } catch (error) {
-          res.status(401).json({ message: `Authentification requise.` });
+        } catch (error : any) {
+          res.status(401).json({ message: error.message });
         }
       };
     }

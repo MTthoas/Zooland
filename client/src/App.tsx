@@ -8,23 +8,29 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
-import Login from './components/login';
+// import Login from './components/login';
 import PrivateComponent from './components/privateRoute';
-import Register from './components/register';
+// import Register from './components/register';
 import Stats from './pages/Stats';
 import Users from './pages/User';
 import Management from './pages/Management';
 import Tickets from './pages/Ticket';
 
+import Login from './components/modal/Login';
+import Register from './components/modal/Register';
+
 function App() {
-  useEffect(() => {
-    // localStorage.removeItem('token');
-}, []);
+
+  const [showModalLogin, setShowModalLogin] = React.useState(false);
+  const [showModalRegister, setShowModalRegister] = React.useState(false);
+
   return (
     <div className="App">
       <Router>
         <div className="body mb-24">
-          <Header />
+          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
+          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
+          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
