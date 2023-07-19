@@ -6,6 +6,7 @@ import './App.css';
 import Header from './components/Header';
 
 import Home from './pages/Home';
+import Footer from './components/footer';
 import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
 // import Login from './components/login';
@@ -25,9 +26,9 @@ function App() {
   const [showModalRegister, setShowModalRegister] = React.useState(false);
 
   return (
-    <div className="App">
+    <div className="App flex flex-col min-h-screen">
       <Router>
-        <div className="body mb-24">
+        <div className="body ">
           <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
           {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
           {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}
@@ -44,8 +45,8 @@ function App() {
             <Route path="/management" element={<PrivateComponent><Management /></PrivateComponent>} />
           </Routes>
         </div>
-        {/* <Footer /> */}
-      </Router>
+           <Footer />
+  </Router>
     </div>
   );
 }
