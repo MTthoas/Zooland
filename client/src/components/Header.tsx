@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 function Header({ setShowModalLogin, setShowModalRegister }: any) {
@@ -9,6 +9,13 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
     localStorage.removeItem('token');
     window.location.href = '/';
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      // const infos = axios.get('users/:username')
+    } 
+  }, [isLoggedIn]);
+
 
   const headerClass = location.pathname === '/' ? 'bg-transparent' : 'bg-base100 border-b border-bg-base100 shadow-sm';
   const textColor = location.pathname === '/' ? 'text-white' : 'text-black';
@@ -48,9 +55,14 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
             </Link>
           )}
           {isLoggedIn ? (
-            <button onClick={handleLogout} className={`mr-5 font-medium ${textColor} mt-2`}>
-              Déconnexion
-            </button>
+            <details className="dropdown ">
+            <summary className="mt-2 btn bg-white hover:bg-white w-32"> Admin </summary>
+            <ul className=" p-2 shadow menu dropdown-content z-[1] mt-2 bg-white rounded-box w-48">
+              <li><a className="text-black hover:text-black">Profil details</a></li>
+              <li><a className="text-black hover:text-black">Déconnexion</a></li>
+            </ul>
+          </details>
+
           ) : (
             <>
               <p onClick={() => setShowModalLogin(true)} className={`mr-5 font-medium ${textColor} hover:underline text-lg mt-2`}>

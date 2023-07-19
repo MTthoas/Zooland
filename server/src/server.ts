@@ -73,6 +73,7 @@ app.get('/stats/live', ZooController.ensureZooOpen, AuthController.ensureRole(['
 app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getDailyStatistics);
 app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsController.getWeeklyStatistics);
 
+app.get('/api/userinfo', AuthController.getUserInfo);
 
 // Accès dédié aux vétérinaires
 
