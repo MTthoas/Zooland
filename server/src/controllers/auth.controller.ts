@@ -17,7 +17,6 @@ export default class AuthController {
         }
     }
 
-
     static async signup(req: Request, res: Response) {
         const { username, password, key} = req.body;
 
