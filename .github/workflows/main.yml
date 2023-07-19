@@ -19,7 +19,6 @@ jobs:
           host: ${{ secrets.NAME_HOST }}
           username: ${{ secrets.USER_HOST }}
           key: ${{ secrets.KEY_SSH }}
-          port: 22
           script: |
             cd /var/www/Zooland
             git pull
