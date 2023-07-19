@@ -6,23 +6,27 @@ on:
       - master
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Node.js environment
+      - name: Set up Node.js environment
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: '14' # specify the Node.js version
 
-      - name: Install Dependencies
-        run: cd server && npm install
+      - name: Install dependencies
+        run: |
+          cd server
+          npm install
 
-      - name: Build Project
-        run: cd server && npm run build
+      - name: Build the TypeScript
+        run: |
+          cd server
+          npm run build # this runs "tsc"
 
       - name: SSH and deploy
         uses: appleboy/ssh-action@master
@@ -31,9 +35,9 @@ jobs:
           username: ${{ secrets.USER_HOST }}
           key: ${{ secrets.KEY_SSH }}
           script: |
-              cd /var/www/Zooland
-              git pull
-              docker-compose down
-              docker-compose up --build -d
-              sleep 10
-              docker ps -a # to list all running containers
+            cd /var/www/Zooland
+            git pull
+            docker-compose down
+            docker-compose up --build -d
+            sleep 10
+            docker ps -a # to list all running containers
