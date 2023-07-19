@@ -240,7 +240,7 @@ function Spaces() {
   };
 
   return (
-    <div className="h-screen pt-24 bg-base100">
+    <div className="h-screen pt-24 bg-base100 ">
         {spaces.map(space => (
             <div className="max-w-md mx-32 bg-white rounded-xl shadow-md overflow-hidden md:max-w-4xl my-3">
 

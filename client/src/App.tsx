@@ -28,7 +28,7 @@ function App() {
   return (
     <div className="App flex flex-col min-h-screen">
       <Router>
-        <div className="body pt-20">
+        <div className="body">
           <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
           {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
           {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}
