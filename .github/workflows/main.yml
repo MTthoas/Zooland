@@ -1,4 +1,4 @@
-name: Deploy to VPS for Express & mongo
+name: Deploy to VPS
 
 on:
   push:
@@ -22,7 +22,10 @@ jobs:
           script: |
             echo "Host *" >> ~/.ssh/config
             echo " StrictHostKeyChecking no" >> ~/.ssh/config
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_rsa
             cd /var/www/Zooland
+            git remote set-url origin git@github.com:username/repo.git
             git pull
             cd server
             npm install
