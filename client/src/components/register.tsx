@@ -12,6 +12,7 @@ function Register() {
     try {
       await axios.post('/auth/register', { username, password });
 
+      window.location.href = '/';
       // Redirigez l'utilisateur vers la page de connexion
       // Vous pouvez utiliser l'API history de React Router pour cela
     } catch (error) {

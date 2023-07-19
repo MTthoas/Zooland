@@ -16,7 +16,7 @@ export default function Login({setShowModalLogin, setShowModalRegister}: any) {
             console.log(response.data.token);
       
             localStorage.setItem('token', token);
-            window.location.href = '/home';
+            window.location.href = '/';
           } catch (error) {
             console.error(error);
             setError('Invalid credentials. Please try again.');
