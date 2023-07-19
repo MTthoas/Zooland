@@ -17,6 +17,11 @@ const port = 8080;
 
 app.options('*', cors());
 
+app.use(cors({
+  origin: 'http://localhost:3000', // Remplacez ceci par l'URL de votre front-end
+  credentials: true
+}));
+
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from

@@ -53,29 +53,34 @@ function Spaces() {
       });
       
 
-    useEffect(() => {
-
+      useEffect(() => {
         // get localStorage
-
         const tokenId = localStorage.getItem('token');
-
-        let config = {
-            headers: {
-              'Authorization': 'Bearer ' + tokenId
-            }
-          }
-          
+    
+        // Verify if tokenId exists
+        if (!tokenId) {
+            console.log("No token found in localStorage");
+            return;
+        }
+    
         const fetchSpaces = async () => {
             try {
-                const response = await axios.get('/spaces', config);
+                const response = await axios.get('/spaces', {
+                    headers: { 
+                        'Authorization': 'Bearer ' + tokenId 
+                    },
+                    withCredentials: true
+                })
+                
                 setSpaces(response.data);
             } catch (error) {
                 console.error(error);
             }
         };
-
+    
         fetchSpaces();
     }, []);
+    
 
     const handleEdit = (space: ISpace) => {
         setEditingSpace(space);
