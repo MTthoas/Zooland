@@ -8,19 +8,26 @@ import { Schema, model } from 'mongoose';
 import ZooModel, { IZoo } from './models/zoo.model';
 import { ISpace } from './models/spaces.model';
 import StatisticsController from './controllers/stats.controller';
-
-var cors = require('cors')
+import cors from 'cors';
 
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 8080;
-app.use(cors()) 
-app.use((err : any, req: any, res: any, next: any) => {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
+const corsOptions = {
+  origin: 'http://localhost:3000', // ou vous pouvez mettre '*' pour autoriser toutes les origines
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
