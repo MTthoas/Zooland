@@ -24,3 +24,5 @@ jobs:
               git pull
               docker-compose down
               docker-compose up --build -d
+              sleep 10
+              docker ps -a # to list all running containers
