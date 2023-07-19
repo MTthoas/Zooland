@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-export default function Register({ setShowModalRegister }: any) {
+export default function Register({ setShowModalRegister, setUserName }: any) {
 
 const [username, setUsername] = useState('');
 const [password, setPassword] = useState('');
@@ -17,7 +17,8 @@ const handleSubmit = async (event: { preventDefault: () => void; }) => {
         const response = await axios.post('/auth/login', { username, password });
         const token = response.data.token;
         console.log(response.data.token);
-  
+
+        setUserName(username);
         localStorage.setItem('token', token);
         window.location.href = '/';
         

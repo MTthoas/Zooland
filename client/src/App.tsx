@@ -23,14 +23,16 @@ function App() {
 
   const [showModalLogin, setShowModalLogin] = React.useState(false);
   const [showModalRegister, setShowModalRegister] = React.useState(false);
+  const [userName, setUserName] = React.useState('');
+  
 
   return (
     <div className="App">
       <Router>
         <div className="pt-22">
-          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
-          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
-          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}
+          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister} username={userName} />
+          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister} setUserName={setUserName} /> : null}
+          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister} setUserName={setUserName} /> : null}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />

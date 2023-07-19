@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-function Header({ setShowModalLogin, setShowModalRegister }: any) {
+function Header({ setShowModalLogin, setShowModalRegister, username }: any) {
   const location = useLocation();
   const isLoggedIn = localStorage.getItem('token');
 
@@ -11,23 +11,24 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
     window.location.href = '/';
   };
 
+
   useEffect(() => {
     if (isLoggedIn) {
-      console.log(" isLoggedIn : " + isLoggedIn)
-      axios.get('/api/userinfo', {
+      const username = localStorage.getItem('username');
+      const token = localStorage.getItem('token');
+
+      axios.get('/users/' + username, {
         headers: {
-          Authorization: `Bearer ${isLoggedIn}`,
-        },
-      })
-      .then(response => {
-        console.log(response.data.username);
-        // Ici vous pouvez définir le nom d'utilisateur dans votre état local
-      })
-      .catch(error => {
+          'Authorization': `Bearer ${token}`
+        }
+      }).then((response) => {
+        console.log(response)
+      }).catch((error) => {
         console.error(error);
       });
     } 
-  }, [isLoggedIn]);
+}, [isLoggedIn]);
+
 
 
   const headerClass = location.pathname === '/' ? 'bg-transparent' : 'bg-base100 border-b border-bg-base100 shadow-sm';
