@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 function Header({ setShowModalLogin, setShowModalRegister }: any) {
   const location = useLocation();
   const isLoggedIn = localStorage.getItem('token');
-  console.log(isLoggedIn);
 
   const handleLogout = () => {
     localStorage.removeItem('token');

@@ -65,6 +65,7 @@ function Spaces() {
     
         const fetchSpaces = async () => {
             try {
+                console.log("Fetching spaces")
                 const response = await axios.get('/spaces', {
                     headers: { 
                         'Authorization': 'Bearer ' + tokenId 
@@ -72,6 +73,7 @@ function Spaces() {
                     withCredentials: true
                 })
                 
+                console.log(response.data);
                 setSpaces(response.data);
             } catch (error) {
                 console.error(error);
