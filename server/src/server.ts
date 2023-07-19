@@ -84,7 +84,7 @@ app.post('/users/add-all', AuthController.addAllUsers);
 app.get('/users', AuthController.getAllUsers);
 
 app.get('/', (req, res) => {
-  res.send('Hello boy !');
+  res.send('Hello !');
 });
 
 mongoose
