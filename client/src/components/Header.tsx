@@ -56,7 +56,7 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
           )}
           {isLoggedIn ? (
             <details className="dropdown ">
-            <summary className="mt-2 btn bg-white hover:bg-white w-32"> Admin </summary>
+              <summary className="mt-2 btn bg-white hover:bg-white w-24 h-10 min-h-8">Admin</summary>
             <ul className=" p-2 shadow menu dropdown-content z-[1] mt-2 bg-white rounded-box w-48">
               <li><a className="text-black hover:text-black">Profil details</a></li>
               <li><a className="text-black hover:text-black">Déconnexion</a></li>
