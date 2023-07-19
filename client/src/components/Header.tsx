@@ -3,8 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function Header({ setShowModalLogin, setShowModalRegister, username }: any) {
+
+  const [ UsernameConst, setUsernameConst ] = React.useState('');
+
   const location = useLocation();
   const isLoggedIn = localStorage.getItem('token');
+  
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -23,6 +27,8 @@ function Header({ setShowModalLogin, setShowModalRegister, username }: any) {
         }
       }).then((response) => {
         console.log(response)
+
+        setUsernameConst(String(username))
       }).catch((error) => {
         console.error(error);
       });
@@ -70,8 +76,8 @@ function Header({ setShowModalLogin, setShowModalRegister, username }: any) {
           )}
           {isLoggedIn ? (
             <details className="dropdown ">
-            <summary className="mt-2 btn bg-white hover:bg-white w-32"> Admin </summary>
-            <ul className=" p-2 shadow menu dropdown-content z-[1] mt-2 bg-white rounded-box w-48">
+            <summary className="mt-2 btn  w-32 border-0 bg-white hover:bg-white text-black"> {UsernameConst} </summary>
+            <ul className=" p-2 menu dropdown-content z-[1] mt-2 bg-white rounded-box shadow-md w-48">
               <li><a className="text-black hover:text-black">Profil details</a></li>
               <li><a onClick={()=> handleLogout()} className="text-black hover:text-black">Déconnexion</a></li>
             </ul>
