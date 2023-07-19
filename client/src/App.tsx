@@ -27,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <div className="body mb-24">
+        <div className="pt-22">
           <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
           {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
           {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}

@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/react-table": "^7.7.14",
+    "daisyui": "^3.2.1",
     "tailwindcss": "^3.3.2"
   }
 }

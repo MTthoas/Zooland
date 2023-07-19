@@ -30,6 +30,14 @@ class AuthService {
     return await user.save();
   }
 
+  static getUserInfo(token: string): IUser {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as IUser;
+      return decoded;
+    } catch (error) {
+      throw new Error('Invalid token.');
+    }
+  }
 
   static async login(username: string, password: string): Promise<string> {
     const user = await User.findOne({ username });
