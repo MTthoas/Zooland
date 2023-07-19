@@ -1,116 +1,104 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Stats.css';
 
 interface IDailyStats {
-    _id: {
-        day: number;
-        hour: number;
-    };
-    totalVisitors: number;
+  _id: {
+    day: number;
+    hour: number;
+  };
+  totalVisitors: number;
 }
 
 interface IWeeklyStats {
-    _id: {
-        week: number;
-        hour: number;
-    };
-    totalVisitors: number;
+  _id: {
+    week: number;
+    hour: number;
+  };
+  totalVisitors: number;
 }
 
 interface ILiveStats {
-    _id: string;
-    totalVisitors: number;
+  _id: string;
+  totalVisitors: number;
 }
 
-function Stats() {
-    const [dailyStats, setDailyStats] = useState<IDailyStats[]>([]);
-    const [weeklyStats, setWeeklyStats] = useState<IWeeklyStats[]>([]);
-    const [liveStats, setLiveStats] = useState<ILiveStats[]>([]);
+const Stats = () => {
+  const [dailyStats, setDailyStats] = useState<IDailyStats[]>([]);
+  const [weeklyStats, setWeeklyStats] = useState<IWeeklyStats[]>([]);
+  const [liveStats, setLiveStats] = useState<ILiveStats[]>([]);
 
-    useEffect(() => {
-        const fetchDailyStats = async () => {
-            try {
-                const response = await axios.get<IDailyStats[]>('/stats/daily');
-                setDailyStats(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dailyResponse = await axios.get<IDailyStats[]>('/stats/daily');
+        setDailyStats(dailyResponse.data);
+        
+        const weeklyResponse = await axios.get<IWeeklyStats[]>('/stats/weekly');
+        setWeeklyStats(weeklyResponse.data);
+        
+        const liveResponse = await axios.get<ILiveStats[]>('/stats/live');
+        setLiveStats(liveResponse.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-        const fetchWeeklyStats = async () => {
-            try {
-                const response = await axios.get<IWeeklyStats[]>('/stats/weekly');
-                setWeeklyStats(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    fetchData();
+  }, []);
 
-        const fetchLiveStats = async () => {
-            try {
-                const response = await axios.get<ILiveStats[]>('/stats/live');
-                setLiveStats(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+  return (
+    <div className="container mx-auto px-4 py-8 pt-24">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-4">Statistiques journalières</h1>
+        {dailyStats.length === 0 ? (
+          <p className="text-gray-600">Aucune statistique disponible pour le moment</p>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {dailyStats.map((stat, index) => (
+              <li key={index} className="bg-white rounded-lg p-4 shadow">
+                <span className="block text-gray-600">Jour : {stat._id.day}</span>
+                <span className="block text-gray-600">Heure : {stat._id.hour}</span>
+                <span className="block text-gray-600">Visiteurs : {stat.totalVisitors}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-        fetchDailyStats();
-        fetchWeeklyStats();
-        fetchLiveStats();
-    }, []);
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold mb-4">Statistiques hebdomadaires</h1>
+        {weeklyStats.length === 0 ? (
+          <p className="text-gray-600">Aucune statistique disponible pour le moment</p>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {weeklyStats.map((stat, index) => (
+              <li key={index} className="bg-white rounded-lg p-4 shadow">
+                <span className="block text-gray-600">Semaine : {stat._id.week}</span>
+                <span className="block text-gray-600">Heure : {stat._id.hour}</span>
+                <span className="block text-gray-600">Visiteurs : {stat.totalVisitors}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-    return (
-        <div className="stats-container">
-            <h1 className="stats-heading">Daily Statistics</h1>
-            {dailyStats.length === 0 ? (
-                <p className="no-stats-message">No daily statistics available</p>
-            ) : (
-                <ul className="stats-list">
-                    {dailyStats.map((stat, index) => (
-                        <li key={index} className="stats-item">
-                            <span className="stats-label">Day:</span> {stat._id.day}<br/>
-                            <span className="stats-label">Hour:</span> {stat._id.hour}<br/>
-                            <span className="stats-label">Total Visitors:</span> {stat.totalVisitors}
-                        </li>
-                    ))}
-                </ul>
-            )}
-
-            <hr></hr>
-            <h1 className="stats-heading">Weekly Statistics</h1>
-            {weeklyStats.length === 0 ? (
-                <p className="no-stats-message">No weekly statistics available</p>
-            ) : (
-                <ul className="stats-list">
-                    {weeklyStats.map((stat, index) => (
-                        <li key={index} className="stats-item">
-                            <span className="stats-label">Week:</span> {stat._id.week}<br/>
-                            <span className="stats-label">Hour:</span> {stat._id.hour}<br/>
-                            <span className="stats-label">Total Visitors:</span> {stat.totalVisitors}
-                        </li>
-                    ))}
-                </ul>
-            )}
-
-            <hr></hr>
-            <h1 className="stats-heading">Live Statistics</h1>
-            {liveStats.length === 0 ? (
-                <p className="no-stats-message">No live statistics available</p>
-            ) : (
-                <ul className="stats-list">
-                    {liveStats.map((stat, index) => (
-                        <li key={index} className="stats-item">
-                            <span className="stats-label">Space ID:</span> {stat._id}<br/>
-                            <span className="stats-label">Total Visitors:</span> {stat.totalVisitors}
-                        </li>
-                    ))}
-                </ul>
-            )}
-            <hr></hr>
-        </div>
-    );
-}
+      <div>
+        <h1 className="text-2xl font-bold mb-4">Statistiques en direct</h1>
+        {liveStats.length === 0 ? (
+          <p className="text-gray-600">Aucune statistique en direct disponible pour le moment</p>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {liveStats.map((stat, index) => (
+              <li key={index} className="bg-white rounded-lg p-4 shadow">
+                <span className="block text-gray-600">ID de l'espace : {stat._id}</span>
+                <span className="block text-gray-600">Total des visiteurs : {stat.totalVisitors}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default Stats;

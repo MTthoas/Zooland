@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useMemo, FC } from 'react';
 import { useTable, Column, CellProps, useGlobalFilter, useSortBy, TableState, TableInstance } from 'react-table';
 import axios from 'axios';
-import './User.css';
 
 interface IUser {
   _id: string;
@@ -12,35 +11,31 @@ interface IUser {
   countTickets: number;
 }
 
-
-// Updated ICellProps to accept string[] or string | undefined
-interface ICellPropsTickets extends CellProps<IUser, string[] | undefined> {}
+interface ICellPropsTickets extends CellProps<IUser, number> {}
 interface ICellPropsSpace extends CellProps<IUser, string | undefined> {}
 interface ICellPropsId extends CellProps<IUser, string> {}
 
-const CustomCell: FC<ICellPropsTickets> = ({ value }) => <>{value?.join(', ') || '-'}</>;
+const CustomCell: FC<ICellPropsTickets> = ({ value }) => <>{value}</>;
 
 const CustomCellSpace: FC<ICellPropsSpace> = ({ value }) => <>{value || '-'}</>;
 
 const CustomCellId: FC<ICellPropsId> = ({ value }) => <>{value}</>;
 
-// Create an extended interface of TableInstance to include 'setGlobalFilter'
 interface ITableInstance extends TableInstance<IUser> {
   setGlobalFilter: (filterValue: string) => void;
 }
 
-// Extend TableState to include 'globalFilter'
 interface ITableState extends TableState<IUser> {
   globalFilter: string;
 }
 
-function Users() {
+const Users: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
 
   const deleteUser = async (id: string) => {
     try {
       await axios.delete(`/users/${id}`);
-      setUsers(users.filter(user => user._id !== id));
+      setUsers(users => users.filter(user => user._id !== id));
     } catch (error) {
       console.error(error);
     }
@@ -50,7 +45,11 @@ function Users() {
     try {
       const newRole = role === 'admin' ? 'user' : 'admin';
       const response = await axios.patch(`/users/${id}/role`, { role: newRole });
-      setUsers(users.map(user => user._id === id ? { ...user, role: response.data.role } : user));
+      setUsers(users =>
+        users.map(user =>
+          user._id === id ? { ...user, role: response.data.role } : user
+        )
+      );
     } catch (error) {
       console.error(error);
     }
@@ -61,19 +60,19 @@ function Users() {
       { Header: 'ID', accessor: '_id', Cell: CustomCellId },
       { Header: 'Username', accessor: 'username' },
       { Header: 'Role', accessor: 'role' },
-      { Header: 'Tickets', accessor: 'countTickets', Cell:  ({ value }) => <>{value}</> },
+      { Header: 'Tickets', accessor: 'countTickets', Cell: CustomCell },
       { Header: 'Current Space', accessor: 'currentSpace', Cell: CustomCellSpace },
-      { 
-        Header: 'Actions', 
+      {
+        Header: 'Actions',
         Cell: ({ row: { original } }: CellProps<IUser>) => (
           <div>
-            <button className="button" onClick={() => deleteUser(original._id)}>Supprimer</button>
-            <button className="button" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</button>
+            <button className="px-4 py-2 bg-red-500 text-white rounded" onClick={() => deleteUser(original._id)}>Supprimer</button>
+            <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</button>
           </div>
         )
       },
     ],
-    [users] // Mettez users dans le tableau des dépendances pour vous assurer que la colonne est mise à jour chaque fois que les users changent.
+    []
   );
 
   const {
@@ -105,25 +104,26 @@ function Users() {
   }, []);
 
   return (
-    <div className="users-container">
-      <h1 className="users-heading">Liste des utilisateurs</h1>
+    <div className="container mx-auto px-4 py-8 pt-24">
+      <h1 className="text-2xl font-bold mb-4">Liste des utilisateurs</h1>
       {users.length === 0 ? (
-        <p className="empty-users">Aucun utilisateur trouvé.</p>
+        <p className="text-gray-600">Aucun utilisateur trouvé.</p>
       ) : (
         <>
-          <div className="search-container">
+          <div className="mb-4">
             <input 
               placeholder="Rechercher..."
               value={globalFilter || ''}
               onChange={(e) => setGlobalFilter(e.target.value || '')}
+              className="w-full px-4 py-2 border border-gray-300 rounded"
             />
           </div>
-          <table {...getTableProps()} className="users-table">
+          <table {...getTableProps()} className="w-full border border-gray-300">
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    <th {...column.getHeaderProps()} className="px-4 py-2 bg-gray-200 font-bold text-left">{column.render('Header')}</th>
                   ))}
                 </tr>
               ))}
@@ -134,7 +134,7 @@ function Users() {
                 return (
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      <td {...cell.getCellProps()} className="px-4 py-2 border-t border-gray-300">{cell.render('Cell')}</td>
                     ))}
                   </tr>
                 );
@@ -145,6 +145,6 @@ function Users() {
       )}
     </div>
   );
-}
+};
 
 export default Users;

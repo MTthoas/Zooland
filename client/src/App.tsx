@@ -6,6 +6,7 @@ import './App.css';
 import Header from './components/Header';
 
 import Home from './pages/Home';
+import Footer from './components/footer';
 import NotFound from './pages/NotFound';
 import Spaces from './pages/Spaces';
 // import Login from './components/login';
@@ -27,12 +28,12 @@ function App() {
   
 
   return (
-    <div className="App">
+    <div className="App flex flex-col min-h-screen">
       <Router>
-        <div className="pt-22">
-          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister} username={userName} />
-          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister} setUserName={setUserName} /> : null}
-          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister} setUserName={setUserName} /> : null}
+        <div className="body">
+          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
+          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
+          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
@@ -46,8 +47,8 @@ function App() {
             <Route path="/management" element={<PrivateComponent><Management /></PrivateComponent>} />
           </Routes>
         </div>
-        {/* <Footer /> */}
-      </Router>
+           <Footer />
+  </Router>
     </div>
   );
 }
