@@ -48,7 +48,8 @@ app.post('/checkout/:ticketId/:spaceName', AuthController.ensureRole(['visitor']
 app.patch('/zoo/open',  AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
 
-app.get('/users/:userId', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserById);
+app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
+
 // app.get('/users', AuthController.ensureRole(['receptionist, admin']), AuthController.getAllUsers);
 
 app.get('/tickets', AuthController.ensureRole(['salesperson', 'receptionist', 'admin']), SpacesController.getAllTickets);
@@ -72,8 +73,6 @@ app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.
 app.get('/stats/live', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getLiveStats);
 app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getDailyStatistics);
 app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsController.getWeeklyStatistics);
-
-app.get('/api/userinfo', AuthController.ensureAuthenticated, AuthController.getUserInfo);
 
 
 // Accès dédié aux vétérinaires
