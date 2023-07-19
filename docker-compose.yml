@@ -4,7 +4,7 @@ services:
     build:
       context: .
     volumes:
-      - ./src:/app/src
+      - ./server/src:/app/src
     ports:
       - 3000:3000
     depends_on:
