@@ -21,6 +21,3 @@ jobs:
           key: ${{ secrets.KEY_SSH }}
           script: |
             cd /var/www/Zooland
-            git pull
-            docker-compose down
-            docker-compose up --build -d
