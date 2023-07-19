@@ -25,7 +25,7 @@ jobs:
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/id_rsa
             cd /var/www/Zooland
-            git remote set-url origin git@github.com:username/repo.git
+            git remote set-url origin git@github.com:MTthoas/Zooland.git
             git pull
             cd server
             npm install
