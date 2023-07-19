@@ -209,11 +209,40 @@ function Spaces() {
         setIsTreatmentModalVisible(false);
       };
 
-    return (
-        <div className="h-screen pt-24 bg-base100">
-
-            
-           
+      return (
+        <div className="h-screen pt-24">
+            <div className="flex flex-wrap justify-center">
+                {spaces.map((space, index) => (
+                    <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-4">
+                        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+                            <div className="bg-cover bg-center h-56 p-4" style={{ backgroundImage: `url(${space.images[0]})` }}>
+                                <div className="flex justify-between">
+                                    <span className="text-white text-lg">{space.nom}</span>
+                                    <button onClick={() => handleEdit(space)} className="text-white bg-blue-500 hover:bg-blue-700 text-xs font-bold py-1 px-2 rounded">
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="p-4">
+                                <p className="uppercase tracking-wide text-sm font-bold text-gray-700">{space.type}</p>
+                                <p className="text-gray-900 text-lg font-semibold mb-2">{space.description}</p>
+                                <p className="text-gray-700"><i className="fas fa-users"></i> {space.capacite}</p>
+                                <p className="text-gray-700"><i className="fas fa-wheelchair"></i> {space.accessibleHandicape ? 'Accessible' : 'Not Accessible'}</p>
+                            </div>
+                            <div className="px-4 pt-3 pb-4 border-t border-gray-300 bg-gray-100">
+                                <div className="text-xs uppercase font-bold text-gray-600 tracking-wide">Maintenance</div>
+                                <div className="flex items-center pt-2">
+                                    <div className="bg-green-200 text-green-800 text-xs px-2 py-1 font-semibold rounded uppercase">{space.isMaintenance ? 'Ongoing' : 'None'}</div>
+                                    <div className="text-sm text-gray-600 ml-2">{space.bestMonth}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <button onClick={handleCreate} className="fixed right-0 bottom-0 m-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+                Add
+            </button>
         </div>
     );
 }
