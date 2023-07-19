@@ -12,3 +12,5 @@ Et dans le deuxième terminal ( application mongodb ), exécutez :
 
 - docker-compose up mongodb
 
+- Worflow done
+
