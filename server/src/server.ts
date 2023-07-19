@@ -22,12 +22,11 @@ app.use(function(req, res, next) {
 });
 
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.post('/auth/login', AuthController.authenticate);
-app.post('/auth/registering', AuthController.signup);
+app.post('/auth/register', AuthController.signup);
 
 // Accès dédié à tous
 

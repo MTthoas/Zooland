@@ -13,21 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14' # specify the Node.js version
-
-      - name: Install dependencies
-        run: |
-          cd server
-          npm install
-
-      - name: Build the TypeScript
-        run: |
-          cd server
-          npm run build # this runs "tsc"
-
       - name: SSH and deploy
         uses: appleboy/ssh-action@master
         with:
@@ -37,6 +22,10 @@ jobs:
           script: |
             cd /var/www/Zooland
             git pull
+            cd server
+            npm install
+            npm run build # this runs "tsc"
+            nano src/server.ts
             docker-compose down
             docker-compose up --build -d
             sleep 10
