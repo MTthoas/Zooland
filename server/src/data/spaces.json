@@ -1,0 +1,96 @@
+[
+  {
+    "nom": "Volcan",
+    "description": "Un espace captivant avec une reconstitution réaliste d'un volcan en éruption.",
+    "images": ["volcan1.jpg", "volcan2.jpg", "volcan3.jpg"],
+    "type": "Espace naturel",
+    "capacite": 200,
+    "horaires": [
+      {
+        "opening": "09:00",
+        "closing": "17:00"
+      },
+      {
+        "opening": "10:00",
+        "closing": "18:00"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Août",
+    "maintenanceLog": [],
+    "animalSpecies": ["Lézard de feu", "Araignée volcanique"],
+    "veterinaryLog": []
+  }
+  ,
+  {
+    "nom": "Forêt Tropicale",
+    "description": "Une immersion totale au cœur d'une forêt tropicale luxuriante.",
+    "images": ["foret1.jpg", "foret2.jpg", "foret3.jpg"],
+    "type": "Espace naturel",
+    "capacite": 150,
+    "horaires": [
+      {
+        "opening": "08:30",
+        "closing": "17:30"
+      },
+      {
+        "opening": "09:30",
+        "closing": "18:30"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Juillet",
+    "maintenanceLog": [],
+    "animalSpecies": ["Toucan", "Paresseux", "Singe hurleur"],
+    "veterinaryLog": []
+  }
+  ,
+  {
+    "nom": "Savane",
+    "description": "Un vaste espace ouvert où l'on peut observer de près la faune de la savane africaine.",
+    "images": ["savane1.jpg", "savane2.jpg", "savane3.jpg"],
+    "type": "Espace naturel",
+    "capacite": 250,
+    "horaires": [
+      {
+        "opening": "08:00",
+        "closing": "18:00"
+      },
+      {
+        "opening": "09:00",
+        "closing": "17:00"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Septembre",
+    "maintenanceLog": [],
+    "animalSpecies": ["Lion", "Girafe", "Zèbre", "Éléphant"],
+    "veterinaryLog": []
+  },
+  {
+    "nom": "Aquarium",
+    "description": "Un monde sous-marin fascinant avec une grande variété d'espèces marines.",
+    "images": ["aquarium1.jpg", "aquarium2.jpg", "aquarium3.jpg"],
+    "type": "Espace aquatique",
+    "capacite": 300,
+    "horaires": [
+      {
+        "opening": "10:00",
+        "closing": "16:30"
+      },
+      {
+        "opening": "11:00",
+        "closing": "17:30"
+      }
+    ],
+    "accessibleHandicape": true,
+    "isMaintenance": false,
+    "bestMonth": "Mai",
+    "maintenanceLog": [],
+    "animalSpecies": ["Poisson clown", "Requin", "Méduse", "Raie"],
+    "veterinaryLog": []
+  }
+]
