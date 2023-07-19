@@ -13,6 +13,7 @@ import cors from 'cors';
 require('dotenv').config();
 
 const app = express();
+const port = 3000;
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -115,7 +116,7 @@ mongoose
     console.error(error);
   });
 
-app.listen(3000, () => {
-  console.log(`Server listening on port ${3000}.`);
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}.`);
 }
 );
