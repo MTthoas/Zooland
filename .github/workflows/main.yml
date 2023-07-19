@@ -20,5 +20,7 @@ jobs:
           username: ${{ secrets.USER_HOST }}
           key: ${{ secrets.KEY_SSH }}
           script: |
-             whoami
-             ls -al
+              cd /var/www/Zooland
+              git pull
+              docker-compose down
+              docker-compose up --build -d
