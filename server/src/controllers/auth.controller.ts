@@ -44,6 +44,8 @@ export default class AuthController {
         res.json(user);
     }
 
+    
+
 
 	static async getUserByName(req: Request, res: Response) {
 		const nom: string = req.params.username;
@@ -53,6 +55,22 @@ export default class AuthController {
 		}
 		res.json(user);	
 	}
+
+  static async getUserInfo(req: Request, res: Response) {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(403).json({ error: 'No token provided.' });
+      }
+
+      const token = authHeader.split(' ')[1]; // Bearer <token>
+      const user = AuthService.getUserInfo(token);
+      
+      res.json({ user });
+    } catch (error) {
+      res.status(401).json({ error: 'Invalid token.' });
+    }
+  }
 
 
     static async deleteUser(req: Request, res: Response) {

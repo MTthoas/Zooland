@@ -14,6 +14,7 @@ import {
 } from "antd";
 import "./Space.css";
 
+
 interface IMaintenanceLog {
   month: string;
   commentary: string;
@@ -171,9 +172,9 @@ function Spaces() {
         await axios.delete(`/users/${space._id}`);
         setSpaces(spaces.filter((s) => s._id !== space._id));
         message.success("Espace supprimé avec succès");
-      } catch (error) {
+      } catch (error : any) {
         console.error(error);
-        message.error("Erreur lors de la suppression de l'espace");
+        message.error("Erreur lors de la suppression de l'espace : " + error.message);
       }
     }
   };
@@ -242,32 +243,104 @@ function Spaces() {
   return (
     <div className="h-screen pt-24 bg-base100">
         {spaces.map(space => (
-            <div className="max-w-md mx-32 bg-white rounded-xl shadow-md overflow-hidden md:max-w-4xl my-3">
-
+            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden  my-3">
                 <div className="md:flex">
-                    <div className="md:flex-shrink-0">
+                    <div className="flex-shrink-0 w-2/6 ">
                         <img className="h-full w-64 object-cover" src={space.images[0]} alt={space.nom} />
                     </div>
-                    <div className="md:flex-grow p-8">
+                    <div className="flex-grow p-8 w-3/6">
                         <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{space.type}</div>
                         <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{space.nom}</a>
                         <p className="mt-2 text-gray-500">{space.description}</p>
-                        <p className="mt-2 text-gray-500">Capacité d'accueil : {space.capacite}</p>
-                        <p className="mt-2 text-gray-500">Nombre d'espèces animales : {space.animalSpecies.length}</p>
+                        <p className="mt-2 text-gray-500 text-sm">Capacité d'accueil : {space.capacite}</p>
+                        <p className="mt-2 text-gray-500 text-sm">Nombre d'espèces animales : {space.animalSpecies.length}</p>
+                        <p className="flex gap-x-3"> {space.animalSpecies.map(specie => (
+                            <p className="mt-2  text-indigo-500 text-sm"> {specie} </p>
+                        ))} </p>
+                        <p className="mt-2 text-gray-500 text-sm">Accessible aux personnes à mobilité réduite : {space.accessibleHandicape ? "Oui" : "Non"}</p>
                         {space.horaires.map(horaire => (
                             <p className="mt-2 text-gray-500">Horaires : {horaire.opening} - {horaire.closing}</p>
                         ))}
                     </div>
-                    {/* <div className="p-8 flex flex-row justify-between items-start">
-                        <button onClick={() => handleEdit(space)} className="px-2 py-1 bg-blue-500 text-white rounded">Modifier</button>
-                        <button onClick={() => handleDelete(space)} className="px-2 py-1 bg-red-500 text-white rounded mt-2">Supprimer</button>
-                        <button onClick={() => handleAddAnimalSpecies(space)} className="px-2 py-1 bg-green-500 text-white rounded mt-2">Ajouter une espèce</button>
-                        <button onClick={() => handleAddTreatmentToVeterinaryLog(space)} className="px-2 py-1 bg-purple-500 text-white rounded mt-2">Ajouter un traitement</button>
-                    </div> */}
+                    <div className="p-8 flex flex-col items-start w-2/6 ">
+
+                        <div className="flex items-center gap-x-3 mx-auto">   
+                            <button onClick={() => handleEdit(space)} className="px-2 py-1 text-xs bg-blue-500 text-white rounded">Modifier</button>
+                            <button onClick={() => handleDelete(space)} className="px-2 py-1 text-xs bg-red-500 text-white rounded">Supprimer</button>
+                        </div>
+
+                        <div className="flex-col my-auto">
+                            <button onClick={() => null} className="px-2 py-1 bg-green-500 text-white rounded mt-2 text-sm">Accéder aux logs</button>
+                            <button onClick={() => handleAddAnimalSpecies(space)} className="px-2 py-1 bg-blue-500 text-white rounded mt-2 text-sm">Ajouter une espèce</button>
+                            <button onClick={() => handleAddTreatmentToVeterinaryLog(space)} className="px-2 py-1 bg-purple-500 text-white rounded mt-2 text-sm">Ajouter un traitement</button>
+                        </div>
+                    </div>
                 </div>
                 
             </div>
         ))}
+         <button
+            onClick={() => handleCreate()}
+            className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl"
+            title="Ajouter un espace"
+        >
+            +
+        </button>
+
+        <Modal title="Ajouter une nouvelle espèce d'animal" visible={isAnimalModalVisible} onOk={handleAnimalOk} onCancel={handleAnimalCancel}>
+            <Form>
+                <Form.Item label="Nom de l'animal">
+                    <Input value={newAnimal} onChange={e => setNewAnimal(e.target.value)} />
+                </Form.Item>
+            </Form>
+        </Modal>
+
+        <Modal title="Ajouter un nouveau traitement" visible={isTreatmentModalVisible} onOk={handleTreatmentOk} onCancel={handleTreatmentCancel}>
+            <Form>
+            <Form.Item label="Traitement par">
+                <Input value={newTreatment.treatmentBy} onChange={e => setNewTreatment({ ...newTreatment, treatmentBy: e.target.value })} />
+            </Form.Item>
+            <Form.Item label="Condition">
+                <Input value={newTreatment.condition} onChange={e => setNewTreatment({ ...newTreatment, condition: e.target.value })} />
+            </Form.Item>
+            <Form.Item label="Détails du traitement">
+                <Input value={newTreatment.treatmentDetails} onChange={e => setNewTreatment({ ...newTreatment, treatmentDetails: e.target.value })} />
+            </Form.Item>
+            <Form.Item label="Espèce">
+                <Input value={newTreatment.species} onChange={e => setNewTreatment({ ...newTreatment, species: e.target.value })} />
+            </Form.Item>
+            </Form>
+        </Modal>
+
+        {editingSpace && (
+            <Modal title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                <Form>
+                        <Form.Item label="Nom">
+                            <Input name="nom" value={editingSpace.nom} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Description">
+                            <Input name="description" value={editingSpace.description} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Type">
+                            <Input name="type" value={editingSpace.type} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Capacité">
+                            <Input name="capacite" value={editingSpace.capacite} onChange={handleInputChange} />
+                        </Form.Item>
+                        <Form.Item label="Accessible aux handicapés">
+                            <Switch checked={editingSpace.accessibleHandicape} onChange={(value) => handleSwitchChange('accessibleHandicape', value)} />
+                        </Form.Item>
+                        <Form.Item label="En maintenance">
+                            <Switch checked={editingSpace.isMaintenance} onChange={(value) => handleSwitchChange('isMaintenance', value)} />
+                        </Form.Item>
+                        {/* ... (autres champs du formulaire) */}
+                </Form>
+            </Modal>
+        )}
+
+        
+
+
     </div>
 );
 }
