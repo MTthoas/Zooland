@@ -25,7 +25,6 @@ jobs:
             cd server
             npm install
             npm run build # this runs "tsc"
-            nano src/server.ts
             docker-compose down
             docker-compose up --build -d
             sleep 10
