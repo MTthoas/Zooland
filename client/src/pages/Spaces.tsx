@@ -241,7 +241,7 @@ function Spaces() {
   };
 
   return (
-    <div className="h-screen pt-24 bg-base100 ">
+    <div className="h-screen pt-24 bg-base100">
         {spaces.map(space => (
             <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden  my-3">
                 <div className="md:flex">
@@ -281,7 +281,7 @@ function Spaces() {
         ))}
          <button
             onClick={() => handleCreate()}
-            className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl"
+            className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl main-content"
             title="Ajouter un espace"
         >
             +
