@@ -20,4 +20,5 @@ jobs:
           username: ${{ secrets.USER_HOST }}
           key: ${{ secrets.KEY_SSH }}
           script: |
-            cd /var/www/Zooland
+             whoami
+             ls -al
