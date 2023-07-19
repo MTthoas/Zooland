@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 function Header({ setShowModalLogin, setShowModalRegister }: any) {
   const location = useLocation();
@@ -12,7 +13,19 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
 
   useEffect(() => {
     if (isLoggedIn) {
-      // const infos = axios.get('users/:username')
+      console.log(" isLoggedIn : " + isLoggedIn)
+      axios.get('/api/userinfo', {
+        headers: {
+          Authorization: `Bearer ${isLoggedIn}`,
+        },
+      })
+      .then(response => {
+        console.log(response.data.username);
+        // Ici vous pouvez définir le nom d'utilisateur dans votre état local
+      })
+      .catch(error => {
+        console.error(error);
+      });
     } 
   }, [isLoggedIn]);
 
@@ -59,7 +72,7 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
             <summary className="mt-2 btn bg-white hover:bg-white w-32"> Admin </summary>
             <ul className=" p-2 shadow menu dropdown-content z-[1] mt-2 bg-white rounded-box w-48">
               <li><a className="text-black hover:text-black">Profil details</a></li>
-              <li><a className="text-black hover:text-black">Déconnexion</a></li>
+              <li><a onClick={()=> handleLogout()} className="text-black hover:text-black">Déconnexion</a></li>
             </ul>
           </details>
 
