@@ -41,6 +41,7 @@ app.post('/spaces/:spaceId/visit', AuthController.ensureRole(['visitor']), Space
 app.patch('/tickets/:userId/buy', AuthController.ensureRole(['visitor']), SpacesController.buyTicket);
 app.get('/checkTicket/:ticketId/:spaceName', AuthController.ensureRole(['visitor']), SpacesController.checkTicket);
 app.post('/checkout/:ticketId/:spaceName', AuthController.ensureRole(['visitor']), SpacesController.checkOut);
+app.get('/user/:userId/tickets', AuthController.ensureRole(['visitor']), SpacesController.getUserTickets);
 
 
 // Accès dédié aux employés
