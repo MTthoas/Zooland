@@ -6,6 +6,8 @@ export interface ITicket {
   dateOfPurchase: Date; // Date d'achat du billet
   validUntil: Date; // Date à laquelle le billet expire
   spaces: string[]; // Espaces accessibles avec ce billet
+  // spaceName?: string; // Espaces accessibles avec ce billet
+  // ticketId?: string;
   type: 'journee' | 'weekend' | 'annuel' | '1daymonth' | 'escapegame';
   escapeGameOrder?: string[]; 
 }
