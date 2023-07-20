@@ -52,7 +52,6 @@ app.patch('/zoo/open',  AuthController.ensureRole(['admin', 'receptionist']), Zo
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
 app.patch('/zoo', AuthController.ensureRole(['admin', 'receptionist']), ZooController.ensureZooOpen);
 
-app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
 
 // app.get('/users', AuthController.ensureRole(['receptionist, admin']), AuthController.getAllUsers);
 
@@ -65,7 +64,8 @@ app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['receptionis
 
 app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
-app.patch('/users/:userId/password', AuthController.updateUser);
+app.patch('/users/:userId', AuthController.updateUser);
+app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
 
 app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
