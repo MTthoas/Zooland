@@ -444,7 +444,7 @@ async buyTicket(req: Request, res: Response): Promise<void> {
       if (updatedSpace) {
         res.status(200).json(updatedSpace);
       } else {
-        res.status(404).end();
+        res.status(404).end("La mise à jour de l'espace a échoué.");
       }
     } catch (err: any) {
       res.status(500).json({ message: err.message });

@@ -121,7 +121,7 @@ class SpacesService {
 		try {
 
 			const space = await SpaceModel.findOneAndUpdate(
-				{ nom },
+				{ nom: { $regex: new RegExp(`^${nom}$`, 'i') } },
 				{ $push: { animalSpecies: species } },
 				{ new: true }
 			);
