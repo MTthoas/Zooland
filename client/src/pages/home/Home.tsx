@@ -1,7 +1,7 @@
 import React from 'react';
 import './Home.css';
 
-import Robin from '../assets/robin.mp4'
+import Robin from '../../assets/robin.mp4'
 
 function Home() {
     return (

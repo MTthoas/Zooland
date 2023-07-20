@@ -241,9 +241,9 @@ function Spaces() {
   };
 
   return (
-    <div className="h-screen pt-24 bg-base100">
+    <div className="h-screen pt-32 bg-base100">
         {spaces.map(space => (
-            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden  my-3">
+            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden my-3">
                 <div className="md:flex">
                     <div className="flex-shrink-0 w-4/12 ">
                         <img className="h-full w-64 object-cover" src={space.images[0]} alt={space.nom} />
