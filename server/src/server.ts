@@ -78,9 +78,9 @@ app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsControl
 
 // Accès dédié aux vétérinaires 
 
-app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary, admin']), SpacesController.addAnimalSpecies);
-app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary, admin']), SpacesController.getAnimalsInSpace);
-app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary, admin']), SpacesController.addTreatmentToVeterinaryLog);
+app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.addAnimalSpecies);
+app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.getAnimalsInSpace);
+app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.addTreatmentToVeterinaryLog);
 
 // Route de dev
 
