@@ -10,7 +10,7 @@ import { IVeterinaryLog } from './veterinarylog.model';
 export interface ISpace extends Document {
   nom: string;
   description: string;
-  images: string[];
+  images?: string[];
   type: string;
   capacite: number;
   horaires: {
