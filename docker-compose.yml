@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./server/src:/app/src
+      - ./public/uploads:/app/public/uploads
     ports:
       -  8080:8080
     depends_on:
