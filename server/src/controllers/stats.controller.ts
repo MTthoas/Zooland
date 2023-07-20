@@ -11,7 +11,7 @@ class StatisticsController {
           const dailyStats = await StatsModel.aggregate([
             { $match: { date: { $gte: lastWeek }}},
             { $group: {
-              _id: { day: { $dayOfYear: "$date" }, hour: "$hour" },
+              _id: { spaceId: "$spaceId", day: { $dayOfYear: "$date" }, hour: "$hour" },
               totalVisitors: { $sum: "$visitors" },
               spaceName: { $first: "$spaceName" }
             }}
@@ -36,7 +36,7 @@ class StatisticsController {
           const weeklyStats = await StatsModel.aggregate([
             { $match: { date: { $gte: lastMonth }}},
             { $group: {
-              _id: { week: { $week: "$date" }, hour: "$hour" },
+              _id: { spaceId: "$spaceId", week: { $week: "$date" }, hour: "$hour" },
               totalVisitors: { $sum: "$visitors" },
               spaceName: { $first: "$spaceName" } 
             }}
