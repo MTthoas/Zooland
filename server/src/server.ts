@@ -41,7 +41,7 @@ app.get('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureAuthen
 
 app.post('/spaces/:spaceId/visit', AuthController.ensureRole(['visitor']), SpacesController.recordVisit);
 app.patch('/tickets/:userId/buy', AuthController.ensureRole(['visitor']), SpacesController.buyTicket);
-app.get('/checkTicket/:ticketId/:spaceName', AuthController.ensureRole(['visitor']), SpacesController.checkTicket);
+app.get('/checkTicket/:ticketId/:spaceName', AuthController.ensureRole(['visitor','admin']), SpacesController.checkTicket);
 app.post('/checkout/:ticketId/:spaceName', AuthController.ensureRole(['visitor']), SpacesController.checkOut);
 app.get('/user/:userId/tickets', AuthController.ensureRole(['visitor']), SpacesController.getUserTickets);
 
@@ -59,6 +59,7 @@ app.get('/tickets', AuthController.ensureRole(['salesperson', 'receptionist', 'a
 app.get('/tickets/:spaceName', AuthController.ensureRole(['salesperson', 'receptionist', 'admin']), SpacesController.getTicketsFromSpace);
 app.delete('/tickets/:ticketId', AuthController.ensureRole(['receptionist', 'admin']), SpacesController.deleteTicket)
 app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['receptionist', 'admin']), SpacesController.deleteAllTicketdFromUserId)
+app.patch('/tickets/checkout-all', AuthController.ensureRole(['receptionist', 'admin']), SpacesController.checkOutAllTickets);
 
 // Accès dédié aux admins
 
