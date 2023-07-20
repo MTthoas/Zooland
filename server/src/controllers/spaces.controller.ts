@@ -365,7 +365,7 @@ class SpacesController {
         const stats = new StatsModel({
           date: new Date(),
           visitors: 0,
-          visitorsLive: 0,
+          visitorsLive: null,
           hour: new Date().getHours(),
           spaceId: space._id,
         });
