@@ -41,7 +41,7 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
   const headerClass =
     location.pathname === "/"
       ? "bg-transparent"
-      : "bg-base100 border-b border-bg-base100 shadow-sm";
+      : "bg-base100 border-b border-bg-base100";
   const textColor = location.pathname === "/" ? "text-white" : "text-black";
 
   return (
@@ -82,7 +82,7 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
           )}
           {isLoggedIn ? (
             <details className="dropdown ">
-              <summary className=" btn bg-white hover:bg-white w-24 h-10 min-h-8 border-0 text-black mt-2">
+              <summary className=" btn bg-base100 hover:bg-gray-100 w-24 h-10 min-h-8 border-gray-500 text-black mt-2">
                 {" "}
                 {UsernameConst}{" "}
               </summary>

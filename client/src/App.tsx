@@ -5,15 +5,15 @@ import './App.css';
 
 import Header from './components/Header';
 
-import Home from './pages/Home';
+import Home from './pages/home/Home';
 import Footer from './components/footer';
 import NotFound from './pages/NotFound';
-import Spaces from './pages/Spaces';
+import Spaces from './pages/spaces/Spaces';
 // import Login from './components/login';
 import PrivateComponent from './components/privateRoute';
 // import Register from './components/register';
 import Stats from './pages/Stats';
-import Users from './pages/User';
+import Users from './pages/users/User';
 import Management from './pages/Management';
 import Tickets from './pages/Ticket';
 import ProfilDestails from './pages/ProfilDetails';

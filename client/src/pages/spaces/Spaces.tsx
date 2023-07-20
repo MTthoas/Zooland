@@ -241,9 +241,9 @@ function Spaces() {
   };
 
   return (
-    <div className="h-screen pt-24 bg-base100">
+    <div className="h-screen pt-32 bg-base100">
         {spaces.map(space => (
-            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden  my-3">
+            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden my-5">
                 <div className="md:flex">
                     <div className="flex-shrink-0 w-4/12 ">
                         <img className="h-full w-64 object-cover" src={space.images[0]} alt={space.nom} />
@@ -269,10 +269,7 @@ function Spaces() {
                             <button onClick={() => handleDelete(space)} className="px-2 py-1 text-xs bg-red-500 text-white rounded w-full">Supprimer</button>
                         </div>
                         <div>
-                            <button onClick={() => null} className="px-3 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full inline-flex text-center inline-flex items-center ">Accéder aux logs  
-                                <svg className="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                </svg></button>
+                            <button onClick={() => null} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Accéder aux logs  </button>
                             <button onClick={() => handleAddAnimalSpecies(space)} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Ajouter une espèce</button>
                             <button onClick={() => handleAddTreatmentToVeterinaryLog(space)} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Ajouter un traitement</button>
                         </div>
