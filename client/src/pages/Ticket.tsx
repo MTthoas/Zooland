@@ -23,6 +23,7 @@ const Tickets = () => {
   const [selectedSpace, setSelectedSpace] = useState<string>('');
 
   const tokenId = localStorage.getItem('token');
+  const userName = localStorage.getItem('username');
 
   // Configurer les en-têtes de la requête
   let config = {
