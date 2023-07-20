@@ -99,7 +99,7 @@ app.get('/nom/:id', ZooController.ensureZooOpen, AuthController.ensureRole(['adm
 app.get('/stats/live', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getLiveStats);
 app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getDailyStatistics);
 app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsController.getWeeklyStatistics);
-
+app.delete('/stats/delete-all', AuthController.ensureRole(['admin']), StatisticsController.deleteAllStats);
 
 // Accès dédié aux vétérinaires 
 

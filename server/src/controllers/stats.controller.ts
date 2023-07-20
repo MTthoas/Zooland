@@ -76,7 +76,18 @@ class StatisticsController {
         }
     }
     
-
+    async deleteAllStats(req: Request, res: Response) {
+      try {
+          await StatsModel.deleteMany({});  // Supprime tous les documents de la collection StatsModel
+          res.status(200).json({ message: 'Toutes les statistiques ont été supprimées avec succès.' });
+      } catch (error) {
+          if (error instanceof Error) {
+              res.status(500).json({ message: `Erreur lors de la suppression de toutes les statistiques: ${error.message}` });
+          } else {
+              res.status(500).json({ message: 'Erreur lors de la suppression de toutes les statistiques.' });
+          }
+      }
+    }
     
   }
   

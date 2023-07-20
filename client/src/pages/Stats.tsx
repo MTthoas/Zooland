@@ -56,27 +56,33 @@ const Stats = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(liveResponse.data);
-
         const liveStatsWithNames = await Promise.all(
           liveResponse.data.map(async (stat) => {
-            console.log(stat);
+            console.log("livewithname stat", stat);
             const spaceResponse = await axios.get(`/nom/${stat._id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
+            console.log("spaceresponde stat", spaceResponse);
+            console.log("nom space", spaceResponse.data.nom);
+
+            
+
             return {
               ...stat,
               nom: spaceResponse.data.nom,
             };
+            
           })
         );
-
+        console.log("rrrrrrrrrrrrrrrrrrrrrrr", liveResponse.data);
         setLiveStats(liveStatsWithNames);
+        
       } catch (error) {
         console.error(error);
       }
+      
     };
 
     fetchData();
@@ -144,7 +150,7 @@ const Stats = () => {
             {liveStats.map((stat, index) => (
               <li key={index} className="bg-white rounded-lg p-4 shadow">
                 <span className="block text-gray-600">
-                  Nom de l'espace : {stat.spaceName}
+                  Nom de l'espace : {stat.nom}
                 </span>
                 <span className="block text-gray-600">
                   Total des visiteurs : {stat.totalVisitors}
