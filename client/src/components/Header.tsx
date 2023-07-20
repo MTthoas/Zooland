@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import ProfilDetails from "../pages/ProfilDetails";
 import axios from "axios";
 
 function Header({ setShowModalLogin, setShowModalRegister }: any) {
-  
   const [UsernameConst, setUsernameConst] = React.useState("");
   const [dataUser, setDataUser] = React.useState({} as any);
 
@@ -88,7 +88,14 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
               </summary>
               <ul className=" p-2 shadow menu dropdown-content z-[1] mt-2 bg-white rounded-box w-48">
                 <li>
-                  <a className="text-black hover:text-black">Profil details</a>
+                  <li>
+                    <Link
+                      to={`/users/${UsernameConst}`}
+                      className="text-black hover:text-black"
+                    >
+                      Profil details
+                    </Link>
+                  </li>
                 </li>
                 <li>
                   <a

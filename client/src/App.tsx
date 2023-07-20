@@ -16,7 +16,7 @@ import Stats from './pages/Stats';
 import Users from './pages/User';
 import Management from './pages/Management';
 import Tickets from './pages/Ticket';
-
+import ProfilDestails from './pages/ProfilDetails';
 import Login from './components/modal/Login';
 import Register from './components/modal/Register';
 
@@ -40,6 +40,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/uers/*" element={<ProfilDestails />} />
             <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
             <Route path="/stats" element={<PrivateComponent><Stats /></PrivateComponent>} />
             <Route path="/users" element={<PrivateComponent><Users /></PrivateComponent>} />
