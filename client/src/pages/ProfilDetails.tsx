@@ -14,6 +14,7 @@ function ProfilDetails() {
   const { name } = useParams<{ name: string }>();
   const [user, setUser] = useState<IUser | null>(null);
   const [newUsername, setNewUsername] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [newRole, setNewRole] = useState('');
   const token = localStorage.getItem('token');
 
@@ -38,14 +39,19 @@ function ProfilDetails() {
     setNewUsername(event.target.value);
   };
 
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewPassword(event.target.value);
+  };
+
   const handleRoleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewRole(event.target.value);
   };
 
   const handleUpdateUser = async () => {
     try {
-      await axios.put(`/users/${user?._id}`, {
+      await axios.patch(`/users/${user?._id}`, {
         username: newUsername,
+        password: newPassword,
         role: newRole,
       });
       // Mettre à jour localement les nouvelles valeurs de l'utilisateur
@@ -54,8 +60,11 @@ function ProfilDetails() {
       );
       // Réinitialiser les valeurs des champs de saisie
       setNewUsername('');
+      setNewPassword('');
       setNewRole('');
       console.log('Utilisateur mis à jour avec succès');
+      localStorage.removeItem("token");
+      window.location.href = "/";
     } catch (error) {
       console.error(error);
     }
@@ -89,6 +98,13 @@ function ProfilDetails() {
           placeholder="Nouveau nom d'utilisateur"
           value={newUsername}
           onChange={handleUsernameChange}
+          className="px-2 py-1 mr-4 border border-gray-300 rounded"
+        />
+        <input
+          type="password"
+          placeholder="Nouveau mot de passe"
+          value={newPassword}
+          onChange={handlePasswordChange}
           className="px-2 py-1 mr-4 border border-gray-300 rounded"
         />
         <input
