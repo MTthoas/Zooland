@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import axios from 'axios';
 
-export default function Login({setShowModalLogin, setShowModalRegister, setUserName}: any) {
+export default function Login({setShowModalLogin, setShowModalRegister}: any) {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -17,7 +17,6 @@ export default function Login({setShowModalLogin, setShowModalRegister, setUserN
 
             localStorage.setItem('username', username);
             localStorage.setItem('token', token);
-            setUserName("username");
 
             window.location.href = '/';
           } catch (error) {

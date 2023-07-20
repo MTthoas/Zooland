@@ -88,7 +88,7 @@ const Tickets = () => {
   };
 
   return (
-    <div>
+    <div className="pt-24">
       <Button style={{ backgroundColor: 'white', color: 'black' }} type="primary" onClick={() => setIsModalVisible(true)}>
         Acheter un billet
       </Button>

@@ -5,17 +5,18 @@ import './App.css';
 
 import Header from './components/Header';
 
-import Home from './pages/Home';
+import Home from './pages/home/Home';
+import Footer from './components/footer';
 import NotFound from './pages/NotFound';
-import Spaces from './pages/Spaces';
+import Spaces from './pages/spaces/Spaces';
 // import Login from './components/login';
 import PrivateComponent from './components/privateRoute';
 // import Register from './components/register';
 import Stats from './pages/Stats';
-import Users from './pages/User';
-import Management from './pages/Management';
+import Users from './pages/users/User';
+import Management from './pages/management/Management';
 import Tickets from './pages/Ticket';
-
+import ProfilDestails from './pages/ProfilDetails';
 import Login from './components/modal/Login';
 import Register from './components/modal/Register';
 
@@ -27,18 +28,19 @@ function App() {
   
 
   return (
-    <div className="App">
+    <div className="App flex flex-col min-h-screen">
       <Router>
-        <div className="pt-22">
-          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister} username={userName} />
-          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister} setUserName={setUserName} /> : null}
-          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister} setUserName={setUserName} /> : null}
+        <div className="body">
+          <Header setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}  />
+          {showModalLogin ? <Login setShowModalLogin={setShowModalLogin} setShowModalRegister={setShowModalRegister}/> : null}
+          {showModalRegister ? <Register setShowModalRegister={setShowModalRegister}/> : null}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/users/:name" element={<ProfilDestails />} />
             <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
             <Route path="/stats" element={<PrivateComponent><Stats /></PrivateComponent>} />
             <Route path="/users" element={<PrivateComponent><Users /></PrivateComponent>} />
@@ -46,8 +48,8 @@ function App() {
             <Route path="/management" element={<PrivateComponent><Management /></PrivateComponent>} />
           </Routes>
         </div>
-        {/* <Footer /> */}
-      </Router>
+           <Footer />
+  </Router>
     </div>
   );
 }

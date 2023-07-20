@@ -241,14 +241,14 @@ function Spaces() {
   };
 
   return (
-    <div className="h-screen pt-24 bg-base100">
+    <div className="h-screen pt-32 bg-base100">
         {spaces.map(space => (
-            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden  my-3">
+            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden my-5">
                 <div className="md:flex">
-                    <div className="flex-shrink-0 w-2/6 ">
+                    <div className="flex-shrink-0 w-4/12 ">
                         <img className="h-full w-64 object-cover" src={space.images[0]} alt={space.nom} />
                     </div>
-                    <div className="flex-grow p-8 w-3/6">
+                    <div className="flex-grow p-8 pl-2 w-6/12">
                         <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{space.type}</div>
                         <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{space.nom}</a>
                         <p className="mt-2 text-gray-500">{space.description}</p>
@@ -262,18 +262,18 @@ function Spaces() {
                             <p className="mt-2 text-gray-500">Horaires : {horaire.opening} - {horaire.closing}</p>
                         ))}
                     </div>
-                    <div className="p-8 flex flex-col items-start w-2/6 ">
+                    <div className="p-8 flex flex-col items-start w-3/12 border-l gap-y-3">
 
-                        <div className="flex items-center gap-x-3 mx-auto">   
-                            <button onClick={() => handleEdit(space)} className="px-2 py-1 text-xs bg-blue-500 text-white rounded">Modifier</button>
-                            <button onClick={() => handleDelete(space)} className="px-2 py-1 text-xs bg-red-500 text-white rounded">Supprimer</button>
+                        <div className="flex-col my-auto w-full">
+                            <button onClick={() => handleEdit(space)} className="px-2 py-1 text-xs bg-blue-500 text-white rounded w-full mb-1">Modifier </button>
+                            <button onClick={() => handleDelete(space)} className="px-2 py-1 text-xs bg-red-500 text-white rounded w-full">Supprimer</button>
                         </div>
-
-                        <div className="flex-col my-auto">
-                            <button onClick={() => null} className="px-2 py-1 bg-green-500 text-white rounded mt-2 text-sm">Accéder aux logs</button>
-                            <button onClick={() => handleAddAnimalSpecies(space)} className="px-2 py-1 bg-blue-500 text-white rounded mt-2 text-sm">Ajouter une espèce</button>
-                            <button onClick={() => handleAddTreatmentToVeterinaryLog(space)} className="px-2 py-1 bg-purple-500 text-white rounded mt-2 text-sm">Ajouter un traitement</button>
+                        <div>
+                            <button onClick={() => null} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Accéder aux logs  </button>
+                            <button onClick={() => handleAddAnimalSpecies(space)} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Ajouter une espèce</button>
+                            <button onClick={() => handleAddTreatmentToVeterinaryLog(space)} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Ajouter un traitement</button>
                         </div>
+                       
                     </div>
                 </div>
                 
@@ -281,7 +281,7 @@ function Spaces() {
         ))}
          <button
             onClick={() => handleCreate()}
-            className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl"
+            className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl main-content"
             title="Ajouter un espace"
         >
             +

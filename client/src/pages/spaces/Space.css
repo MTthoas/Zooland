@@ -7,6 +7,10 @@
     gap: 20px;
 }
 
+.main-content {
+    margin-bottom: 40px; /* Vous pouvez ajuster la valeur de la marge selon vos besoins */
+  }
+
 .spaces-grid .ant-card {
     flex: 0 0 calc(33.33% - 20px);
     margin-bottom: 20px;
