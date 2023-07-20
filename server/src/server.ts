@@ -76,11 +76,11 @@ app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole([
 app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsController.getWeeklyStatistics);
 
 
-// Accès dédié aux vétérinaires
+// Accès dédié aux vétérinaires 
 
-app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary']), SpacesController.addAnimalSpecies);
-app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary']), SpacesController.getAnimalsInSpace);
-app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary']), SpacesController.addTreatmentToVeterinaryLog);
+app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary, admin']), SpacesController.addAnimalSpecies);
+app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary, admin']), SpacesController.getAnimalsInSpace);
+app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary, admin']), SpacesController.addTreatmentToVeterinaryLog);
 
 // Route de dev
 
