@@ -43,6 +43,7 @@ interface ISpace {
     opening: string;
     closing: string;
   }[];
+  imagePath: string;
   accessibleHandicape: boolean;
   isMaintenance: boolean;
   bestMonth: string;
@@ -126,6 +127,7 @@ function Spaces() {
       type: "",
       capacite: 0,
       horaires: [],
+      imagePath: "",
       accessibleHandicape: false,
       isMaintenance: false,
       bestMonth: "",

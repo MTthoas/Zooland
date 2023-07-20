@@ -17,7 +17,7 @@ export interface ISpace extends Document {
     opening: string; // heure d'ouverture
     closing: string; // heure de fermeture
   }[];
-  imagePath: string;
+  imagePath: any;
   accessibleHandicape: boolean;
   isMaintenance: boolean;
   bestMonth: string;
