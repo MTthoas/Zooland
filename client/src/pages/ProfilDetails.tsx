@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import React from 'react';
-
 import axios from 'axios';
 
 interface IUser {
@@ -13,10 +11,8 @@ interface IUser {
 }
 
 function ProfilDetails() {
-  const { name } = useParams();
-  const [user, setUser] = useState<IUser | null>(null); // Ajoutez le type IUser | null
-  console.log("username");
-
+  const { name } = useParams<{ name: string }>();
+  const [user, setUser] = useState<IUser | null>(null);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -27,8 +23,6 @@ function ProfilDetails() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response);
-        console.log(response.data);
         setUser(response.data);
       } catch (error) {
         console.error(error);
@@ -36,19 +30,28 @@ function ProfilDetails() {
     };
 
     fetchUser();
-  },);
+  }, [name, token]);
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div className="pt-44">Loading...</div>;
   }
 
   return (
-    <div>
-      <h1>Profil de {user.username}</h1>
-      <p>ID: {user._id}</p>
-      <p>Rôle: {user.role}</p>
-      <p>Tickets: {user.tickets.length}</p>
-      <p>Espace actuel: {user.currentSpace ? user.currentSpace : 'Aucun'}</p>
+    <div className="pt-44">
+      <h1 className="text-2xl font-bold mb-4">Votre profil {user.username}</h1>
+      <p className="mb-2">
+        <span className="font-bold">ID:</span> {user._id}
+      </p>
+      <p className="mb-2">
+        <span className="font-bold">Rôle:</span> {user.role}
+      </p>
+      <p className="mb-2">
+        <span className="font-bold">Tickets:</span> {user.tickets.length}
+      </p>
+      <p>
+        <span className="font-bold">Espace actuel:</span>{' '}
+        {user.currentSpace ? user.currentSpace : 'Aucun'}
+      </p>
     </div>
   );
 }
