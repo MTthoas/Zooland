@@ -11,7 +11,9 @@ import {
   Input,
   Switch,
   message,
+  Upload
 } from "antd";
+import type { UploadProps } from 'antd';
 import "./Space.css";
 
 
@@ -68,6 +70,8 @@ function Spaces() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [spacesForDelete, setSpacesForDelete] = useState<ISpace[]>([]);
   const [newImage, setNewImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+
 
   useEffect(() => {
     // get localStorage
@@ -82,6 +86,10 @@ function Spaces() {
     setToken(tokenId);
     fetchSpaces(tokenId);
   }, []);
+
+  const handleImageChange = (event : any) => {
+    setSelectedImage(event.target.files[0]);
+  };
 
   const handleEdit = (space: ISpace) => {
     setEditingSpace(space);
@@ -131,11 +139,24 @@ function Spaces() {
 
   const handleOk = async () => {
     if (editingSpace) {
+      // Create a new FormData object to send the form data
+      const formData = new FormData();
+      if (selectedImage) {
+        formData.append("image", selectedImage);
+      }
+      // Append other form fields to the FormData 
+      
+    
+      formData.append("nom", editingSpace.nom);
+      formData.append("description", editingSpace.description);
+      // Append other form fields as needed
+  
       if (isCreating) {
         try {
-          const response = await axios.post("/spaces", editingSpace,  {
+          const response = await axios.post("/spaces", formData, {
             headers: {
               Authorization: "Bearer " + token,
+              "Content-Type": "multipart/form-data", // Set the content type for FormData
             },
             withCredentials: true,
           });
@@ -149,12 +170,15 @@ function Spaces() {
         try {
           const response = await axios.put(
             `/spaces/${editingSpace.nom}`,
-            editingSpace,  {
+            formData,
+            {
               headers: {
                 Authorization: "Bearer " + token,
+                "Content-Type": "multipart/form-data", // Set the content type for FormData
               },
               withCredentials: true,
-            });
+            }
+          );
           console.log(response.data);
           message.success("Espace modifié avec succès");
         } catch (error) {
@@ -163,10 +187,11 @@ function Spaces() {
         }
       }
     }
-
-    fetchSpaces()
+  
+    fetchSpaces();
     setIsModalVisible(false);
   };
+  
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -226,7 +251,7 @@ function Spaces() {
       try {
         const response = await axios.post(
           `/spaces/${editingSpace.nom}/animals`,
-          { name: newAnimal }
+          { species: newAnimal }
         ,{
           headers: {
             Authorization: "Bearer " + token,
@@ -391,11 +416,9 @@ function Spaces() {
               />
             </Form.Item>
             <Form.Item label="Image">
-              <Input
-                value={newImage}
-                onChange={(e) => setNewImage(e.target.value)}
-              />
+              <input type="file" name="image" onChange={handleImageChange} />
             </Form.Item>
+
             <Form.Item label="Type">
               <Input
                 name="type"

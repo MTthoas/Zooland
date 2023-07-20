@@ -10,6 +10,8 @@ import { ISpace } from './models/spaces.model';
 import StatisticsController from './controllers/stats.controller';
 import cors from 'cors';
 
+import upload from './multerConfig';
+
 require('dotenv').config();
 
 const app = express();
@@ -65,9 +67,9 @@ app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthControlle
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
 app.patch('/users/:userId/password', AuthController.updateUser);
 
-app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
+app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
-app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.updateSpace);
+app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.updateSpace);
 
 app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.toggleMaintenanceStatus);
 app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.getBestMonthForSpace);
