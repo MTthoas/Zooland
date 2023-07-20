@@ -55,9 +55,11 @@ const Stats = () => {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log(liveResponse.data);
 
         const liveStatsWithNames = await Promise.all(
           liveResponse.data.map(async (stat) => {
+            console.log(stat);
             const spaceResponse = await axios.get(`/nom/${stat._id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,

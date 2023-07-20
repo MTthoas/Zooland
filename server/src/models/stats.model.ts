@@ -6,6 +6,7 @@ export interface IStats extends Document {
   visitorsLive: number;
   hour: number;
   spaceId: string;
+  spaceName?: string;
 }
 
 const StatsSchema: Schema = new Schema({
@@ -13,7 +14,8 @@ const StatsSchema: Schema = new Schema({
   visitors: { type: Number, required: true },
   visitorsLive: { type: Number, required: true },
   hour: { type: Number, required: true },
-  spaceId: { type: String, required: true }
+  spaceId: { type: String, required: true },
+  spaceName: { type: String, required: false }
 });
 
 export default mongoose.model<IStats>('Stats', StatsSchema);
