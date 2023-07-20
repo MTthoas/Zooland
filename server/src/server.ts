@@ -20,6 +20,9 @@ const port = 8080;
 
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
+app.use(express.static('public'));
+
+
 app.use(cors({
   origin: function(origin, callback){
     return callback(null, true);
@@ -29,9 +32,6 @@ app.use(cors({
 }));
 
 const upload = multer({ dest: 'uploads/' });
-
-app.use('/uploads', express.static('uploads'));
-
 
 app.post('/auth/login', AuthController.authenticate);
 app.post('/auth/register', AuthController.signup);

@@ -37,10 +37,10 @@ class SpacesService {
 	
 		// Ajouter un log de maintenance initial
 		newSpace.maintenanceLog.push({
-		commentary: "Espace créé",
-		maintenanceBy: "null", // On suppose qu'il n'y a pas de maintenance lors de la création
-		month: new Date().toLocaleString('default', { month: 'long' }), // Ajoute le mois actuel
-		doesBestMonth: false
+			commentary: "Espace créé",
+			maintenanceBy: "null", // On suppose qu'il n'y a pas de maintenance lors de la création
+			month: new Date().toLocaleString('default', { month: 'long' }), // Ajoute le mois actuel
+			doesBestMonth: false
 		});
 
 		newSpace.isMaintenance = false;

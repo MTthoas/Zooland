@@ -149,7 +149,11 @@ function Spaces() {
       
     
       formData.append("nom", editingSpace.nom);
-      formData.append("description", editingSpace.description);
+    formData.append("description", editingSpace.description);
+    formData.append("type", editingSpace.type); // assuming type exists on editingSpace object
+    formData.append("capacite", editingSpace.capacite.toString()); // assuming capacite exists on editingSpace object
+    formData.append("accessibleHandicape", editingSpace.accessibleHandicape.toString()); // assuming accessibleHandicape exists on editingSpace object
+    
       // Append other form fields as needed
   
       if (isCreating) {
