@@ -143,8 +143,8 @@ class StatisticsController {
   }
 
   async suppStatByIdSpace(req: Request, res: Response) {
+    const spaceId = req.params.spaceId; // Récupère le spaceId depuis les paramètres de la requête
     try {
-      const spaceId = req.params.spaceId; // Récupère le spaceId depuis les paramètres de la requête
 
       // Supprime toutes les statistiques associées à ce spaceId
       await StatsModel.deleteMany({ spaceId: spaceId });
