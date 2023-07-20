@@ -14,6 +14,7 @@ import {
 } from "antd";
 import "./Space.css";
 
+
 interface IMaintenanceLog {
   month: string;
   commentary: string;
@@ -56,13 +57,17 @@ function Spaces() {
   const [isAnimalModalVisible, setIsAnimalModalVisible] = useState(false);
   const [newAnimal, setNewAnimal] = useState("");
   const [isTreatmentModalVisible, setIsTreatmentModalVisible] = useState(false);
-  const [newImage, setNewImage] = useState("");
   const [newTreatment, setNewTreatment] = useState({
     treatmentBy: "",
     condition: "",
     treatmentDetails: "",
     species: "",
   });
+  const [token, setToken] = useState<string | null>(null);
+  const [modal, contextHolder] = Modal.useModal();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [spacesForDelete, setSpacesForDelete] = useState<ISpace[]>([]);
+  const [newImage, setNewImage] = useState("");
 
   useEffect(() => {
     // get localStorage
@@ -74,24 +79,8 @@ function Spaces() {
       return;
     }
 
-    const fetchSpaces = async () => {
-      try {
-        console.log("Fetching spaces");
-        const response = await axios.get("/spaces", {
-          headers: {
-            Authorization: "Bearer " + tokenId,
-          },
-          withCredentials: true,
-        });
-
-        console.log(response.data);
-        setSpaces(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchSpaces();
+    setToken(tokenId);
+    fetchSpaces(tokenId);
   }, []);
 
   const handleEdit = (space: ISpace) => {
@@ -99,12 +88,33 @@ function Spaces() {
     setIsCreating(false);
     setIsModalVisible(true);
   };
+  
+  
+  const fetchSpaces = async (tokenId ?: any) => {
+
+    const tokenForFetch = tokenId ? tokenId : token;
+
+    try {
+      console.log("Fetching spaces");
+      const response = await axios.get("/spaces", {
+        headers: {
+          Authorization: "Bearer " + tokenForFetch,
+        },
+        withCredentials: true,
+      });
+
+      console.log(response.data);
+      setSpaces(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleCreate = () => {
     setEditingSpace({
       nom: "",
       description: "",
-      images: [newImage],
+      images: [],
       type: "",
       capacite: 0,
       horaires: [],
@@ -123,7 +133,12 @@ function Spaces() {
     if (editingSpace) {
       if (isCreating) {
         try {
-          const response = await axios.post("/spaces", editingSpace);
+          const response = await axios.post("/spaces", editingSpace,  {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            withCredentials: true,
+          });
           console.log(response.data);
           message.success("Espace créé avec succès");
         } catch (error) {
@@ -134,8 +149,12 @@ function Spaces() {
         try {
           const response = await axios.put(
             `/spaces/${editingSpace.nom}`,
-            editingSpace
-          );
+            editingSpace,  {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+              withCredentials: true,
+            });
           console.log(response.data);
           message.success("Espace modifié avec succès");
         } catch (error) {
@@ -144,6 +163,8 @@ function Spaces() {
         }
       }
     }
+
+    fetchSpaces()
     setIsModalVisible(false);
   };
 
@@ -167,19 +188,33 @@ function Spaces() {
   };
 
   const handleDelete = async (space: ISpace) => {
-    if (space._id) {
-      try {
-        await axios.delete(`/users/${space._id}`);
-        setSpaces(spaces.filter((s) => s._id !== space._id));
-        message.success("Espace supprimé avec succès");
-      } catch (error: any) {
-        console.error(error);
-        message.error(
-          "Erreur lors de la suppression de l'espace : " + error.message
-        );
-      }
+    if(space._id){
+      setSpacesForDelete([space]);
+      setConfirmDelete(true);
     }
   };
+
+  const handleConfirmDelete = async () => {
+    const space = spacesForDelete[0];
+    setConfirmDelete(false);
+    console.log(space)
+    if (space && space._id) {
+      try {
+        await axios.delete(`/spaces/${space.nom}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          withCredentials: true,
+        });
+        setSpaces(spaces.filter((s) => s.nom !== space.nom));
+        message.success("Espace supprimé avec succès");
+      } catch (error) {
+        console.error(error);
+        message.error("Erreur lors de la suppression de l'espace");
+      }
+    }
+  }
+    
 
   const handleAddAnimalSpecies = (space: ISpace) => {
     setEditingSpace(space);
@@ -192,11 +227,18 @@ function Spaces() {
         const response = await axios.post(
           `/spaces/${editingSpace.nom}/animals`,
           { name: newAnimal }
+        ,{
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          withCredentials: true,
+        } 
         );
         console.log(response.data);
         message.success("Espèce d'animal ajoutée avec succès");
         setNewAnimal(""); // Réinitialiser la valeur du nouvel animal
         setIsAnimalModalVisible(false); // Fermer la fenêtre contextuelle
+        fetchSpaces()
       } catch (error) {
         console.error(error);
         message.error("Erreur lors de l'ajout d'une espèce d'animal");
@@ -244,167 +286,95 @@ function Spaces() {
 
   return (
     <div className="h-screen pt-32 bg-base100">
-      {spaces.map((space) => (
-        <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden my-5">
-          <div className="md:flex">
-            <div className="flex-shrink-0 w-4/12 ">
-              <img
-                className="h-full w-64 object-cover"
-                src={space.images[0]}
-                alt={space.nom}
-              />
-            </div>
-            <div className="flex-grow p-8 pl-2 w-6/12">
-              <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-                {space.type}
-              </div>
-              <a
-                href="#"
-                className="block mt-1 text-lg leading-tight font-medium text-black hover:underline"
-              >
-                {space.nom}
-              </a>
-              <p className="mt-2 text-gray-500">{space.description}</p>
-              <p className="mt-2 text-gray-500 text-sm">
-                Capacité d'accueil : {space.capacite}
-              </p>
-              <p className="mt-2 text-gray-500 text-sm">
-                Nombre d'espèces animales : {space.animalSpecies.length}
-              </p>
-              <p className="flex gap-x-3">
-                {" "}
-                {space.animalSpecies.map((specie) => (
-                  <p className="mt-2  text-indigo-500 text-sm"> {specie} </p>
-                ))}{" "}
-              </p>
-              <p className="mt-2 text-gray-500 text-sm">
-                Accessible aux personnes à mobilité réduite :{" "}
-                {space.accessibleHandicape ? "Oui" : "Non"}
-              </p>
-              {space.horaires.map((horaire) => (
-                <p className="mt-2 text-gray-500">
-                  Horaires : {horaire.opening} - {horaire.closing}
-                </p>
-              ))}
-            </div>
-            <div className="p-8 flex flex-col items-start w-3/12 border-l gap-y-3">
-              <div className="flex-col my-auto w-full">
-                <button
-                  onClick={() => handleEdit(space)}
-                  className="px-2 py-1 text-xs bg-blue-500 text-white rounded w-full mb-1"
-                >
-                  Modifier{" "}
-                </button>
-                <button
-                  onClick={() => handleDelete(space)}
-                  className="px-2 py-1 text-xs bg-red-500 text-white rounded w-full"
-                >
-                  Supprimer
-                </button>
-              </div>
-              <div>
-                <button
-                  onClick={() => null}
-                  className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
-                >
-                  Accéder aux logs{" "}
-                </button>
-                <button
-                  onClick={() => handleAddAnimalSpecies(space)}
-                  className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
-                >
-                  Ajouter une espèce
-                </button>
-                <button
-                  onClick={() => handleAddTreatmentToVeterinaryLog(space)}
-                  className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
-                >
-                  Ajouter un traitement
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
-      <button
-        onClick={() => handleCreate()}
-        className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl main-content"
-        title="Ajouter un espace"
-      >
-        +
-      </button>
+        {spaces.map(space => (
+            <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden my-5">
+                <div className="md:flex">
+                    <div className="flex-shrink-0 w-4/12 ">
+                        <img className="h-full w-64 object-cover" src={space.images[0]} alt={space.nom} />
+                    </div>
+                    <div className="flex-grow p-8 pl-2 w-6/12">
+                        <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{space.type}</div>
+                        <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black text-inline"> <span className="hover:underline">  {space.nom}  </span>{
+                            space.isMaintenance ? <span className="text-red-500 text-xs ml-2"> (En maintenance) </span> : <span className="text-green-500 text-xs ml-2"> (Disponible) </span>
 
-      <Modal
-        title="Ajouter une nouvelle espèce d'animal"
-        visible={isAnimalModalVisible}
-        onOk={handleAnimalOk}
-        onCancel={handleAnimalCancel}
-      >
-        <Form>
-          <Form.Item label="Nom de l'animal">
-            <Input
-              value={newAnimal}
-              onChange={(e) => setNewAnimal(e.target.value)}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+                        } </a>  
+                        <p className="mt-2 text-gray-500">{space.description}</p>
+                        <p className="mt-2 text-gray-500 text-sm">Capacité d'accueil : {space.capacite}</p>
+                        <p className="mt-2 text-gray-500 text-sm">Nombre d'espèces animales : {space.animalSpecies.length}</p>
+                        <p className="flex gap-x-3"> {space.animalSpecies.map(specie => (
+                            <p className="mt-2  text-indigo-500 text-sm"> {specie} </p>
+                        ))} </p>
+                        <p className="mt-2 text-gray-500 text-sm">Accessible aux personnes à mobilité réduite : {space.accessibleHandicape ? "Oui" : "Non"}</p>
+                        {space.horaires.map(horaire => (
+                            <p className="mt-2 text-gray-500">Horaires : {horaire.opening} - {horaire.closing}</p>
+                        ))}
+                    </div>
+                    <div className="p-8 flex flex-col items-start w-3/12 border-l gap-y-3">
 
-      <Modal
-        title="Ajouter un nouveau traitement"
-        visible={isTreatmentModalVisible}
-        onOk={handleTreatmentOk}
-        onCancel={handleTreatmentCancel}
-      >
-        <Form>
-          <Form.Item label="Traitement par">
-            <Input
-              value={newTreatment.treatmentBy}
-              onChange={(e) =>
-                setNewTreatment({
-                  ...newTreatment,
-                  treatmentBy: e.target.value,
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Condition">
-            <Input
-              value={newTreatment.condition}
-              onChange={(e) =>
-                setNewTreatment({ ...newTreatment, condition: e.target.value })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Détails du traitement">
-            <Input
-              value={newTreatment.treatmentDetails}
-              onChange={(e) =>
-                setNewTreatment({
-                  ...newTreatment,
-                  treatmentDetails: e.target.value,
-                })
-              }
-            />
-          </Form.Item>
-          <Form.Item label="Espèce">
-            <Input
-              value={newTreatment.species}
-              onChange={(e) =>
-                setNewTreatment({ ...newTreatment, species: e.target.value })
-              }
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {editingSpace && (
-        <Modal
-          title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"}
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
+                        <div className="flex-col my-auto w-full">
+                            <button onClick={() => handleEdit(space)} className="px-2 py-1 text-xs bg-blue-500 text-white rounded w-full mb-1">Modifier </button>
+                            <button onClick={() => handleDelete(space)} className="px-2 py-1 text-xs bg-red-500 text-white rounded w-full">Supprimer</button>
+                        </div>
+                        <div>
+                            <button onClick={() => null} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Accéder aux logs  </button>
+                            <button onClick={() => handleAddAnimalSpecies(space)} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Ajouter une espèce</button>
+                            <button onClick={() => handleAddTreatmentToVeterinaryLog(space)} className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full">Ajouter un traitement</button>
+                        </div>
+                       
+                    </div>
+                </div>
+                
+            </div>
+        ))}
+         <button
+            onClick={() => handleCreate()}
+            className="fixed right-5 bottom-5 w-12 h-12 mb-2 pb-1 bg-blue-500 text-white rounded-full flex items-center justify-center text-3xl main-content"
+            title="Ajouter un espace"
         >
+            +
+        </button>
+
+        <Modal title="Ajouter une nouvelle espèce d'animal" visible={isAnimalModalVisible} onCancel={handleAnimalCancel} footer={[
+              <Button key="back" onClick={handleAnimalCancel}>
+                Return
+              </Button>,
+              <Button key="submit" type="primary" className="bg-gray-900 hover:bg-gray-800" onClick={handleAnimalOk}>
+                Submit
+              </Button>,
+            ]}>
+            <Form>
+                <Form.Item label="Nom de l'animal">
+                    <Input value={newAnimal} onChange={e => setNewAnimal(e.target.value)} />
+                </Form.Item>
+            </Form>
+        </Modal>
+
+        <Modal title="Ajouter un nouveau traitement" visible={isTreatmentModalVisible} onOk={handleTreatmentOk} onCancel={handleTreatmentCancel}>
+            <Form>
+            <Form.Item label="Traitement par">
+                <Input value={newTreatment.treatmentBy} onChange={e => setNewTreatment({ ...newTreatment, treatmentBy: e.target.value })} />
+            </Form.Item>
+            <Form.Item label="Condition">
+                <Input value={newTreatment.condition} onChange={e => setNewTreatment({ ...newTreatment, condition: e.target.value })} />
+            </Form.Item>
+            <Form.Item label="Détails du traitement">
+                <Input value={newTreatment.treatmentDetails} onChange={e => setNewTreatment({ ...newTreatment, treatmentDetails: e.target.value })} />
+            </Form.Item>
+            <Form.Item label="Espèce">
+                <Input value={newTreatment.species} onChange={e => setNewTreatment({ ...newTreatment, species: e.target.value })} />
+            </Form.Item>
+            </Form>
+        </Modal>
+
+        {editingSpace && (
+            <Modal title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}  footer={[
+              <Button key="back" onClick={handleCancel}>
+                Return
+              </Button>,
+              <Button key="submit" type="primary" className="bg-gray-900 hover:bg-gray-800" onClick={handleOk}>
+                Submit
+              </Button>,
+            ]}>
           <Form>
             <Form.Item label="Nom">
               <Input
@@ -458,8 +428,25 @@ function Spaces() {
           </Form>
         </Modal>
       )}
+
+        {confirmDelete && ( 
+            <Modal title="Supprimer un espace" visible={confirmDelete} onCancel={() => setConfirmDelete(false)} footer={[
+              <Button key="back" onClick={() => setConfirmDelete(false)}>
+                Return
+              </Button>,
+              <Button type="primary" danger onClick={() => handleConfirmDelete()}>
+                Submit
+              </Button>
+            ]}>
+                <p>Êtes-vous sûr de vouloir supprimer cet espace ?</p>
+            </Modal>
+        )}
+
+        
+
+
     </div>
-  );
+);
 }
 
 export default Spaces;
