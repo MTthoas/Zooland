@@ -11,15 +11,23 @@ interface IUser {
   countTickets: number;
 }
 
+function truncateString(str : any, num: any) {
+  if (str.length <= num) {
+    return str
+  }
+  return str.slice(0, num) + '...'
+}
+
 interface ICellPropsTickets extends CellProps<IUser, number> {}
 interface ICellPropsSpace extends CellProps<IUser, string | undefined> {}
 interface ICellPropsId extends CellProps<IUser, string> {}
 
-const CustomCell: FC<ICellPropsTickets> = ({ value }) => <>{value}</>;
+const CustomCell: FC<ICellPropsTickets> = ({ value }) => <div className='text-sm'>{truncateString(String(value), 10)}</div>;
 
-const CustomCellSpace: FC<ICellPropsSpace> = ({ value }) => <>{value || '-'}</>;
+const CustomCellSpace: FC<ICellPropsSpace> = ({ value }) => <div className='text-sm'>{value || '-'}</div>;
 
-const CustomCellId: FC<ICellPropsId> = ({ value }) => <>{value}</>;
+const CustomCellId: FC<ICellPropsId> = ({ value }) => <div className='text-sm'>{truncateString(value, 30)}</div>;
+
 
 interface ITableInstance extends TableInstance<IUser> {
   setGlobalFilter: (filterValue: string) => void;
@@ -66,7 +74,7 @@ const Users: React.FC = () => {
         Header: 'Actions',
         Cell: ({ row: { original } }: CellProps<IUser>) => (
           <div className="">
-            <button className="px-2 py-2 mx-2 bg-red-500 text-xs text-white rounded" onClick={() => deleteUser(original._id)}>Supprimer</button>
+            <button className="px-2 py-2 mr-2 bg-red-500 text-xs text-white rounded" onClick={() => deleteUser(original._id)}>Supprimer</button>
             <button className="px-4 py-2 mx-2 bg-blue-500 text-xs text-white rounded" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</button>
           </div>
         )
@@ -137,11 +145,11 @@ const Users: React.FC = () => {
             </div>
             
             <table {...getTableProps()} className="w-full border border-gray-300">
-              <thead>
+              <thead className='text-sm'>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map((column) => (
-                      <th {...column.getHeaderProps()} className="px-4 py-2 bg-gray-200 font-bold text-left">{column.render('Header')}</th>
+                      <th {...column.getHeaderProps()} className="px-4 py-2 bg-gray-200 font-medium text-left text-black">{column.render('Header')}</th>
                     ))}
                   </tr>
                 ))}
@@ -152,7 +160,7 @@ const Users: React.FC = () => {
                   return (
                     <tr {...row.getRowProps()}>
                       {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()} className="px-4 py-2 border-t border-gray-300">{cell.render('Cell')}</td>
+                        <td {...cell.getCellProps()} className="px-4 py-2 border-t border-gray-300 text-sm font-normal text-black">{cell.render('Cell')}</td>
                       ))}
                     </tr>
                   );
