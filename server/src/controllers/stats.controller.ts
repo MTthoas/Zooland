@@ -61,7 +61,8 @@ class StatisticsController {
                 { $match: { date: { $gte: startOfDay }}},
                 { $group: {
                     _id: "$spaceId",
-                    totalVisitorsLive: { $sum: "$visitorsLive" }
+                    totalVisitorsLive: { $sum: "$visitorsLive" },
+                    spaceName: { $first: "$spaceName" }
                 }}
             ]);
         

@@ -84,6 +84,8 @@ app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthControlle
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
 app.patch('/users/:userId', AuthController.updateUser);
 app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
+app.get('/usersinfo/:username', AuthController.ensureRole(['visitor']), AuthController.getUserByName);
+
 
 app.post('/spaces', upload.single('image'), ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
