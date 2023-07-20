@@ -20,6 +20,7 @@ interface IWeeklyStats {
 interface ILiveStats {
   _id: string;
   nom: string;
+  spaceName: string;
   totalVisitors: number;
 }
 
@@ -143,7 +144,7 @@ const Stats = () => {
             {liveStats.map((stat, index) => (
               <li key={index} className="bg-white rounded-lg p-4 shadow">
                 <span className="block text-gray-600">
-                  Nom de l'espace : {stat.nom}
+                  Nom de l'espace : {stat.spaceName}
                 </span>
                 <span className="block text-gray-600">
                   Total des visiteurs : {stat.totalVisitors}

@@ -245,7 +245,7 @@ class SpacesController {
         visitorsLive: 1,
         hour: new Date().getHours(),
         spaceId: space._id,
-        spaceName: spaceName,
+        spaceName: space.nom,
       });
 
       await stats.save();
