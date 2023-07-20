@@ -1,9 +1,0 @@
-/* CSS */
-.ant-btn-primary {
-  background-color: #1E90FF; /* Cette couleur est un exemple, vous pouvez la remplacer par la couleur que vous voulez */
-}
-
-.ant-btn-primary:hover,
-.ant-btn-primary:focus {
-  background-color: #559ee6; /* Une nuance légèrement plus foncée pour l'effet de survol et de focus */
-}

@@ -46,10 +46,9 @@ class SpacesService {
 		newSpace.isMaintenance = false;
 		newSpace.bestMonth = "null"; // On suppose qu'il n'y a pas de meilleur mois lors de la création
 	
-		// Assurez-vous que les logs vétérinaires et la liste des espèces animales sont initialisées vides
-		newSpace.veterinaryLog = [];
-		newSpace.animalSpecies = [];
-	
+		newSpace.veterinaryLog = space.veterinaryLog || [];
+		newSpace.animalSpecies = space.animalSpecies || [];
+
 		return await newSpace.save();
 	}
 

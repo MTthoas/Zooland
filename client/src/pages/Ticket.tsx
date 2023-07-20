@@ -161,7 +161,7 @@ const Tickets = () => {
               <Select.Option key={index} value={space}>{space}</Select.Option>
             ))}
           </Select>
-          <Button type="primary" onClick={handleSearch}>Search</Button>
+          <Button type="primary" style={{ backgroundColor: '#1A9EFF' }} onClick={handleSearch} className="my-blue-button">Search</Button>
           </div>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

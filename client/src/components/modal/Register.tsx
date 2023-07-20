@@ -17,7 +17,7 @@ const handleSubmit = async (event: { preventDefault: () => void; }) => {
         const response = await axios.post('/auth/login', { username, password });
         const token = response.data.token;
         console.log(response.data.token);
-  
+
         localStorage.setItem('token', token);
         window.location.href = '/';
         

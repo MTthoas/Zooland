@@ -17,7 +17,6 @@ export default class AuthController {
         }
     }
 
-
     static async signup(req: Request, res: Response) {
         const { username, password, key} = req.body;
 
@@ -44,6 +43,8 @@ export default class AuthController {
         res.json(user);
     }
 
+    
+
 
 	static async getUserByName(req: Request, res: Response) {
 		const nom: string = req.params.username;
@@ -53,6 +54,8 @@ export default class AuthController {
 		}
 		res.json(user);	
 	}
+
+
 
 
     static async deleteUser(req: Request, res: Response) {

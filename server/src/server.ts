@@ -15,15 +15,17 @@ require('dotenv').config();
 const app = express();
 const port = 8080;
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+app.use(cors({
+  origin: function(origin, callback){
+    return callback(null, true);
+  },
+  optionsSuccessStatus: 200,
+  credentials: true
+}));
 
 app.post('/auth/login', AuthController.authenticate);
 app.post('/auth/register', AuthController.signup);
@@ -45,8 +47,10 @@ app.post('/checkout/:ticketId/:spaceName', AuthController.ensureRole(['visitor']
 
 app.patch('/zoo/open',  AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
+app.patch('/zoo', AuthController.ensureRole(['admin', 'receptionist']), ZooController.ensureZooOpen);
 
-app.get('/users/:userId', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserById);
+app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
+
 // app.get('/users', AuthController.ensureRole(['receptionist, admin']), AuthController.getAllUsers);
 
 app.get('/tickets', AuthController.ensureRole(['salesperson', 'receptionist', 'admin']), SpacesController.getAllTickets);

@@ -4,10 +4,15 @@ import './Management.css';
 
 function Management() {
   const [zooStatus, setZooStatus] = useState<boolean>(false);
+  const token = localStorage.getItem('token');
 
   const toggleZooStatus = async () => {
     try {
-      const response = await axios.patch(`/zoo/${zooStatus ? 'close' : 'open'}`);
+      const response = await axios.patch(`/zoo/${zooStatus ? 'close' : 'open'}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setZooStatus(!zooStatus);
       alert(response.data.message);
     } catch (error) {
@@ -18,20 +23,24 @@ function Management() {
   useEffect(() => {
     const fetchZooStatus = async () => {
       try {
-        const response = await axios.get('/zoo');
+        const response = await axios.get('/zoo', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setZooStatus(response.data.isOpen);
       } catch (error) {
         console.error(error);
       }
     };
     fetchZooStatus();
-  }, []);
+  }, [token]);
 
   return (
-    <div className="management">
+    <div className="pt-24 text-center">
       <h1>Page de Gestion</h1>
-      <button 
-        className="toggle-zoo-button" 
+      <button
+        className="toggle-zoo-button"
         onClick={toggleZooStatus}
         style={{
           backgroundColor: zooStatus ? 'red' : 'green',

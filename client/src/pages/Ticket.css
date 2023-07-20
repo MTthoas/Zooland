@@ -1,0 +1,10 @@
+/* CSS */
+.my-blue-button {
+    background-color: #1E90FF;
+  }
+  
+  .my-blue-button:hover,
+  .my-blue-button:focus {
+    background-color: #1C86EE;
+  }
+  

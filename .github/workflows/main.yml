@@ -20,12 +20,18 @@ jobs:
           username: ${{ secrets.USER_HOST }}
           key: ${{ secrets.KEY_SSH }}
           script: |
+            echo "Host *" >> ~/.ssh/config
+            echo " StrictHostKeyChecking no" >> ~/.ssh/config
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_rsa
             cd /var/www/Zooland
+            git remote set-url origin git@github.com:MTthoas/Zooland.git
             git pull
             cd server
             npm install
             npm run build # this runs "tsc"
             docker-compose down
+            docker network prune -f
             docker-compose up --build -d
             sleep 10
             docker ps -a # to list all running containers
