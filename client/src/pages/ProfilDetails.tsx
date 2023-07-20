@@ -13,14 +13,20 @@ interface IUser {
 }
 
 function ProfilDetails() {
-  const { username } = useParams();
+  const { name } = useParams();
   const [user, setUser] = useState<IUser | null>(null); // Ajoutez le type IUser | null
   console.log("username");
+
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`/users/${username}`);
+        const response = await axios.get(`/users/${name}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         console.log(response);
         console.log(response.data);
         setUser(response.data);

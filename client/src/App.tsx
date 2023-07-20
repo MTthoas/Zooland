@@ -40,7 +40,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/uers/*" element={<ProfilDestails />} />
+            <Route path="/users/:name" element={<ProfilDestails />} />
             <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
             <Route path="/stats" element={<PrivateComponent><Stats /></PrivateComponent>} />
             <Route path="/users" element={<PrivateComponent><Users /></PrivateComponent>} />

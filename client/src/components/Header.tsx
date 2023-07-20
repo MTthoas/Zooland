@@ -88,14 +88,12 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
               </summary>
               <ul className=" p-2 shadow menu dropdown-content z-[1] mt-2 bg-white rounded-box w-48">
                 <li>
-                  <li>
-                    <Link
+                <Link
                       to={`/users/${UsernameConst}`}
                       className="text-black hover:text-black"
                     >
                       Profil details
                     </Link>
-                  </li>
                 </li>
                 <li>
                   <a
