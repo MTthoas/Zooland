@@ -62,6 +62,7 @@ app.delete('/tickets/:userId/deleteAll', AuthController.ensureRole(['receptionis
 
 app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthController.deleteUser);
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
+app.patch('/users/:userId/password', AuthController.updateUser);
 
 app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
