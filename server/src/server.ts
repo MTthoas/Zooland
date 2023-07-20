@@ -31,7 +31,8 @@ app.use(cors({
   credentials: true
 }));
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: 'public/uploads/' });
+
 
 app.post('/auth/login', AuthController.authenticate);
 app.post('/auth/register', AuthController.signup);
