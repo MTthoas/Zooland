@@ -4,6 +4,8 @@ import './Home.css';
 import Robin from '../assets/robin.mp4'
 
 function Home() {
+
+    {localStorage.username ? console.log(localStorage.username) : console.log('no username')}
     return (
     <main className="relative h-screen bg-grayDorian">
         <section className="absolute inset-0 flex items-center justify-center text-center text-white p-3">

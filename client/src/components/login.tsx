@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; // Importez le composant Link
 import './login.css';
@@ -7,21 +7,25 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    localStorage.setItem('username', username);
+  }, [username]);
+
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-
+  
     try {
       const response = await axios.post('/auth/login', { username, password });
       const token = response.data.token;
-      console.log(response.data.token);
-
+      
       localStorage.setItem('token', token);
       window.location.href = '/';
     } catch (error) {
       console.error(error);
     }
   };
-
+  
+  
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>

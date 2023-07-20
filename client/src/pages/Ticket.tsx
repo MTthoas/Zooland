@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Table, Button, Input, Modal, message } from 'antd';
+import { Table, Button, Input, Modal, message, Select, Typography } from 'antd';
 
 interface ITicket {
+  _id: string;
   _idOfUser: string;
   dateOfPurchase: Date;
   validUntil: Date;
@@ -18,10 +19,23 @@ const Tickets = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [ticketType, setTicketType] = useState<'journee' | 'weekend' | 'annuel' | '1daymonth' | 'escapegame'>('journee');
   const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
+  const [spaces, setSpaces] = useState<string[]>([]);
+  const [selectedSpace, setSelectedSpace] = useState<string>('');
+
+  const tokenId = localStorage.getItem('token');
+
+  // Configurer les en-têtes de la requête
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + tokenId
+    }
+  }
 
   const fetchTickets = async () => {
+    // Récupérer le token du localStorage
+  
     try {
-      const response = await axios.get('/tickets');
+      const response = await axios.get('/tickets', config);
       setTickets(response.data);
     } catch (error) {
       console.error(error);
@@ -29,7 +43,26 @@ const Tickets = () => {
     }
   };
 
+  const fetchSpaces = async () => {
+    try {
+      const response = await axios.get('/spaces', config);
+      setSpaces(response.data.map((space: any) => space.nom));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`/tickets/${selectedSpace}`, config);
+      setTickets(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
+    fetchSpaces();
     fetchTickets();
   }, []);
 
@@ -55,7 +88,15 @@ const Tickets = () => {
       key: 'spaces',
       render: (spaces: string[]) => spaces.join(', '),
     },
-    // Ajoutez d'autres colonnes selon vos besoins
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text: string, record: ITicket) => (
+        <Button type="primary" danger onClick={() => handleDelete(record._idOfUser)}>
+          Supprimer
+        </Button>
+      ),
+    },
   ];
 
   const handleBuyTicket = async () => {
@@ -87,52 +128,112 @@ const Tickets = () => {
     }
   };
 
+  const handleDelete = async (ticketId: string) => {
+    try {
+      await axios.delete(`/tickets/${ticketId}`, config);
+      message.success('Ticket supprimé avec succès');
+      fetchTickets();  // Recharger les tickets après la suppression
+    } catch (error) {
+      console.error(error);
+      message.error('Erreur lors de la suppression du ticket');
+    }
+  };
+  // if (userRole !== 'admin') {
+  //   return null; // Ne rien rendre si l'utilisateur n'est pas un admin
+  // }else{
   return (
-    <div>
-      <Button style={{ backgroundColor: 'white', color: 'black' }} type="primary" onClick={() => setIsModalVisible(true)}>
-        Acheter un billet
-      </Button>
-      <hr />    
-        
-
-
-      <Table
-        dataSource={tickets}
-        columns={columns}
-        rowKey="_idOfUser"
-        onRow={(record) => ({
-          onClick: () => handleCheckTicket(record._idOfUser, record.spaces[0]),
-        })}
-      />
-      <Modal
-        title="Acheter un billet"
-        visible={isModalVisible}
-        onOk={handleBuyTicket}
-        onCancel={() => setIsModalVisible(false)}
-      >
-        <Input
-          placeholder="ID de l'utilisateur"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-        />
-        <Input
-          placeholder="Sélectionnez les espaces (séparés par des virgules)"
-          value={selectedSpaces.join(', ')}
-          onChange={(e) => setSelectedSpaces(e.target.value.split(',').map(space => space.trim()))}
-        />
-        <div>
-          <span>Type de billet : </span>
-          <select value={ticketType} onChange={(e) => setTicketType(e.target.value as any)}>
-            <option value="journee">Journée</option>
-            <option value="weekend">Weekend</option>
-            <option value="annuel">Annuel</option>
-            <option value="1daymonth">1 jour par mois</option>
-            <option value="escapegame">Escape Game</option>
-          </select>
-        </div>
-      </Modal>
+    <div className="flex flex-col pt-24">
+    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <Typography.Title level={1} className="users-heading" style={{ color: 'white' }}>Liste des tickets</Typography.Title>
+        <div className="shadow overflow-hidden sm:rounded-lg mb-4">
+        <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="Select a space"
+            optionFilterProp="children"
+            onChange={(value: string) => setSelectedSpace(value)}
+            filterOption={(input, option: any) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }            
+          >
+            {spaces.map((space, index) => (
+              <Select.Option key={index} value={space}>{space}</Select.Option>
+            ))}
+          </Select>
+          <Button type="primary" onClick={handleSearch}>Search</Button>
+          </div>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID de l'utilisateur
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date d'achat
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date d'expiration
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Espaces
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ordre de l'Escape Game
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {tickets.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-4 whitespace-nowrap text-center">
+                    <p className="empty-tickets">Aucun ticket trouvé.</p>
+                  </td>
+                </tr>
+              ) : (
+                tickets.map((ticket, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket._idOfUser}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{new Date(ticket.dateOfPurchase).toLocaleDateString()}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{new Date(ticket.validUntil).toLocaleDateString()}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket.spaces.join(', ')}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket.type}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket.escapeGameOrder?.join(', ')}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-left">
+                      <Button type="primary" danger onClick={() => handleDelete(ticket._id)}>
+                        Supprimer
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+      </div>
     </div>
-  );
+  </div>
+);
 };
+// }
 
 export default Tickets;
+
+

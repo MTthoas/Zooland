@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, FC } from 'react';
 import { useTable, Column, CellProps, useGlobalFilter, useSortBy, TableState, TableInstance } from 'react-table';
 import axios from 'axios';
 import './User.css';
+import { Button, Input, Typography } from 'antd';
 
 interface IUser {
   _id: string;
@@ -17,6 +18,15 @@ interface IUser {
 interface ICellPropsTickets extends CellProps<IUser, string[] | undefined> {}
 interface ICellPropsSpace extends CellProps<IUser, string | undefined> {}
 interface ICellPropsId extends CellProps<IUser, string> {}
+
+const tokenId = localStorage.getItem('token');
+
+  // Configurer les en-têtes de la requête
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + tokenId
+    }
+  }
 
 const CustomCell: FC<ICellPropsTickets> = ({ value }) => <>{value?.join(', ') || '-'}</>;
 
@@ -56,6 +66,16 @@ function Users() {
     }
   };
 
+  const deleteUserTickets = async (id: string) => {
+    try {
+      await axios.delete(`/tickets/${id}/deleteAll`, config);
+      const updatedUsers = users.map(user => user._id === id ? { ...user, countTickets: 0 } : user);
+      setUsers(updatedUsers);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const columns: Column<IUser>[] = useMemo(
     () => [
       { Header: 'ID', accessor: '_id', Cell: CustomCellId },
@@ -67,9 +87,11 @@ function Users() {
         Header: 'Actions', 
         Cell: ({ row: { original } }: CellProps<IUser>) => (
           <div>
-            <button className="button" onClick={() => deleteUser(original._id)}>Supprimer</button>
-            <button className="button" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</button>
+            <Button type="primary" danger onClick={() => deleteUser(original._id)}>Supprimer</Button>
+            <Button type="primary" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</Button>
+            <Button type="primary" danger onClick={() => deleteUserTickets(original._id)}>Supprimer tous les tickets</Button>
           </div>
+
         )
       },
     ],
@@ -105,44 +127,56 @@ function Users() {
   }, []);
 
   return (
-    <div className="users-container">
-      <h1 className="users-heading">Liste des utilisateurs</h1>
-      {users.length === 0 ? (
-        <p className="empty-users">Aucun utilisateur trouvé.</p>
-      ) : (
-        <>
-          <div className="search-container">
-            <input 
-              placeholder="Rechercher..."
-              value={globalFilter || ''}
-              onChange={(e) => setGlobalFilter(e.target.value || '')}
-            />
-          </div>
-          <table {...getTableProps()} className="users-table">
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.map((row) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()}>
-                    {row.cells.map((cell) => (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+    <div className="flex flex-col pt-24">
+      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+        <Typography.Title level={1} className="users-heading" style={{ color: 'white' }}>Liste des utilisateurs</Typography.Title>
+          {users.length === 0 ? (
+            <p className="empty-users">Aucun utilisateur trouvé.</p>
+          ) : (
+            <>
+              <div className="shadow overflow-hidden sm:rounded-lg mb-4 flex items-center justify-center">
+                <Input
+                  placeholder="Rechercher..."
+                  value={globalFilter || ''}
+                  onChange={(e) => setGlobalFilter(e.target.value || '')}
+                  style={{ width: 200, marginRight: 10 }}
+                />
+              </div>
+
+              <div className="shadow overflow-hidden sm:rounded-lg mb-4">
+                <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    {headerGroups.map((headerGroup) => (
+                      <tr {...headerGroup.getHeaderGroupProps()}>
+                        {headerGroup.headers.map((column) => (
+                          <th {...column.getHeaderProps()} scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            {column.render('Header')}
+                          </th>
+                        ))}
+                      </tr>
                     ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </>
-      )}
+                  </thead>
+                  <tbody {...getTableBodyProps()} className="bg-white divide-y divide-gray-200">
+                    {rows.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr {...row.getRowProps()}>
+                          {row.cells.map((cell) => (
+                            <td {...cell.getCellProps()} className="px-6 py-4 whitespace-nowrap">
+                              {cell.render('Cell')}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
