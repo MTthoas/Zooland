@@ -37,7 +37,7 @@ function Management() {
   }, [token]);
 
   return (
-    <div className="pt-24">
+    <div className="pt-24 text-center">
       <h1>Page de Gestion</h1>
       <button
         className="toggle-zoo-button"

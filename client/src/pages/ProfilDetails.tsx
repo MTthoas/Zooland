@@ -37,7 +37,7 @@ function ProfilDetails() {
   }
 
   return (
-    <div className="pt-44">
+    <div className="pt-44 text-center">
       <h1 className="text-2xl font-bold mb-4">Votre profil {user.username}</h1>
       <p className="mb-2">
         <span className="font-bold">ID:</span> {user._id}

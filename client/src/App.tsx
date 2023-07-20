@@ -14,7 +14,7 @@ import PrivateComponent from './components/privateRoute';
 // import Register from './components/register';
 import Stats from './pages/Stats';
 import Users from './pages/users/User';
-import Management from './pages/Management';
+import Management from './pages/management/Management';
 import Tickets from './pages/Ticket';
 import ProfilDestails from './pages/ProfilDetails';
 import Login from './components/modal/Login';
