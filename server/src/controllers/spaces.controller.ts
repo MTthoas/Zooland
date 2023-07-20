@@ -25,6 +25,10 @@ class SpacesController {
     try {
       const space: ISpace = req.body;
 
+      if (req.file) {
+        space.imagePath = req.file.path; // Ajoute le chemin d'accès de l'image au corps de la requête
+      }
+
       const spaceName = await SpacesService.getSpaceByName(space.nom);
       if (spaceName) {
         res.status(409).json({ message: 'Space already exists' });
@@ -93,14 +97,17 @@ class SpacesController {
     try {
       const nom: string = req.params.nom;
       const updatedSpace: ISpace = req.body;
-
+  
+      if (req.file) {
+        updatedSpace.imagePath = req.file.path; // Ajoute le chemin d'accès de l'image au corps de la requête
+      }
+  
       const getSpace = await SpacesService.getSpaceByName(nom);
       if (!getSpace) {
         res.status(404).json({ message: 'Space not found' });
         return;
       }
-
-
+  
       const space = await SpacesService.updateSpace(nom, updatedSpace);
       if (space) {
         res.status(200).json(space);
@@ -111,6 +118,7 @@ class SpacesController {
       res.status(500).json({ message: err.message });
     }
   }
+  
 
   async toggleMaintenanceStatus(req: Request, res: Response): Promise<void> {
     try {

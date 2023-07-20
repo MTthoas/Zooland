@@ -1,14 +1,16 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import SpacesController from '../controllers/spaces.controller';
-import AuthController from '../controllers/auth.controller';
-import ZooController from '../controllers/zoo.controller';
-import AuthService from '../services/auth.service';
+import SpacesController from './controllers/spaces.controller';
+import AuthController from './controllers/auth.controller';
+import ZooController from './controllers/zoo.controller';
+import AuthService from './services/auth.service';
 import { Schema, model } from 'mongoose';
-import ZooModel, { IZoo } from '../models/zoo.model';
-import { ISpace } from '../models/spaces.model';
-import StatisticsController from '../controllers/stats.controller';
+import ZooModel, { IZoo } from './models/zoo.model';
+import { ISpace } from './models/spaces.model';
+import StatisticsController from './controllers/stats.controller';
 import cors from 'cors';
+
+import upload from './multerConfig';
 
 require('dotenv').config();
 
@@ -65,9 +67,9 @@ app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthControlle
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
 app.patch('/users/:userId/password', AuthController.updateUser);
 
-app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
+app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
-app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.updateSpace);
+app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.updateSpace);
 
 app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.toggleMaintenanceStatus);
 app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.getBestMonthForSpace);
