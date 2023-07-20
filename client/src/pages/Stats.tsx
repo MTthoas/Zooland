@@ -49,6 +49,7 @@ const Stats = () => {
             },
           }
         );
+        console.log(weeklyResponse.data);
         setWeeklyStats(weeklyResponse.data);
 
         const liveResponse = await axios.get<ILiveStats[]>("/stats/live", {
@@ -58,17 +59,11 @@ const Stats = () => {
         });
         const liveStatsWithNames = await Promise.all(
           liveResponse.data.map(async (stat) => {
-            console.log("livewithname stat", stat);
             const spaceResponse = await axios.get(`/nom/${stat._id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
-            console.log("spaceresponde stat", spaceResponse);
-            console.log("nom space", spaceResponse.data.nom);
-
-            
-
             return {
               ...stat,
               nom: spaceResponse.data.nom,
@@ -76,9 +71,7 @@ const Stats = () => {
             
           })
         );
-        console.log("rrrrrrrrrrrrrrrrrrrrrrr", liveResponse.data);
         setLiveStats(liveStatsWithNames);
-        
       } catch (error) {
         console.error(error);
       }

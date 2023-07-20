@@ -12,7 +12,8 @@ class StatisticsController {
             { $match: { date: { $gte: lastWeek }}},
             { $group: {
               _id: { day: { $dayOfYear: "$date" }, hour: "$hour" },
-              totalVisitors: { $sum: "$visitors" }
+              totalVisitors: { $sum: "$visitors" },
+              spaceName: { $first: "$spaceName" }
             }}
           ]);
       
@@ -36,7 +37,8 @@ class StatisticsController {
             { $match: { date: { $gte: lastMonth }}},
             { $group: {
               _id: { week: { $week: "$date" }, hour: "$hour" },
-              totalVisitors: { $sum: "$visitors" }
+              totalVisitors: { $sum: "$visitors" },
+              spaceName: { $first: "$spaceName" } 
             }}
           ]);
       
