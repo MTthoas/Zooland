@@ -142,6 +142,7 @@ function Spaces() {
       // Create a new FormData object to send the form data
       const formData = new FormData();
       if (selectedImage) {
+        console.log("selectedImage", selectedImage)
         formData.append("image", selectedImage);
       }
       // Append other form fields to the FormData 

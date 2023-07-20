@@ -9,18 +9,17 @@ import ZooModel, { IZoo } from './models/zoo.model';
 import { ISpace } from './models/spaces.model';
 import StatisticsController from './controllers/stats.controller';
 import cors from 'cors';
-
-import upload from './multerConfig';
+import multer from 'multer';
 
 require('dotenv').config();
 
 const app = express();
 const port = 8080;
 
+
+
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
-
 app.use(express.json());
-
 app.use(cors({
   origin: function(origin, callback){
     return callback(null, true);
@@ -28,6 +27,11 @@ app.use(cors({
   optionsSuccessStatus: 200,
   credentials: true
 }));
+
+const upload = multer({ dest: 'uploads/' });
+
+app.use('/uploads', express.static('uploads'));
+
 
 app.post('/auth/login', AuthController.authenticate);
 app.post('/auth/register', AuthController.signup);
@@ -67,9 +71,9 @@ app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthControlle
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
 app.patch('/users/:userId/password', AuthController.updateUser);
 
-app.post('/spaces', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.addSpace);
+app.post('/spaces', upload.single('image'), ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
-app.put('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), upload.single('image'), SpacesController.updateSpace);
+app.put('/spaces/:nom', upload.single('image'), ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.updateSpace);
 
 app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.toggleMaintenanceStatus);
 app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.getBestMonthForSpace);
