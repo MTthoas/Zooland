@@ -335,6 +335,7 @@ async checkOutAllTickets(req: Request, res: Response): Promise<void> {
       for (const space of spaces) {
           const stats = new StatsModel({
               date: new Date(),
+              visitors: 0,
               visitorsLive: 0,
               hour: new Date().getHours(),
               spaceId: space._id
