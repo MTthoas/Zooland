@@ -328,51 +328,30 @@ async getUserTickets(req: Request, res: Response): Promise<void> {
 
 async checkOutAllTickets(req: Request, res: Response): Promise<void> {
   try {
-    const tickets = await TicketService.getAllTickets(); // Récupérer tous les tickets
+      // Récupérez tous les espaces
+      const spaces = await SpacesService.getSpaces();
 
-    for (const ticket of tickets) {
-      const { ticketId, spaceName } = ticket as any; // Correction de type
+      // Parcourez chaque espace et mettez à jour les statistiques pour mettre visitorsLive à 0
+      for (const space of spaces) {
+          const stats = new StatsModel({
+              date: new Date(),
+              visitors: 0, // Vous pouvez ajuster cela si nécessaire
+              visitorsLive: 0,
+              hour: new Date().getHours(),
+              spaceId: space._id
+          });
 
-      const user = await AuthService.getUserByTicketId(ticketId);
-
-      if (!user) {
-        console.error(`Utilisateur introuvable pour le ticket d'identification : ${ticketId}`);
-        continue; // Passer au ticket suivant en cas d'erreur
+          await stats.save();
       }
 
-      const space = await SpacesService.getSpaceByName(spaceName);
-      if (!space) {
-        console.error(`Espace introuvable avec le nom : ${spaceName}`);
-        continue; // Passer au ticket suivant en cas d'erreur
-      }
+      res.status(200).json({ message: 'Tous les visiteurs ont été enregistrés comme sortis.' });
 
-      const hasAccess = ticket.spaces.includes(spaceName);
-      const isValid = new Date(ticket.validUntil) > new Date();
-
-      if (!hasAccess || !isValid) {
-        console.error(`Ticket invalide ou expiré pour le ticket d'identification : ${ticketId}`);
-        continue; // Passer au ticket suivant en cas de ticket invalide ou expiré
-      }
-
-      // Enregistrer une sortie
-      const stats = new StatsModel({
-        date: new Date(),
-        visitors: 0,
-        visitorsLive: -1, // Utilisez -1 pour indiquer une sortie
-        hour: new Date().getHours(),
-        spaceId: space._id,
-      });
-
-      await stats.save();
-
-      await SpacesService.updateUserCurrentSpace(user._id, ""); // Mettre à jour l'espace actuel de l'utilisateur à null
-    }
-
-    res.status(200).json({ message: 'Tous les tickets ont été enregistrés avec succès.' });
   } catch (err: any) {
-    res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message });
   }
 }
+
+
 
 
 
