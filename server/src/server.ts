@@ -10,6 +10,8 @@ import { ISpace } from './models/spaces.model';
 import StatisticsController from './controllers/stats.controller';
 import cors from 'cors';
 import multer from 'multer';
+import path from 'path';
+
 
 require('dotenv').config();
 
@@ -20,8 +22,7 @@ const port = 8080;
 
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
-app.use(express.static('public'));
-
+app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
 
 app.use(cors({
   origin: function(origin, callback){
@@ -33,11 +34,13 @@ app.use(cors({
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads')
+    // Utilisez path.join pour construire un chemin absolu vers votre dossier d'upload
+    cb(null, path.join(__dirname, '../../public/uploads'))
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
+  cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+}
+
 })
 
 var upload = multer({ storage: storage })

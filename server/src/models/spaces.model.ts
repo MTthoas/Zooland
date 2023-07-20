@@ -41,6 +41,7 @@ const SpaceSchema: Schema = new Schema({
     ],
     required: true,
   },
+  imagePath: { type: String, required: true },
   accessibleHandicape: { type: Boolean, required: true },
   isMaintenance: { type: Boolean, required: true },
   bestMonth: { type: String, required: false },

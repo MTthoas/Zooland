@@ -43,6 +43,7 @@ class SpacesService {
 			doesBestMonth: false
 		});
 
+		newSpace.imagePath = space.imagePath || "null"; // On suppose qu'il n'y a pas d'image lors de la création
 		newSpace.isMaintenance = false;
 		newSpace.bestMonth = "null"; // On suppose qu'il n'y a pas de meilleur mois lors de la création
 	
