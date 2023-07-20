@@ -229,20 +229,31 @@ function Spaces() {
     console.log(space);
     if (space && space._id) {
       try {
+        // Supprime l'espace
         await axios.delete(`/spaces/${space.nom}`, {
           headers: {
             Authorization: "Bearer " + token,
           },
           withCredentials: true,
         });
+
+        // Supprime les statistiques associées à cet espace
+        await axios.delete(`/stats/space/${space._id}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          withCredentials: true,
+        });
+
         setSpaces(spaces.filter((s) => s.nom !== space.nom));
-        message.success("Espace supprimé avec succès");
+        message.success("Espace et ses statistiques associées supprimés avec succès");
       } catch (error) {
         console.error(error);
-        message.error("Erreur lors de la suppression de l'espace");
+        message.error("Erreur lors de la suppression de l'espace et/ou de ses statistiques associées");
       }
     }
-  };
+};
+
 
   const handleAddAnimalSpecies = (space: ISpace) => {
     setEditingSpace(space);
