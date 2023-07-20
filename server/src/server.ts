@@ -47,6 +47,7 @@ app.post('/checkout/:ticketId/:spaceName', AuthController.ensureRole(['visitor']
 
 app.patch('/zoo/open',  AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
+app.patch('/zoo/', AuthController.ensureRole(['admin', 'receptionist']), ZooController.ensureZooOpen);
 
 app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
 
