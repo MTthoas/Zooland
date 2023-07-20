@@ -89,9 +89,10 @@ app.post('/spaces', upload.single('image'), ZooController.ensureZooOpen, AuthCon
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
 app.put('/spaces/:nom', upload.single('image'), ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.updateSpace);
 
-app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.toggleMaintenanceStatus);
-app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.getBestMonthForSpace);
-app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.setBestMonthForSpace);
+app.patch('/spaces/:nom/maintenance', ZooController.ensureZooOpen, AuthController.ensureRole(['admin', 'receptionist']), SpacesController.toggleMaintenanceStatus);
+app.get('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin', 'receptionist']), SpacesController.getBestMonthForSpace);
+app.patch('/spaces/:nom/bestMonth', ZooController.ensureZooOpen, AuthController.ensureRole(['admin', 'receptionist']), SpacesController.setBestMonthForSpace);
+app.get('/nom/:id', ZooController.ensureZooOpen, AuthController.ensureRole(['admin', 'receptionist']), SpacesController.getSpaceNomById);
 
 app.get('/stats/live', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getLiveStats);
 app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getDailyStatistics);

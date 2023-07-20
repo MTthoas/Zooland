@@ -18,6 +18,7 @@ class SpacesService {
     	return await SpaceModel.findOne({ nom });
   	}
 
+
 	async GoToSpace(nom: string): Promise<ISpace | null> {
 		return await SpaceModel.findOne({ nom });
 	}
@@ -180,6 +181,10 @@ class SpacesService {
 	return space;
 	
   	}
+
+	async getSpaceById(id: string): Promise<ISpace | null> {
+    	return await SpaceModel.findById(id);
+    }
 
 
 }
