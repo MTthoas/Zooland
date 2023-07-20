@@ -31,7 +31,16 @@ app.use(cors({
   credentials: true
 }));
 
-const upload = multer({ dest: 'public/uploads/' });
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+
+var upload = multer({ storage: storage })
 
 
 app.post('/auth/login', AuthController.authenticate);

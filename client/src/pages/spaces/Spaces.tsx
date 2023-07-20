@@ -420,7 +420,8 @@ function Spaces() {
                 onChange={handleInputChange}
               />
             </Form.Item>
-            <Form.Item label="Image">
+            
+            <Form.Item label="Image" >
               <input type="file" name="image" onChange={handleImageChange} />
             </Form.Item>
 
