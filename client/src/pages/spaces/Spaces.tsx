@@ -63,6 +63,11 @@ function Spaces() {
     treatmentDetails: "",
     species: "",
   });
+  const [token, setToken] = useState<string | null>(null);
+  const [modal, contextHolder] = Modal.useModal();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [spacesForDelete, setSpacesForDelete] = useState<ISpace[]>([]);
+  const [newImage, setNewImage] = useState("");
 
   useEffect(() => {
     // get localStorage
@@ -74,30 +79,35 @@ function Spaces() {
       return;
     }
 
-    const fetchSpaces = async () => {
-      try {
-        console.log("Fetching spaces");
-        const response = await axios.get("/spaces", {
-          headers: {
-            Authorization: "Bearer " + tokenId,
-          },
-          withCredentials: true,
-        });
-
-        console.log(response.data);
-        setSpaces(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchSpaces();
+    setToken(tokenId);
+    fetchSpaces(tokenId);
   }, []);
 
   const handleEdit = (space: ISpace) => {
     setEditingSpace(space);
     setIsCreating(false);
     setIsModalVisible(true);
+  };
+  
+  
+  const fetchSpaces = async (tokenId ?: any) => {
+
+    const tokenForFetch = tokenId ? tokenId : token;
+
+    try {
+      console.log("Fetching spaces");
+      const response = await axios.get("/spaces", {
+        headers: {
+          Authorization: "Bearer " + tokenForFetch,
+        },
+        withCredentials: true,
+      });
+
+      console.log(response.data);
+      setSpaces(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleCreate = () => {
@@ -123,7 +133,12 @@ function Spaces() {
     if (editingSpace) {
       if (isCreating) {
         try {
-          const response = await axios.post("/spaces", editingSpace);
+          const response = await axios.post("/spaces", editingSpace,  {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            withCredentials: true,
+          });
           console.log(response.data);
           message.success("Espace créé avec succès");
         } catch (error) {
@@ -134,8 +149,12 @@ function Spaces() {
         try {
           const response = await axios.put(
             `/spaces/${editingSpace.nom}`,
-            editingSpace
-          );
+            editingSpace,  {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+              withCredentials: true,
+            });
           console.log(response.data);
           message.success("Espace modifié avec succès");
         } catch (error) {
@@ -144,6 +163,8 @@ function Spaces() {
         }
       }
     }
+
+    fetchSpaces()
     setIsModalVisible(false);
   };
 
@@ -167,17 +188,33 @@ function Spaces() {
   };
 
   const handleDelete = async (space: ISpace) => {
-    if (space._id) {
-      try {
-        await axios.delete(`/users/${space._id}`);
-        setSpaces(spaces.filter((s) => s._id !== space._id));
-        message.success("Espace supprimé avec succès");
-      } catch (error : any) {
-        console.error(error);
-        message.error("Erreur lors de la suppression de l'espace : " + error.message);
-      }
+    if(space._id){
+      setSpacesForDelete([space]);
+      setConfirmDelete(true);
     }
   };
+
+  const handleConfirmDelete = async () => {
+    const space = spacesForDelete[0];
+    setConfirmDelete(false);
+    console.log(space)
+    if (space && space._id) {
+      try {
+        await axios.delete(`/spaces/${space.nom}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          withCredentials: true,
+        });
+        setSpaces(spaces.filter((s) => s.nom !== space.nom));
+        message.success("Espace supprimé avec succès");
+      } catch (error) {
+        console.error(error);
+        message.error("Erreur lors de la suppression de l'espace");
+      }
+    }
+  }
+    
 
   const handleAddAnimalSpecies = (space: ISpace) => {
     setEditingSpace(space);
@@ -190,11 +227,18 @@ function Spaces() {
         const response = await axios.post(
           `/spaces/${editingSpace.nom}/animals`,
           { name: newAnimal }
+        ,{
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          withCredentials: true,
+        } 
         );
         console.log(response.data);
         message.success("Espèce d'animal ajoutée avec succès");
         setNewAnimal(""); // Réinitialiser la valeur du nouvel animal
         setIsAnimalModalVisible(false); // Fermer la fenêtre contextuelle
+        fetchSpaces()
       } catch (error) {
         console.error(error);
         message.error("Erreur lors de l'ajout d'une espèce d'animal");
@@ -250,7 +294,10 @@ function Spaces() {
                     </div>
                     <div className="flex-grow p-8 pl-2 w-6/12">
                         <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">{space.type}</div>
-                        <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black hover:underline">{space.nom}</a>
+                        <a href="#" className="block mt-1 text-lg leading-tight font-medium text-black text-inline"> <span className="hover:underline">  {space.nom}  </span>{
+                            space.isMaintenance ? <span className="text-red-500 text-xs ml-2"> (En maintenance) </span> : <span className="text-green-500 text-xs ml-2"> (Disponible) </span>
+
+                        } </a>  
                         <p className="mt-2 text-gray-500">{space.description}</p>
                         <p className="mt-2 text-gray-500 text-sm">Capacité d'accueil : {space.capacite}</p>
                         <p className="mt-2 text-gray-500 text-sm">Nombre d'espèces animales : {space.animalSpecies.length}</p>
@@ -287,7 +334,14 @@ function Spaces() {
             +
         </button>
 
-        <Modal title="Ajouter une nouvelle espèce d'animal" visible={isAnimalModalVisible} onOk={handleAnimalOk} onCancel={handleAnimalCancel}>
+        <Modal title="Ajouter une nouvelle espèce d'animal" visible={isAnimalModalVisible} onCancel={handleAnimalCancel} footer={[
+              <Button key="back" onClick={handleAnimalCancel}>
+                Return
+              </Button>,
+              <Button key="submit" type="primary" className="bg-gray-900 hover:bg-gray-800" onClick={handleAnimalOk}>
+                Submit
+              </Button>,
+            ]}>
             <Form>
                 <Form.Item label="Nom de l'animal">
                     <Input value={newAnimal} onChange={e => setNewAnimal(e.target.value)} />
@@ -313,28 +367,78 @@ function Spaces() {
         </Modal>
 
         {editingSpace && (
-            <Modal title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                <Form>
-                        <Form.Item label="Nom">
-                            <Input name="nom" value={editingSpace.nom} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Description">
-                            <Input name="description" value={editingSpace.description} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Type">
-                            <Input name="type" value={editingSpace.type} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Capacité">
-                            <Input name="capacite" value={editingSpace.capacite} onChange={handleInputChange} />
-                        </Form.Item>
-                        <Form.Item label="Accessible aux handicapés">
-                            <Switch checked={editingSpace.accessibleHandicape} onChange={(value) => handleSwitchChange('accessibleHandicape', value)} />
-                        </Form.Item>
-                        <Form.Item label="En maintenance">
-                            <Switch checked={editingSpace.isMaintenance} onChange={(value) => handleSwitchChange('isMaintenance', value)} />
-                        </Form.Item>
-                        {/* ... (autres champs du formulaire) */}
-                </Form>
+            <Modal title={isCreating ? "Créer un nouvel espace" : "Modifier l'espace"} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}  footer={[
+              <Button key="back" onClick={handleCancel}>
+                Return
+              </Button>,
+              <Button key="submit" type="primary" className="bg-gray-900 hover:bg-gray-800" onClick={handleOk}>
+                Submit
+              </Button>,
+            ]}>
+          <Form>
+            <Form.Item label="Nom">
+              <Input
+                name="nom"
+                value={editingSpace.nom}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+            <Form.Item label="Description">
+              <Input
+                name="description"
+                value={editingSpace.description}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+            <Form.Item label="Image">
+              <Input
+                value={newImage}
+                onChange={(e) => setNewImage(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="Type">
+              <Input
+                name="type"
+                value={editingSpace.type}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+            <Form.Item label="Capacité">
+              <Input
+                name="capacite"
+                value={editingSpace.capacite}
+                onChange={handleInputChange}
+              />
+            </Form.Item>
+            <Form.Item label="Accessible aux handicapés">
+              <Switch
+                checked={editingSpace.accessibleHandicape}
+                onChange={(value) =>
+                  handleSwitchChange("accessibleHandicape", value)
+                }
+              />
+            </Form.Item>
+            <Form.Item label="En maintenance">
+              <Switch
+                checked={editingSpace.isMaintenance}
+                onChange={(value) => handleSwitchChange("isMaintenance", value)}
+              />
+            </Form.Item>
+            {/* ... (autres champs du formulaire) */}
+          </Form>
+        </Modal>
+      )}
+
+        {confirmDelete && ( 
+            <Modal title="Supprimer un espace" visible={confirmDelete} onCancel={() => setConfirmDelete(false)} footer={[
+              <Button key="back" onClick={() => setConfirmDelete(false)}>
+                Return
+              </Button>,
+              <Button type="primary" danger onClick={() => handleConfirmDelete()}>
+                Submit
+              </Button>
+            ]}>
+                <p>Êtes-vous sûr de vouloir supprimer cet espace ?</p>
             </Modal>
         )}
 

@@ -30,13 +30,27 @@ const Stats = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dailyResponse = await axios.get<IDailyStats[]>('/stats/daily');
+        const token = localStorage.getItem('token');
+
+        const dailyResponse = await axios.get<IDailyStats[]>('/stats/daily', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setDailyStats(dailyResponse.data);
         
-        const weeklyResponse = await axios.get<IWeeklyStats[]>('/stats/weekly');
+        const weeklyResponse = await axios.get<IWeeklyStats[]>('/stats/weekly', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setWeeklyStats(weeklyResponse.data);
         
-        const liveResponse = await axios.get<ILiveStats[]>('/stats/live');
+        const liveResponse = await axios.get<ILiveStats[]>('/stats/live', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setLiveStats(liveResponse.data);
       } catch (error) {
         console.error(error);
@@ -45,7 +59,6 @@ const Stats = () => {
 
     fetchData();
   }, []);
-
   return (
     <div className="container mx-auto px-4 py-8 pt-24">
       <div className="mb-8">

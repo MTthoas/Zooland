@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, FC } from 'react';
 import { useTable, Column, CellProps, useGlobalFilter, useSortBy, TableState, TableInstance } from 'react-table';
 import axios from 'axios';
+import { Button, Input, Typography } from 'antd';
 
 interface IUser {
   _id: string;
@@ -22,6 +23,15 @@ interface ICellPropsTickets extends CellProps<IUser, number> {}
 interface ICellPropsSpace extends CellProps<IUser, string | undefined> {}
 interface ICellPropsId extends CellProps<IUser, string> {}
 
+const tokenId = localStorage.getItem('token');
+
+  // Configurer les en-têtes de la requête
+  let config = {
+    headers: {
+      'Authorization': 'Bearer ' + tokenId
+    }
+  }
+
 const CustomCell: FC<ICellPropsTickets> = ({ value }) => <div className='text-sm'>{truncateString(String(value), 10)}</div>;
 
 const CustomCellSpace: FC<ICellPropsSpace> = ({ value }) => <div className='text-sm'>{value || '-'}</div>;
@@ -42,7 +52,7 @@ const Users: React.FC = () => {
 
   const deleteUser = async (id: string) => {
     try {
-      await axios.delete(`/users/${id}`);
+      await axios.delete(`/users/${id}`, config);
       setUsers(users => users.filter(user => user._id !== id));
     } catch (error) {
       console.error(error);
@@ -52,12 +62,22 @@ const Users: React.FC = () => {
   const setUserRole = async (id: string, role: string) => {
     try {
       const newRole = role === 'admin' ? 'user' : 'admin';
-      const response = await axios.patch(`/users/${id}/role`, { role: newRole });
+      const response = await axios.patch(`/users/${id}/role`, { role: newRole }, config);
       setUsers(users =>
         users.map(user =>
           user._id === id ? { ...user, role: response.data.role } : user
         )
       );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteUserTickets = async (id: string) => {
+    try {
+      await axios.delete(`/tickets/${id}/deleteAll`, config);
+      const updatedUsers = users.map(user => user._id === id ? { ...user, countTickets: 0 } : user);
+      setUsers(updatedUsers);
     } catch (error) {
       console.error(error);
     }
@@ -76,6 +96,7 @@ const Users: React.FC = () => {
           <div className="">
             <button className="px-2 py-2 mr-2 bg-red-500 text-xs text-white rounded" onClick={() => deleteUser(original._id)}>Supprimer</button>
             <button className="px-4 py-2 mx-2 bg-blue-500 text-xs text-white rounded" onClick={() => setUserRole(original._id, original.role)}>Changer de rôle</button>
+            <Button type="primary" danger onClick={() => deleteUserTickets(original._id)}>Supprimer tous les tickets</Button>
           </div>
         )
       },
@@ -98,7 +119,7 @@ const Users: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get<IUser[]>('/users');
+        const response = await axios.get<IUser[]>('/users', config);
         const updatedUsers = response.data.map(user => ({
           ...user,
           countTickets: user.tickets ? user.tickets.length : 0
