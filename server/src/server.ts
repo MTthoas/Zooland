@@ -84,6 +84,8 @@ app.delete('/users/:userId', AuthController.ensureRole(['admin']), AuthControlle
 app.patch('/users/:userId/role', AuthController.ensureRole(['admin']), AuthController.setUserRole);
 app.patch('/users/:userId', AuthController.updateUser);
 app.get('/users/:username', AuthController.ensureRole(['receptionist', 'admin']), AuthController.getUserByName);
+app.get('/usersinfo/:username', AuthController.ensureRole(['visitor']), AuthController.getUserByName);
+
 
 app.post('/spaces', upload.single('image'), ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.addSpace);
 app.delete('/spaces/:nom', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), SpacesController.deleteSpace);
@@ -97,7 +99,7 @@ app.get('/nom/:id', ZooController.ensureZooOpen, AuthController.ensureRole(['adm
 app.get('/stats/live', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getLiveStats);
 app.get('/stats/daily', ZooController.ensureZooOpen, AuthController.ensureRole(['admin']), StatisticsController.getDailyStatistics);
 app.get('/stats/weekly', AuthController.ensureRole(['admin']), StatisticsController.getWeeklyStatistics);
-
+app.delete('/stats/delete-all', AuthController.ensureRole(['admin']), StatisticsController.deleteAllStats);
 
 // Accès dédié aux vétérinaires 
 

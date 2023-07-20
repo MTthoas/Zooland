@@ -245,6 +245,7 @@ class SpacesController {
         visitorsLive: 1,
         hour: new Date().getHours(),
         spaceId: space._id,
+        spaceName: space.nom,
       });
 
       await stats.save();
@@ -331,6 +332,7 @@ class SpacesController {
         visitorsLive: -1, // Utilisez -1 pour indiquer une sortie
         hour: new Date().getHours(),
         spaceId: space._id,
+        spaceName: spaceName,
       });
 
       await stats.save();
@@ -368,6 +370,7 @@ class SpacesController {
           visitorsLive: null,
           hour: new Date().getHours(),
           spaceId: space._id,
+          spaceName: space.nom,
         });
 
         await stats.save();

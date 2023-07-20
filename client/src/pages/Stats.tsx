@@ -3,24 +3,29 @@ import axios from "axios";
 
 interface IDailyStats {
   _id: {
+    nom: string;
     day: number;
     hour: number;
   };
+  spaceName: string;
   totalVisitors: number;
 }
 
 interface IWeeklyStats {
   _id: {
+    nom: string;
     week: number;
     hour: number;
   };
+  spaceName: string;
   totalVisitors: number;
 }
 
 interface ILiveStats {
   _id: string;
   nom: string;
-  totalVisitors: number;
+  spaceName: string;
+  totalVisitorsLive: number;
 }
 
 const Stats = () => {
@@ -55,7 +60,6 @@ const Stats = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-
         const liveStatsWithNames = await Promise.all(
           liveResponse.data.map(async (stat) => {
             const spaceResponse = await axios.get(`/nom/${stat._id}`, {
@@ -67,13 +71,15 @@ const Stats = () => {
               ...stat,
               nom: spaceResponse.data.nom,
             };
+            
           })
         );
-
+        console.log("weekly.data",liveStatsWithNames);
         setLiveStats(liveStatsWithNames);
       } catch (error) {
         console.error(error);
       }
+      
     };
 
     fetchData();
@@ -90,6 +96,9 @@ const Stats = () => {
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {dailyStats.map((stat, index) => (
               <li key={index} className="bg-white rounded-lg p-4 shadow">
+                <span className="block text-gray-600">
+                  Nom : {stat.spaceName}
+                </span>
                 <span className="block text-gray-600">
                   Jour : {stat._id.day}
                 </span>
@@ -115,6 +124,9 @@ const Stats = () => {
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {weeklyStats.map((stat, index) => (
               <li key={index} className="bg-white rounded-lg p-4 shadow">
+                <span className="block text-gray-600">
+                  Nom : {stat.spaceName}
+                </span>
                 <span className="block text-gray-600">
                   Semaine : {stat._id.week}
                 </span>
@@ -144,7 +156,7 @@ const Stats = () => {
                   Nom de l'espace : {stat.nom}
                 </span>
                 <span className="block text-gray-600">
-                  Total des visiteurs : {stat.totalVisitors}
+                  Total des visiteurs : {stat.totalVisitorsLive}
                 </span>
               </li>
             ))}

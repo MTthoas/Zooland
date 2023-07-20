@@ -11,8 +11,9 @@ class StatisticsController {
           const dailyStats = await StatsModel.aggregate([
             { $match: { date: { $gte: lastWeek }}},
             { $group: {
-              _id: { day: { $dayOfYear: "$date" }, hour: "$hour" },
-              totalVisitors: { $sum: "$visitors" }
+              _id: { spaceId: "$spaceId", day: { $dayOfYear: "$date" }, hour: "$hour" },
+              totalVisitors: { $sum: "$visitors" },
+              spaceName: { $first: "$spaceName" }
             }}
           ]);
       
@@ -35,8 +36,9 @@ class StatisticsController {
           const weeklyStats = await StatsModel.aggregate([
             { $match: { date: { $gte: lastMonth }}},
             { $group: {
-              _id: { week: { $week: "$date" }, hour: "$hour" },
-              totalVisitors: { $sum: "$visitors" }
+              _id: { spaceId: "$spaceId", week: { $week: "$date" }, hour: "$hour" },
+              totalVisitors: { $sum: "$visitors" },
+              spaceName: { $first: "$spaceName" } 
             }}
           ]);
       
@@ -61,7 +63,8 @@ class StatisticsController {
                 { $match: { date: { $gte: startOfDay }}},
                 { $group: {
                     _id: "$spaceId",
-                    totalVisitorsLive: { $sum: "$visitorsLive" }
+                    totalVisitorsLive: { $sum: "$visitorsLive" },
+                    spaceName: { $first: "$spaceName" }
                 }}
             ]);
         
@@ -75,7 +78,18 @@ class StatisticsController {
         }
     }
     
-
+    async deleteAllStats(req: Request, res: Response) {
+      try {
+          await StatsModel.deleteMany({});  // Supprime tous les documents de la collection StatsModel
+          res.status(200).json({ message: 'Toutes les statistiques ont été supprimées avec succès.' });
+      } catch (error) {
+          if (error instanceof Error) {
+              res.status(500).json({ message: `Erreur lors de la suppression de toutes les statistiques: ${error.message}` });
+          } else {
+              res.status(500).json({ message: 'Erreur lors de la suppression de toutes les statistiques.' });
+          }
+      }
+    }
     
   }
   
