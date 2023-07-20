@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Table, Button, Input, Modal, message, Select, Typography } from 'antd';
 
@@ -21,9 +22,11 @@ const Tickets = () => {
   const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
   const [spaces, setSpaces] = useState<string[]>([]);
   const [selectedSpace, setSelectedSpace] = useState<string>('');
+  const [userRole, setUserRole] = useState('');
 
   const tokenId = localStorage.getItem('token');
   const userName = localStorage.getItem('username');
+
 
   // Configurer les en-têtes de la requête
   let config = {
@@ -52,7 +55,7 @@ const Tickets = () => {
       console.error(error);
     }
   };
-
+  
   const handleSearch = async () => {
     try {
       const response = await axios.get(`/tickets/${selectedSpace}`, config);
@@ -63,6 +66,18 @@ const Tickets = () => {
   };
 
   useEffect(() => {
+    const getRole = async (userName: string) => {
+      try {
+        const response = await axios.get(`/users/${userName}`, config); 
+        setUserRole(response.data.role);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (userName) {
+      getRole(userName);
+    }
     fetchSpaces();
     fetchTickets();
   }, []);
@@ -139,10 +154,8 @@ const Tickets = () => {
       message.error('Erreur lors de la suppression du ticket');
     }
   };
-  // if (userRole !== 'admin') {
-  //   return null; // Ne rien rendre si l'utilisateur n'est pas un admin
-  // }else{
   return (
+    userRole === 'admin' ? (
     <div className="flex flex-col pt-24">
     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -194,7 +207,8 @@ const Tickets = () => {
               {tickets.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-4 whitespace-nowrap text-center">
-                    <p className="empty-tickets">Aucun ticket trouvé.</p>
+                    {/* <p className="empty-tickets">Aucun ticket trouvé.</p> */}
+                    {userRole}
                   </td>
                 </tr>
               ) : (
@@ -230,7 +244,18 @@ const Tickets = () => {
           </table>
       </div>
     </div>
-  </div>
+  </div>) : (
+    <div className="flex flex-col pt-24">
+      <div className="flex flex-col pt-24">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <Typography.Title level={1} className="users-heading" style={{ color: 'dark' }}>Liste des tickets</Typography.Title>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 );
 };
 // }

@@ -308,6 +308,15 @@ async checkOut(req: Request, res: Response): Promise<void> {
   }
 }
 
+async getUserTickets(req: Request, res: Response): Promise<void> {
+  const { userId } = req.params;
+  try {
+    const tickets = await TicketService.getTicketsByUserId(userId);
+    res.json(tickets);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
 
 
