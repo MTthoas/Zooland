@@ -22,7 +22,7 @@ const port = 8080;
 
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '/app/public/uploads')));
 
 app.use(cors({
   origin: function(origin, callback){
@@ -34,13 +34,11 @@ app.use(cors({
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // Utilisez path.join pour construire un chemin absolu vers votre dossier d'upload
-    cb(null, path.join(__dirname, '../../public/uploads'))
+    cb(null, '/app/public/uploads')
   },
   filename: function (req, file, cb) {
   cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
 }
-
 })
 
 var upload = multer({ storage: storage })
