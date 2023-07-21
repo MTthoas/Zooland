@@ -165,26 +165,26 @@ const Tickets = () => {
   
   return (
     userRole !== 'visitor' ? (
-    <div className="flex flex-col pt-24">
-    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-      <Typography.Title level={1} className="users-heading" style={{ color: 'white' }}>Liste des tickets</Typography.Title>
-        <div className="shadow overflow-hidden sm:rounded-lg mb-4">
-        <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Select a space"
-            optionFilterProp="children"
-            onChange={(value: string) => setSelectedSpace(value)}
-            filterOption={(input, option: any) =>
-              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }            
-          >
-            {spaces.map((space, index) => (
-              <Select.Option key={index} value={space}>{space}</Select.Option>
-            ))}
-          </Select>
-          <Button type="primary" style={{ backgroundColor: '#1A9EFF' }} onClick={handleSearch} className="my-blue-button">Search</Button>
+      <div className="flex flex-col pt-24">
+      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+          <Typography.Title level={1} className="users-heading" style={{ color: 'black' }}>Liste des tickets</Typography.Title>
+          <div className="shadow overflow-hidden sm:rounded-lg mb-4">
+            <Select
+              showSearch
+              style={{ width: 200 }}
+              placeholder="Select a space"
+              optionFilterProp="children"
+              onChange={(value: string) => setSelectedSpace(value)}
+              filterOption={(input, option: any) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }            
+            >
+              {spaces.map((space, index) => (
+                <Select.Option key={index} value={space}>{space}</Select.Option>
+              ))}
+            </Select>
+            <Button type="primary" style={{ backgroundColor: '#1A9EFF' }} onClick={handleSearch} className="my-blue-button">Search</Button>
           </div>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -251,9 +251,9 @@ const Tickets = () => {
               )}
             </tbody>
           </table>
+        </div>
       </div>
-    </div>
-  </div>) : (
+    </div>) : (
     navigate('/ticketuser'), null
   )
   );

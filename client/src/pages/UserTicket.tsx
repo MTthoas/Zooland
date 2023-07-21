@@ -129,89 +129,89 @@ const fetchUserTickets = async () => {
 
   return (
     <div className="flex flex-col pt-24">
-      <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-          <Typography.Title level={1} className="users-heading" style={{ color: 'white' }}>Mes tickets</Typography.Title>
-          <div className="flex flex-row justify-between mb-4">
+    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+        <Typography.Title level={1} className="users-heading" style={{ color: 'black' }}>Mes tickets</Typography.Title>
+        <div className="flex flex-row justify-between mb-4">
           <Button type="primary" danger onClick={() => setIsModalVisible(true)}>Acheter un ticket</Button>
-          </div>
-          <Modal title="Acheter un ticket" visible={isModalVisible} onOk={handleBuyTicket} onCancel={() => setIsModalVisible(false)}>
-            <Select value={selectedSpace} onChange={setSelectedSpace} style={{ width: 120 }}>
-              {spaces.map((space, index) => (
-                <Select.Option key={index} value={space}>{space}</Select.Option>
-              ))}
-            </Select>
-            <Select value={selectedType} onChange={setSelectedType} style={{ width: 120 }}>
-              <Select.Option value="journee">Journée</Select.Option>
-              <Select.Option value="weekend">Weekend</Select.Option>
-              <Select.Option value="annuel">Annuel</Select.Option>
-              <Select.Option value="1daymonth">1 jour par mois</Select.Option>
-              <Select.Option value="escapegame">Escape Game</Select.Option>
-            </Select>
-          </Modal>
-          <div className="shadow overflow-hidden sm:rounded-lg mb-4">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+        </div>
+        <Modal title="Acheter un ticket" visible={isModalVisible} onOk={handleBuyTicket} onCancel={() => setIsModalVisible(false)}>
+          <Select value={selectedSpace} onChange={setSelectedSpace} style={{ width: 120 }}>
+            {spaces.map((space, index) => (
+              <Select.Option key={index} value={space}>{space}</Select.Option>
+            ))}
+          </Select>
+          <Select value={selectedType} onChange={setSelectedType} style={{ width: 120 }}>
+            <Select.Option value="journee">Journée</Select.Option>
+            <Select.Option value="weekend">Weekend</Select.Option>
+            <Select.Option value="annuel">Annuel</Select.Option>
+            <Select.Option value="1daymonth">1 jour par mois</Select.Option>
+            <Select.Option value="escapegame">Escape Game</Select.Option>
+          </Select>
+        </Modal>
+        <div className="shadow overflow-hidden sm:rounded-lg mb-4 bg-white">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID du billet
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date d'achat
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date d'expiration
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Espaces
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {tickets.length === 0 ? (
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID du billet
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date d'achat
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date d'expiration
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Espaces
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
-                  </th>
+                  <td colSpan={6} className="px-6 py-4 whitespace-nowrap text-center">
+                    Aucun ticket trouvé.
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {tickets.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-4 whitespace-nowrap text-center">
-                      Aucun ticket trouvé.
+              ) : (
+                tickets.map((ticket, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket._id}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{new Date(ticket.dateOfPurchase).toLocaleDateString()}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{new Date(ticket.validUntil).toLocaleDateString()}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket.spaces.join(', ')}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-left text-gray-500">{ticket.type}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Button onClick={() => handleCheckInOut(ticket._id, ticket.spaces[0])}>
+                        {checkInStatus[ticket._id] ? 'CheckOut' : 'CheckIn'}
+                      </Button>
                     </td>
                   </tr>
-                ) : (
-                  tickets.map((ticket, index) => (
-                    <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-left text-gray-500">{ticket._id}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-left text-gray-500">{new Date(ticket.dateOfPurchase).toLocaleDateString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-left text-gray-500">{new Date(ticket.validUntil).toLocaleDateString()}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-left text-gray-500">{ticket.spaces.join(', ')}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-left text-gray-500">{ticket.type}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <Button onClick={() => handleCheckInOut(ticket._id, ticket.spaces[0])}>
-                          {checkInStatus[ticket._id] ? 'CheckOut' : 'CheckIn'}
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
