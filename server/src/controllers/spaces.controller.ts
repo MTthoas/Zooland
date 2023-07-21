@@ -283,8 +283,8 @@ class SpacesController {
     }
 }
 
-async checkOut(req: Request, res: Response): Promise<void> {
-  try {
+  async checkOut(req: Request, res: Response): Promise<void> {
+    try {
       const ticketId: string = req.params.ticketId;
       const spaceName: string = req.params.spaceName;
 
@@ -316,114 +316,27 @@ async checkOut(req: Request, res: Response): Promise<void> {
         return;
       }
 
-      // Enregistrez une visite
+      // Enregistrez une sortie
       const stats = new StatsModel({
         date: new Date(),
-        visitors: 1,
-        visitorsLive: 1,
+        visitors: 0,
+        visitorsLive: -1, // Utilisez -1 pour indiquer une sortie
         hour: new Date().getHours(),
         spaceId: space._id,
-        spaceName: space.nom,
+        spaceName: spaceName,
       });
 
       await stats.save();
 
-      if (ticket.type === "escapegame" && user.currentSpace !== null) {
-        console.log(user.currentSpace);
-        const currentIndex = user.currentSpace
-          ? ticket.escapeGameOrder?.indexOf(user.currentSpace)
-          : -1;
-        const nextIndex = ticket.escapeGameOrder?.indexOf(space.nom);
-
-        if (
-          currentIndex === undefined ||
-          nextIndex === undefined ||
-          currentIndex === -1
-        ) {
-          res.status(403).json({ message: "Invalid ticket order" });
-          return;
-        }
-
-        if (nextIndex === currentIndex + 1) {
-          // Supprimer l'espace en cours dans le tableau spaces du ticket
-          ticket.spaces = ticket.spaces.filter((s) => s !== space.nom);
-
-          // Supprimer l'espace en cours dans le tableau escapeGameOrder du ticket
-          if (ticket.escapeGameOrder) {
-            ticket.escapeGameOrder = ticket.escapeGameOrder.filter(
-              (s) => s !== space.nom
-            );
-          }
-        } else {
-          res.status(403).json({ message: "Invalid ticket order" });
-          return;
-        }
-      }
-
-      await SpacesService.updateUserCurrentSpace(user._id, space.nom);
+      await SpacesService.updateUserCurrentSpace(user._id, ""); // Mettez à jour l'espace actuel de l'utilisateur à null
 
       res
         .status(200)
-        .json({ message: "Access granted", user: user, ticket: ticket });
+        .json({ message: "Exit registered", user: user, ticket: ticket });
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
   }
-
-  // async checkOut(req: Request, res: Response): Promise<void> {
-  //   try {
-  //     const ticketId: string = req.params.ticketId;
-  //     const spaceName: string = req.params.spaceName;
-
-  //     const user = await AuthService.getUserByTicketId(ticketId);
-
-  //     if (!user) {
-  //       res.status(404).json({ message: "User not found" });
-  //       return;
-  //     }
-
-  //     const space = await SpacesService.getSpaceByName(spaceName);
-  //     if (!space) {
-  //       res.status(404).json({ message: "Space not found" });
-  //       return;
-  //     }
-
-  //     const ticket = await TicketService.getTicketById(ticketId);
-
-  //     if (!ticket) {
-  //       res.status(404).json({ message: "No ticket found for the user" });
-  //       return;
-  //     }
-
-  //     const hasAccess = ticket.spaces.includes(space.nom);
-  //     const isValid = new Date(ticket.validUntil) > new Date();
-
-  //     if (!hasAccess || !isValid) {
-  //       res.status(403).json({ message: "Invalid or expired ticket" });
-  //       return;
-  //     }
-
-  //     // Enregistrez une sortie
-  //     const stats = new StatsModel({
-  //       date: new Date(),
-  //       visitors: 0,
-  //       visitorsLive: -1, // Utilisez -1 pour indiquer une sortie
-  //       hour: new Date().getHours(),
-  //       spaceId: space._id,
-  //       spaceName: spaceName,
-  //     });
-
-  //     await stats.save();
-
-  //     await SpacesService.updateUserCurrentSpace(user._id, ""); // Mettez à jour l'espace actuel de l'utilisateur à null
-
-  //     res
-  //       .status(200)
-  //       .json({ message: "Exit registered", user: user, ticket: ticket });
-  //   } catch (err: any) {
-  //     res.status(500).json({ message: err.message });
-  //   }
-  // }
 
   async getUserTickets(req: Request, res: Response): Promise<void> {
     const { userId } = req.params;
@@ -437,23 +350,31 @@ async checkOut(req: Request, res: Response): Promise<void> {
 
   async checkOutAllTickets(req: Request, res: Response): Promise<void> {
     try {
-      // Récupérez tous les espaces
+      // Récupérez tous les espaces et les tickets
       const spaces = await SpacesService.getSpaces();
-
-      // Parcourez chaque espace et mettez à jour les statistiques pour mettre visitorsLive à 0
+      const tickets = await TicketService.getAllTickets();
+  
+      // Parcourez chaque espace
       for (const space of spaces) {
-        const stats = new StatsModel({
-          date: new Date(),
-          visitors: 0,
-          visitorsLive: null,
-          hour: new Date().getHours(),
-          spaceId: space._id,
-          spaceName: space.nom,
-        });
-
-        await stats.save();
+        // Parcourez chaque ticket
+        for (const ticket of tickets) {
+          // Si le ticket est associé à cet espace
+          if (ticket.spaces.includes(space._id)) {
+            // Créez une nouvelle statistique avec visitorsLive décrémenté
+            const stats = new StatsModel({
+              date: new Date(),
+              visitors: 0,
+              visitorsLive: -1,
+              hour: new Date().getHours(),
+              spaceId: space._id,
+              spaceName: space.nom,
+            });
+  
+            await stats.save();
+          }
+        }
       }
-
+  
       res.status(200).json({
         message: "Tous les visiteurs ont été enregistrés comme sortis.",
       });
@@ -461,6 +382,7 @@ async checkOut(req: Request, res: Response): Promise<void> {
       res.status(500).json({ message: err.message });
     }
   }
+  
 
   async deleteTicket(req: Request, res: Response): Promise<void> {
     try {
