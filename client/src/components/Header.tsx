@@ -16,7 +16,7 @@ function Header({ setShowModalLogin, setShowModalRegister }: any) {
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && location.pathname !== '/ticketuser') {
       const username = localStorage.getItem("username");
       const token = localStorage.getItem("token");
 
