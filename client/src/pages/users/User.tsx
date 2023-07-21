@@ -134,7 +134,7 @@ const Users: React.FC = () => {
 
   return (
     <div className="h-screen pt-32 bg-base100">
-      <div className='mx-32'>
+      <div className="mx-32">
         <h1 className="text-2xl font-bold mb-4 text-black">Liste des utilisateurs</h1>
         {users.length === 0 ? (
           <p className="text-gray-600">Aucun utilisateur trouvé.</p>
@@ -147,52 +147,81 @@ const Users: React.FC = () => {
                 onChange={(e) => setGlobalFilter(e.target.value || '')}
                 className="w-full px-4 py-2 border border-gray-300 rounded"
               /> */}
-              <form>   
-                <label  className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
+              <form>
+                <label className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
                 <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                        </svg>
-                    </div>
-                    <input type="search" 
-                     value={globalFilter || ''}
-                     onChange={(e) => setGlobalFilter(e.target.value || '')}
-                    id="default-search" className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Rechercher utilisateur..." required/>
-                    {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 bg-gray-900">Search</button> */}
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="search"
+                    value={globalFilter || ''}
+                    onChange={(e) => setGlobalFilter(e.target.value || '')}
+                    id="default-search"
+                    className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Rechercher utilisateur..."
+                    required
+                  />
+                  {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5  focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 bg-gray-900">Search</button> */}
                 </div>
-            
-            </form>
+              </form>
             </div>
-            
-            <table {...getTableProps()} className="w-full border border-gray-300">
-              <thead className='text-sm'>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th {...column.getHeaderProps()} className="px-4 py-2 bg-gray-200 font-medium text-left text-black">{column.render('Header')}</th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {rows.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()}>
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()} className="px-4 py-2 border-t border-gray-300 text-sm font-normal text-black">{cell.render('Cell')}</td>
+  
+            <div className="overflow-y-auto max-h-96">
+              <table {...getTableProps()} className="w-full border border-gray-300">
+                <thead className="text-sm">
+                  {headerGroups.map((headerGroup) => (
+                    <tr {...headerGroup.getHeaderGroupProps()}>
+                      {headerGroup.headers.map((column) => (
+                        <th
+                          {...column.getHeaderProps()}
+                          className="px-4 py-2 bg-gray-200 font-medium text-left text-black"
+                        >
+                          {column.render('Header')}
+                        </th>
                       ))}
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                  {rows.map((row) => {
+                    prepareRow(row);
+                    return (
+                      <tr {...row.getRowProps()}>
+                        {row.cells.map((cell) => (
+                          <td
+                            {...cell.getCellProps()}
+                            className="px-4 py-2 border-t border-gray-300 text-sm font-normal text-black"
+                          >
+                            {cell.render('Cell')}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
       </div>
     </div>
   );
+  
 };
 
 export default Users;
