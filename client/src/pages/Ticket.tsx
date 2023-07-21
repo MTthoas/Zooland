@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Table, Button, Input, Modal, message, Select, Typography } from 'antd';
+import { set } from 'mongoose';
+import { useNavigate } from 'react-router-dom';
 
 interface ITicket {
   _id: string;
@@ -26,6 +28,7 @@ const Tickets = () => {
 
   const tokenId = localStorage.getItem('token');
   const userName = localStorage.getItem('username');
+  const navigate = useNavigate();
 
 
   // Configurer les en-têtes de la requête
@@ -71,15 +74,20 @@ const Tickets = () => {
         const response = await axios.get(`/users/${userName}`, config); 
         setUserRole(response.data.role);
       } catch (error) {
-        console.error(error);
+        setUserRole('visitor');
       }
     };
 
     if (userName) {
       getRole(userName);
     }
-    fetchSpaces();
-    fetchTickets();
+    if(userRole !== 'visitor') {
+      fetchSpaces();
+      fetchTickets();
+    }else{
+      navigate('/ticketuser');
+    }
+
   }, []);
 
   const columns = [
@@ -154,8 +162,9 @@ const Tickets = () => {
       message.error('Erreur lors de la suppression du ticket');
     }
   };
+  
   return (
-    userRole === 'admin' ? (
+    userRole !== 'visitor' ? (
     <div className="flex flex-col pt-24">
     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -245,20 +254,11 @@ const Tickets = () => {
       </div>
     </div>
   </div>) : (
-    <div className="flex flex-col pt-24">
-      <div className="flex flex-col pt-24">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <Typography.Title level={1} className="users-heading" style={{ color: 'dark' }}>Liste des tickets</Typography.Title>
-            
-          </div>
-        </div>
-      </div>
-    </div>
+    navigate('/ticketuser'), null
   )
-);
+  );
 };
-// }
+
 
 export default Tickets;
 
