@@ -23,18 +23,24 @@ function Management() {
   useEffect(() => {
     const fetchZooStatus = async () => {
       try {
-        const response = await axios.get('/zoo', {
+        const response = await axios.get('/zoo/status', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setZooStatus(response.data.isOpen);
+  
+        if (response.data && typeof response.data.isOpen === 'boolean') {
+          setZooStatus(response.data.isOpen);
+        } else {
+          console.error('Unexpected server response', response.data);
+        }
       } catch (error) {
         console.error(error);
       }
     };
     fetchZooStatus();
   }, [token]);
+  
 
   return (
     <div className="pt-24 text-center">

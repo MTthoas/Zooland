@@ -133,7 +133,7 @@ function Spaces() {
       images: [],
       type: "",
       capacite: 0,
-      horaires: [],
+        horaires: [{ opening: '', closing: '' }],
       imagePath: "",
       accessibleHandicape: false,
       isMaintenance: false,
@@ -156,6 +156,12 @@ function Spaces() {
       }
       // Append other form fields to the FormData
 
+      editingSpace.horaires.forEach((horaire, index) => {
+        formData.append(`horaires[${index}][opening]`, horaire.opening);
+        formData.append(`horaires[${index}][closing]`, horaire.closing);
+      });
+
+      
       formData.append("nom", editingSpace.nom);
       formData.append("description", editingSpace.description);
       formData.append("type", editingSpace.type); // assuming type exists on editingSpace object
@@ -165,6 +171,8 @@ function Spaces() {
         editingSpace.accessibleHandicape.toString()
       ); // assuming accessibleHandicape exists on editingSpace object
 
+      
+      
       // Append other form fields as needed
 
       if (isCreating) {
@@ -413,6 +421,22 @@ function Spaces() {
   const handleTreatmentCancel = () => {
     setIsTreatmentModalVisible(false);
   };
+
+  const handleHorairesChange = (index: number, field: 'opening' | 'closing', value: string) => {
+    if (editingSpace) {
+      let newHoraires = [...editingSpace.horaires];
+      if (!newHoraires[index]) {
+        newHoraires[index] = { opening: '', closing: '' };
+      }
+      newHoraires[index][field] = value;
+      setEditingSpace({ ...editingSpace, horaires: newHoraires });
+    } else {
+      // Handle the case where editingSpace is null or undefined
+    }
+  };
+  
+  
+  
 
   return (
     <div className="h-screen pt-32 bg-base100 overflow-y-auto pb-32">
@@ -686,6 +710,23 @@ function Spaces() {
                 onChange={handleInputChange}
               />
             </Form.Item>
+
+            <Form.Item label="Heure d'ouverture">
+    <Input
+      name="opening"
+      value={editingSpace.horaires[0]?.opening}
+      onChange={(e) => handleHorairesChange(0, 'opening', e.target.value)}
+    />
+  </Form.Item>
+  <Form.Item label="Heure de fermeture">
+    <Input
+      name="closing"
+      value={editingSpace.horaires[0]?.closing}
+      onChange={(e) => handleHorairesChange(0, 'closing', e.target.value)}
+    />
+  </Form.Item>
+
+
             <Form.Item label="Capacité">
               <Input
                 name="capacite"
