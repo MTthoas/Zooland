@@ -7,7 +7,6 @@ interface IDailyStats {
     day: number;
     hour: number;
   };
-  spaceName: string;
   totalVisitors: number;
 }
 
@@ -17,14 +16,12 @@ interface IWeeklyStats {
     week: number;
     hour: number;
   };
-  spaceName: string;
   totalVisitors: number;
 }
 
 interface ILiveStats {
   _id: string;
   nom: string;
-  spaceName: string;
   totalVisitorsLive: number;
 }
 
@@ -97,7 +94,7 @@ const Stats = () => {
             {dailyStats.map((stat, index) => (
               <li key={index} className="bg-white rounded-lg p-4 shadow">
                 <span className="block text-gray-600">
-                  Nom : {stat.spaceName}
+                  Nom : {stat._id.nom}
                 </span>
                 <span className="block text-gray-600">
                   Jour : {stat._id.day}
@@ -125,7 +122,7 @@ const Stats = () => {
             {weeklyStats.map((stat, index) => (
               <li key={index} className="bg-white rounded-lg p-4 shadow">
                 <span className="block text-gray-600">
-                  Nom : {stat.spaceName}
+                  Nom : {stat._id.nom}
                 </span>
                 <span className="block text-gray-600">
                   Semaine : {stat._id.week}
