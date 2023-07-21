@@ -248,7 +248,7 @@ async checkTicket(req: Request, res: Response): Promise<void> {
 
         await SpacesService.updateUserCurrentSpace(user._id, space.nom);
 
-        res.status(200).json({ message: 'Access granted', user: user, ticket: ticket });
+        res.status(200).json({ message: 'Access granted', user: user, ticket: ticket, checkIn: user.currentSpace === space.nom });
 
     } catch (err: any) {
         res.status(500).json({ message: err.message });
