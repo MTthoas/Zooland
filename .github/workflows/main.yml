@@ -35,4 +35,4 @@ jobs:
             docker-compose up --build -d
             sleep 10
             docker ps -a # to list all running containers
-            docker exec -it zooland_app_1 chmod -R 755 /app/public/uploads
+    

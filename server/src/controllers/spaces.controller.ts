@@ -545,11 +545,6 @@ class SpacesController {
       const nom: string = req.params.nom;
       const treatment: IVeterinaryLog = req.body.treatment;
 
-      // Ajouter la personne ayant fait le traitement avec AuthService.verifyToken
-      const adminUsername: string = AuthService.verifyToken(req).username;
-
-      treatment.treatmentBy = adminUsername;
-
       const space = await SpacesService.addTreatmentToVeterinaryLog(
         nom,
         treatment

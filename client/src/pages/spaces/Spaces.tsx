@@ -59,13 +59,13 @@ function Spaces() {
   const [isAnimalModalVisible, setIsAnimalModalVisible] = useState(false);
   const [newAnimal, setNewAnimal] = useState("");
   const [isTreatmentModalVisible, setIsTreatmentModalVisible] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
   const [newTreatment, setNewTreatment] = useState({
-    treatmentBy: "",
+    treatmentBy: token ? token : "",
     condition: "",
     treatmentDetails: "",
     species: "",
   });
-  const [token, setToken] = useState<string | null>(null);
   const [modal, contextHolder] = Modal.useModal();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [spacesForDelete, setSpacesForDelete] = useState<ISpace[]>([]);
@@ -299,8 +299,12 @@ function Spaces() {
       try {
         const response = await axios.post(
           `/spaces/${editingSpace.nom}/treatments`,
-          newTreatment
-        );
+          newTreatment, {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            withCredentials: true,
+          });
         console.log(response.data);
         message.success("Traitement ajouté avec succès au journal vétérinaire");
         setNewTreatment({
@@ -327,111 +331,112 @@ function Spaces() {
     <div className="h-screen pt-32 bg-base100 overflow-y-auto pb-32">
       {spaces.map((space) => {
 
+   
           const baseUrl = "http://54.37.68.74:8080";
           let imageUrl;
 
           if (space.imagePath) {
-              const imagePath = space.imagePath.replace("/var/www/Zooland/public", "");
+              const imagePath = space.imagePath.replace("/app/public", "");
               imageUrl = baseUrl + imagePath;
           } else {
               imageUrl = ""; // Fallback URL or keep it empty
           }
-
-          console.log(imageUrl)
-
         return (
          <div className="mx-32 bg-white rounded-xl shadow-md overflow-hidden my-5">
-  <div className="md:flex">
-      <div className="flex-shrink-0 w-4/12 ">
-        <img
-          className="h-full w-64 object-cover"
-          src={imageUrl}
-          alt={space.nom}
-        />
-      </div>
-      <div className="flex-grow p-8 pl-2 w-6/12">
-        <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
-          {space.type}
-        </div>
-        <a
-          href="#"
-          className="block mt-1 text-lg leading-tight font-medium text-black text-inline"
-        >
-          {" "}
-          <span className="hover:underline"> {space.nom} </span>
-          {space.isMaintenance ? (
-            <span className="text-red-500 text-xs ml-2">
-              {" "}
-              (En maintenance){" "}
-            </span>
-          ) : (
-            <span className="text-green-500 text-xs ml-2">
-              {" "}
-              (Disponible){" "}
-            </span>
-          )}{" "}
-        </a>
-        <p className="mt-2 text-gray-500">{space.description}</p>
-        <p className="mt-2 text-gray-500 text-sm">
-          Capacité d'accueil : {space.capacite}
-        </p>
-        <p className="mt-2 text-gray-500 text-sm">
-          Nombre d'espèces animales : {space.animalSpecies.length}
-        </p>
-        <p className="flex gap-x-3">
-          {" "}
-          {space.animalSpecies.map((specie) => (
-            <p className="mt-2  text-indigo-500 text-sm"> {specie} </p>
-          ))}{" "}
-        </p>
-        <p className="mt-2 text-gray-500 text-sm">
-          Accessible aux personnes à mobilité réduite :{" "}
-          {space.accessibleHandicape ? "Oui" : "Non"}
-        </p>
-        {space.horaires.map((horaire) => (
-          <p className="mt-2 text-gray-500">
-            Horaires : {horaire.opening} - {horaire.closing}
-          </p>
-        ))}
-      </div>
-      <div className="p-8 flex flex-col items-start w-3/12 border-l gap-y-3">
-        <div className="flex-col my-auto w-full">
-          <button
-            onClick={() => handleEdit(space)}
-            className="px-2 py-1 text-xs bg-blue-500 text-white rounded w-full mb-1"
-          >
-            Modifier{" "}
-          </button>
-          <button
-            onClick={() => handleDelete(space)}
-            className="px-2 py-1 text-xs bg-red-500 text-white rounded w-full"
-          >
-            Supprimer
-          </button>
-        </div>
-        <div>
-          <button
-            onClick={() => null}
-            className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
-          >
-            Accéder aux logs{" "}
-          </button>
-          <button
-            onClick={() => handleAddAnimalSpecies(space)}
-            className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
-          >
-            Ajouter une espèce
-          </button>
-          <button
-            onClick={() => handleAddTreatmentToVeterinaryLog(space)}
-            className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
-          >
-            Ajouter un traitement
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+          <div className="md:flex">
+              <div className="flex-shrink-0 w-4/12 ">
+                <img
+                  className="h-full w-64 object-cover"
+                  src={imageUrl}
+                  alt={space.nom}
+                />
+              </div>
+              <div className="flex-grow p-8 pl-2 w-6/12">
+                <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+                  {space.type}
+                </div>
+                <a
+                  href="#"
+                  className="block mt-1 text-lg leading-tight font-medium text-black text-inline"
+                >
+                  {" "}
+                  <span className="hover:underline"> {space.nom} </span>
+                  {space.isMaintenance ? (
+                    <span className="text-red-500 text-xs ml-2">
+                      {" "}
+                      (En maintenance){" "}
+                    </span>
+                  ) : (
+                    <span className="text-green-500 text-xs ml-2">
+                      {" "}
+                      (Disponible){" "}
+                    </span>
+                  )}{" "}
+                </a>
+                <p className="mt-2 text-gray-500">{space.description}</p>
+                <p className="mt-2 text-gray-500 text-sm">
+                  Capacité d'accueil : {space.capacite}
+                </p>
+                <p className="mt-2 text-gray-500 text-sm">
+                  Meilleur mois pour la mise en maintenance : {space.bestMonth}
+                </p>
+                <p className="mt-2 text-gray-500 text-sm">
+                  Nombre d'espèces animales : {space.animalSpecies.length}
+                </p>
+                <p className="flex gap-x-3">
+                  {" "}
+                  {space.animalSpecies.map((specie) => (
+                    <p className="mt-2  text-indigo-500 text-sm"> {specie} </p>
+                  ))}{" "}
+                </p>
+                <p className="mt-2 text-gray-500 text-sm">
+                  Accessible aux personnes à mobilité réduite :{" "}
+                  {space.accessibleHandicape ? "Oui" : "Non"}
+                </p>
+                {space.horaires.map((horaire) => (
+                  <p className="mt-2 text-gray-500">
+                    Horaires : {horaire.opening} - {horaire.closing}
+                  </p>
+                ))}
+              </div>
+              <div className="p-8 flex flex-col items-start w-3/12 border-l gap-y-3">
+                <div className="flex-col my-auto w-full">
+                  <button
+                    onClick={() => handleEdit(space)}
+                    className="px-2 py-1 text-xs bg-blue-500 text-white rounded w-full mb-1"
+                  >
+                    Modifier{" "}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(space)}
+                    className="px-2 py-1 text-xs bg-red-500 text-white rounded w-full"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => null}
+                    className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
+                  >
+                    Accéder aux logs{" "}
+                  </button>
+                  <button
+                    onClick={() => handleAddAnimalSpecies(space)}
+                    className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
+                  >
+                    Ajouter une espèce
+                  </button>
+                  <button
+                    onClick={() => handleAddTreatmentToVeterinaryLog(space)}
+                    className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
+                  >
+                    Ajouter un traitement
+                  </button>
+                </div>
+              </div>
+            </div>
+         </div>
 
         );
       })}
@@ -477,7 +482,7 @@ function Spaces() {
         onOk={handleTreatmentOk}
         onCancel={handleTreatmentCancel}
       >
-        <Form>
+        <Form className="mt-6">
           <Form.Item label="Traitement par">
             <Input
               value={newTreatment.treatmentBy}
