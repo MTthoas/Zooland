@@ -64,7 +64,7 @@ app.get('/usersinfo/:username', AuthController.ensureRole(['visitor']), AuthCont
 
 app.patch('/zoo/open',  AuthController.ensureRole(['admin', 'receptionist']), ZooController.openZoo);
 app.patch('/zoo/close', AuthController.ensureRole(['admin', 'receptionist']), ZooController.closeZoo);
-app.get('/zoo/status', AuthController.ensureRole(['admin', 'receptionist']), ZooController.ensureZooOpen);
+app.get('/zoo/status', AuthController.ensureRole(['admin', 'receptionist']), ZooController.checkZooStatus);
 
 
 // app.get('/users', AuthController.ensureRole(['receptionist, admin']), AuthController.getAllUsers);

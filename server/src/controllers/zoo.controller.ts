@@ -60,11 +60,28 @@ export default class ZooController {
 			 return res.status(403).json({ message: 'Le zoo est fermé.' });
 		  }
 		  
-        res.status(200).json({ message: 'Le zoo est ouvert.' });
-
+        next()
 		} catch (error) {
 		  res.status(500).json({ message: 'Erreur lors de la vérification du statut du zoo.' });
 		}
 	 }
 
+    static async checkZooStatus(req: Request, res: Response) {
+
+      try {
+
+         const zoo = await ZooModel.findOne({ nom: 'LaFaille' });
+
+         if (!zoo) {
+            return res.status(404).json({ message: 'Zoo non trouvé.' });
+         }
+
+         res.json({ isOpen: zoo.isOpen });
+
+      } catch (error) {
+
+         res.status(500).json({ message: 'Erreur lors de la vérification du statut du zoo.' });
+      }
+
+   }
 }
