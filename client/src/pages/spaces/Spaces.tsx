@@ -55,13 +55,14 @@ function Spaces() {
   const [spaces, setSpaces] = useState<ISpace[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingSpace, setEditingSpace] = useState<ISpace | null>(null);
+  const [deleteSpeciesForSpace, setDeleteSpeciesForSpace] = useState<ISpace | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isAnimalModalVisible, setIsAnimalModalVisible] = useState(false);
   const [newAnimal, setNewAnimal] = useState("");
   const [isTreatmentModalVisible, setIsTreatmentModalVisible] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [newTreatment, setNewTreatment] = useState({
-    treatmentBy: token ? token : "",
+    treatmentBy: token ? token : "zddazdazdaz",
     condition: "",
     treatmentDetails: "",
     species: "",
@@ -71,10 +72,18 @@ function Spaces() {
   const [spacesForDelete, setSpacesForDelete] = useState<ISpace[]>([]);
   const [newImage, setNewImage] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [confirmDeleteSpecies, setConfirmDeleteSpecies] = useState(false);
+  const [deleteSpecies, setDeleteSpecies] = useState<string | null>(null);
+  const [stockSpace, setStockSpace] = useState<ISpace | null>(null);
+  const [modalLogsMaintenance, setModalLogsMaintenance] = useState(false);
+  const [modalLogsVeterinary, setModalLogsVeterinary] = useState(false);
+
 
   useEffect(() => {
     // get localStorage
     const tokenId = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
 
     // Verify if tokenId exists
     if (!tokenId) {
@@ -82,6 +91,7 @@ function Spaces() {
       return;
     }
 
+    setUserName(username);
     setToken(tokenId);
     fetchSpaces(tokenId);
   }, []);
@@ -223,6 +233,19 @@ function Spaces() {
     }
   };
 
+  const consultLogsMaintenance = (space: ISpace) => {
+    setStockSpace(space);
+    setModalLogsMaintenance(true);
+  };
+
+  const consultLogsVeterinary = (space: ISpace) => {
+    setStockSpace(space);
+    setModalLogsVeterinary(true);
+  };
+  
+
+    
+
   const handleConfirmDelete = async () => {
     const space = spacesForDelete[0];
     setConfirmDelete(false);
@@ -260,6 +283,13 @@ function Spaces() {
     setIsAnimalModalVisible(true);
   };
 
+  const handleDeleteSpecies = async (space: ISpace, specie: string) => {
+    setDeleteSpeciesForSpace(space);
+    setDeleteSpecies(specie);  // Vous devez définir setDeleteSpecies et deleteSpecies dans votre état
+    DeleteSpecies()
+  }
+  
+
   const handleAnimalOk = async () => {
     if (editingSpace && editingSpace.nom && newAnimal) {
       try {
@@ -294,12 +324,49 @@ function Spaces() {
     setIsTreatmentModalVisible(true);
   };
 
+  const DeleteSpecies = async () => {
+    if (deleteSpeciesForSpace && deleteSpeciesForSpace.nom && deleteSpecies) {
+      try {
+        const response = await axios.delete(
+          `/spaces/${deleteSpeciesForSpace.nom}/${deleteSpecies}`,
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            withCredentials: true,
+          });
+        console.log(response.data);
+        message.success("Espèce d'animal supprimée avec succès");
+        setConfirmDeleteSpecies(false);
+        fetchSpaces();
+      } catch (error) {
+        console.error(error);
+        message.error("Erreur lors de la suppression d'une espèce d'animal");
+      }
+    }
+  };
+  
+
+
+            
+            
+
+
   const handleTreatmentOk = async () => {
     if (editingSpace && editingSpace.nom && newTreatment) {
       try {
         const response = await axios.post(
           `/spaces/${editingSpace.nom}/treatments`,
-          newTreatment, {
+          {
+            treatment: {
+              treatmentDate : new Date(),
+              treatmentBy: userName,
+              condition: newTreatment.condition,
+              treatmentDetails: newTreatment.treatmentDetails,
+              species: newTreatment.species,
+            }
+          }, 
+          {
             headers: {
               Authorization: "Bearer " + token,
             },
@@ -385,9 +452,21 @@ function Spaces() {
                 </p>
                 <p className="flex gap-x-3">
                   {" "}
-                  {space.animalSpecies.map((specie) => (
-                    <p className="mt-2  text-indigo-500 text-sm"> {specie} </p>
-                  ))}{" "}
+                <p className="flex gap-x-3"> 
+                {space.animalSpecies.map((specie) => (
+                  <div className="flex items-center gap-x-3">
+                    <p className="mt-2 text-indigo-500 text-sm"> {specie} </p>
+                    <button
+                      onClick={() => handleDeleteSpecies(space, specie)}
+                      className="px-1 py-1 text-xs bg-red-500 text-white rounded"
+                    >
+                      x
+                    </button>
+                    -
+                  </div>
+                ))} 
+              </p>
+
                 </p>
                 <p className="mt-2 text-gray-500 text-sm">
                   Accessible aux personnes à mobilité réduite :{" "}
@@ -416,10 +495,16 @@ function Spaces() {
                 </div>
                 <div>
                   <button
-                    onClick={() => null}
+                    onClick={() => consultLogsMaintenance(space)}
                     className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
                   >
-                    Accéder aux logs{" "}
+                    Accéder aux logs de Maintenance{" "}
+                  </button>
+                  <button
+                    onClick={() => consultLogsVeterinary(space)}
+                    className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
+                  >
+                    Accéder aux carnets de soins{" "}
                   </button>
                   <button
                     onClick={() => handleAddAnimalSpecies(space)}
@@ -427,6 +512,12 @@ function Spaces() {
                   >
                     Ajouter une espèce
                   </button>
+                  {/* <button
+                    onClick={() => handleDeleteSpecies(space)}
+                    className="px-2 py-1 bg-red-500 text-white rounded-lg mt-2 text-sm w-full"
+                  >
+                    Supprim. une espèce
+                  </button> */}
                   <button
                     onClick={() => handleAddTreatmentToVeterinaryLog(space)}
                     className="px-2 py-1 bg-gray-800 text-white rounded-lg mt-2 text-sm w-full"
@@ -483,7 +574,7 @@ function Spaces() {
         onCancel={handleTreatmentCancel}
       >
         <Form className="mt-6">
-          <Form.Item label="Traitement par">
+          {/* <Form.Item label="Traitement par">
             <Input
               value={newTreatment.treatmentBy}
               onChange={(e) =>
@@ -493,7 +584,7 @@ function Spaces() {
                 })
               }
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="Condition">
             <Input
               value={newTreatment.condition}
@@ -614,6 +705,61 @@ function Spaces() {
           <p>Êtes-vous sûr de vouloir supprimer cet espace ?</p>
         </Modal>
       )}
+
+    {modalLogsMaintenance && (
+      <Modal
+        title="Journal de Maintenance et Vétérinaire"
+        visible={modalLogsMaintenance}
+        onCancel={() => setModalLogsMaintenance(false)}
+        footer={[
+          <Button key="back" onClick={() => setModalLogsMaintenance(false)}>
+            Fermer
+          </Button>,
+        ]}
+      >
+        <Timeline mode="alternate">
+          {stockSpace?.maintenanceLog.slice(1).map((log, index) => (
+          <Timeline.Item key={index} color={log.doesBestMonth ? "green" : "red"}>
+            <h4>Maintenance Log</h4>
+            <p className="text-sm"><strong>Mois :</strong> {log.month} </p>
+            <p className="text-sm"><strong>Commentaire :</strong> {log.commentary} </p>
+            <p className="text-sm"><strong>Maintenance par :</strong> {log.maintenanceBy} </p>
+          </Timeline.Item>
+        ))}
+
+        </Timeline>
+      </Modal>
+    )}
+
+    {modalLogsVeterinary && (
+     <Modal
+     title="Journal de Maintenance et Vétérinaire"
+      visible={modalLogsVeterinary}
+     onCancel={() => setModalLogsVeterinary(false)}
+     footer={[
+       <Button key="back" onClick={() => setModalLogsVeterinary(false)}>
+         Fermer
+       </Button>,
+     ]}
+   >
+     <Timeline mode="alternate">
+ 
+       {stockSpace?.veterinaryLog.slice(1).map((log, index) => (
+         <Timeline.Item key={index} color="blue">
+           <h4>Veterinary Log</h4>
+           <p className="text-sm"><strong>Date de traitement :</strong> {log.treatmentDate} </p>
+           <p className="text-sm"><strong>Traitement par :</strong> {log.treatmentBy} </p>
+           <p className="text-sm"><strong>Condition :</strong> {log.condition} </p>
+           <p className="text-sm"><strong>Détails du traitement :</strong> {log.treatmentDetails} </p>
+           <p className="text-sm"><strong>Espèce :</strong> {log.species} </p>
+         </Timeline.Item>
+       ))}
+     </Timeline>
+   </Modal>
+ )}
+
+
+
     </div>
   );
 }

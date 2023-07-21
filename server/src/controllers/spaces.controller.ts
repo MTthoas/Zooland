@@ -537,6 +537,27 @@ class SpacesController {
     }
   }
 
+  async deleteAnimalSpecies(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+      const species: string = req.params.species;
+
+      const updatedSpace = await SpacesService.deleteAnimalSpecies(
+        nom,
+        species
+      );
+
+      if (updatedSpace) {
+        res.status(200).json(updatedSpace);
+      } else {
+        res.status(404).end("La mise à jour de l'espace a échoué.");
+      }
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+
   async addTreatmentToVeterinaryLog(
     req: Request,
     res: Response
@@ -558,6 +579,25 @@ class SpacesController {
       res.status(500).json({ message: err.message });
     }
   }
+
+  async getVeterinaryLog(req: Request, res: Response): Promise<void> {
+    try {
+      const nom: string = req.params.nom;
+
+      const space = await SpacesService.getSpaceByName(nom);
+
+      if (!space) {
+        res.status(404).json({ message: "Space not found" });
+        return;
+      }
+
+      res.status(200).json(space.veterinaryLog);
+      
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
 }
 
 export default new SpacesController();

@@ -137,6 +137,26 @@ class SpacesService {
 		}
   	}
 
+	async deleteAnimalSpecies(nom: string, species: string): Promise<ISpace | null> {
+
+		try {
+
+			const space = await SpaceModel.findOneAndUpdate(
+				{ nom: { $regex: new RegExp(`^${nom}$`, 'i') } },
+				{ $pull: { animalSpecies: species } },
+				{ new: true }
+			);
+
+			return space;
+
+		} catch (err) {
+
+			throw new Error('Erreur lors de la suppression de l\'espèce animale de l\'espace.');
+
+		}
+	}
+	
+
   
   	async getAnimalsInSpace(nom: string): Promise<string[] | null> {
 

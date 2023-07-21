@@ -100,9 +100,11 @@ app.delete('/stats/space/:spaceId', AuthController.ensureRole(['admin']), Statis
 
 // Accès dédié aux vétérinaires 
 
+app.delete('/spaces/:nom/:species', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.deleteAnimalSpecies);
 app.post('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.addAnimalSpecies);
 app.get('/spaces/:nom/animals', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.getAnimalsInSpace);
 app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.ensureRole(['veterinary', 'admin']), SpacesController.addTreatmentToVeterinaryLog);
+
 
 // Route de dev
 
