@@ -19,6 +19,7 @@ import Tickets from './pages/Ticket';
 import ProfilDestails from './pages/ProfilDetails';
 import Login from './components/modal/Login';
 import Register from './components/modal/Register';
+import UserTickets from './pages/UserTicket';
 
 function App() {
 
@@ -44,6 +45,7 @@ function App() {
             <Route path="/spaces" element={<PrivateComponent><Spaces /></PrivateComponent>} />
             <Route path="/stats" element={<PrivateComponent><Stats /></PrivateComponent>} />
             <Route path="/users" element={<PrivateComponent><Users /></PrivateComponent>} />
+            <Route path="/ticketuser" element={<PrivateComponent><UserTickets /></PrivateComponent>} />
             <Route path="/tickets" element={<PrivateComponent><Tickets /></PrivateComponent>} />
             <Route path="/management" element={<PrivateComponent><Management /></PrivateComponent>} />
           </Routes>
