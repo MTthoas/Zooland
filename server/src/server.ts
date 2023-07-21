@@ -22,7 +22,7 @@ const port = 8080;
 
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../../public/uploads')));
 
 
 app.use(cors({
