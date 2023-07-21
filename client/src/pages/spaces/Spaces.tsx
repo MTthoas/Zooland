@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 import {
   Card,
   List,
@@ -210,6 +211,25 @@ function Spaces() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+
+  const handleMaintenanceSwitch = async (space : any, checked: any) => {
+    console.log("checked", checked)
+    try {
+        const response = await axios.patch(`/spaces/${space.nom}/maintenance`, { isMaintenance: checked }
+        , {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          withCredentials: true,
+        });
+        
+        fetchSpaces();
+    } catch (error) {
+        console.error(error);
+        // Handle the error here.
+    }
+};
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (editingSpace) {
@@ -439,6 +459,10 @@ function Spaces() {
                       (Disponible){" "}
                     </span>
                   )}{" "}
+                  <Switch
+                      checked={space.isMaintenance}
+                      onChange={(checked) => handleMaintenanceSwitch(space, checked)}
+                  />
                 </a>
                 <p className="mt-2 text-gray-500">{space.description}</p>
                 <p className="mt-2 text-gray-500 text-sm">
@@ -677,12 +701,12 @@ function Spaces() {
                 }
               />
             </Form.Item>
-            <Form.Item label="En maintenance">
+            {/* <Form.Item label="En maintenance">
               <Switch
                 checked={editingSpace.isMaintenance}
                 onChange={(value) => handleSwitchChange("isMaintenance", value)}
               />
-            </Form.Item>
+            </Form.Item> */}
             {/* ... (autres champs du formulaire) */}
           </Form>
         </Modal>

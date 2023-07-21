@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Table, Button, Input, Modal, message, Select, Typography } from 'antd';
-import { set } from 'mongoose';
 import { useNavigate } from 'react-router-dom';
 
 interface ITicket {
