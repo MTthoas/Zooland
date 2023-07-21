@@ -59,7 +59,9 @@ export default class ZooController {
 		  if (!zoo || !zoo.isOpen) {
 			 return res.status(403).json({ message: 'Le zoo est fermé.' });
 		  }
-		  next();
+		  
+        res.status(200).json({ message: 'Le zoo est ouvert.' });
+
 		} catch (error) {
 		  res.status(500).json({ message: 'Erreur lors de la vérification du statut du zoo.' });
 		}
