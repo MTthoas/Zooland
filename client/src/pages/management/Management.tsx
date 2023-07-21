@@ -23,7 +23,7 @@ function Management() {
   useEffect(() => {
     const fetchZooStatus = async () => {
       try {
-        const response = await axios.get('/zoo', {
+        const response = await axios.get('/zoo/status', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
