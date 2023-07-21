@@ -161,6 +161,19 @@ const Tickets = () => {
       message.error('Erreur lors de la suppression du ticket');
     }
   };
+
+  const handleCheckOutAllTickets = async () => {
+    try {
+        await axios.patch('/tickets/checkout-all', config);
+        message.success('Tous les billets ont été enregistrés comme sortis');
+        fetchTickets(); // Recharger les billets après le checkout
+    } catch (error) {
+        console.error(error);
+        message.error('Erreur lors du checkout de tous les billets');
+    }
+};
+
+  
   
   return (
     userRole !== 'visitor' ? (
@@ -184,6 +197,10 @@ const Tickets = () => {
               ))}
             </Select>
             <Button type="primary" style={{ backgroundColor: '#1A9EFF' }} onClick={handleSearch} className="my-blue-button">Search</Button>
+            <Button type="primary" danger onClick={handleCheckOutAllTickets}>
+                Checkout All Tickets
+            </Button>
+
           </div>
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
