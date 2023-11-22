@@ -26,7 +26,7 @@ jobs:
           run: docker-compose up -d
 
   push_registry:
-    needs: build
+    needs: [build, test]
     name: Push to Docker Hub
     runs-on: ubuntu-latest
     steps:
@@ -55,14 +55,9 @@ jobs:
             push: true
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
-          
-  healthcheck:
-    name: Healthcheck
-    needs: push_registry
-    runs-on: ubuntu-latest
-    steps:
-      - name: Health Check
-        run: curl -X GET ${{ env.APP_URL }}/healthcheck
+
+        - name: Health Check
+          run: curl -X GET ${{ env.APP_URL }}/healthcheck
 
 
         

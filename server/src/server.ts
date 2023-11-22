@@ -121,34 +121,34 @@ app.get('/', (req, res) => {
   res.send('Hello !');
 });
 
-mongoose
-   .connect(process.env.MONGODB_URI as string, {
-    authSource: 'admin',
-   })
-   .then(() => {
-   console.log('Successfully connected to MongoDB.');
+// mongoose
+//    .connect(process.env.MONGODB_URI as string, {
+//     authSource: 'admin',
+//    })
+//    .then(() => {
+//    console.log('Successfully connected to MongoDB.');
     
-    // Initialisation du zoo
-   ZooModel.findOne({ nom: 'LaFaille' }) 
-      .then((zoo) => {
-        if (!zoo) {
-          const newZoo = new ZooModel({
-            nom: 'LaFaille', // Nom de votre zoo
-            adresse: '20 rue de la bagarre', // Adresse de votre zoo
-            isOpen: false,
-            espaces: [],
-            employees: []
-          });
-          newZoo.save().then(() => {
-            console.log('Zoo créé avec succès.');
-          });
-        }
-      });
-  })
-  .catch((error) => {
-    console.log('Unable to connect to MongoDB.');
-    console.error(error);
-  });
+//     // Initialisation du zoo
+//    ZooModel.findOne({ nom: 'LaFaille' }) 
+//       .then((zoo) => {
+//         if (!zoo) {
+//           const newZoo = new ZooModel({
+//             nom: 'LaFaille', // Nom de votre zoo
+//             adresse: '20 rue de la bagarre', // Adresse de votre zoo
+//             isOpen: false,
+//             espaces: [],
+//             employees: []
+//           });
+//           newZoo.save().then(() => {
+//             console.log('Zoo créé avec succès.');
+//           });
+//         }
+//       });
+//   })
+//   .catch((error) => {
+//     console.log('Unable to connect to MongoDB.');
+//     console.error(error);
+//   });
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}.`);
