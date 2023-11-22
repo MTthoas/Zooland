@@ -41,6 +41,11 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 
+// Define /health
+
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
 
 app.post('/auth/login', AuthController.authenticate);
 app.post('/auth/register', AuthController.signup);
