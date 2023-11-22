@@ -43,7 +43,7 @@ var upload = multer({ storage: storage })
 
 // Define /health
 
-app.get('/health', (req, res) => {
+app.get('/healthcheck', (req, res) => {
   res.send('OK');
 });
 

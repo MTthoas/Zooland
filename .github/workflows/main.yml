@@ -53,16 +53,13 @@ jobs:
             push: true
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
+          
+        - name: Notify Listener server
+          run: |
+            curl -X POST -H "Content-Type: application/json" 
+            -d '{"image_name": "${{ env.IMAGE_NAME }}", "tag": "latest"}' "http://localhost:3000/healthcheck"
 
-  ping:
-      needs: push_registry
-      name: Ping the server
-      runs-on: ubuntu-latest
-      steps:
-        - name: Ping the server
-          run: curl -s http://localhost:3000
-        
-    
+
 
         
             
