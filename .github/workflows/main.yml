@@ -57,7 +57,10 @@ jobs:
             labels: ${{ steps.meta.outputs.labels }}
 
         - name: Health Check
-          run: curl -X POST ${{ env.APP_URL }}/deploy -d  `{"event": "image_pushed", "image": "${{ env.IMAGE_NAME }}" } ` -H "Content-Type: application/json"
+          run: |
+            curl -X POST ${{ env.APP_URL }}/deploy \
+            -H "Content-Type: application/json" \
+            -d "{\"event\": \"image_pushed\", \"image\": \"${{ env.IMAGE_NAME }}\"}"
 
 
         
