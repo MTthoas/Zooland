@@ -12,6 +12,7 @@ import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
 
+const { exec } = require('child_process');
 
 require('dotenv').config();
 
@@ -116,6 +117,21 @@ app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.
 
 app.post('/users/add-all', AuthController.addAllUsers);
 app.get('/users', AuthController.getAllUsers);
+
+app.post('/deploy', (req, res) => {
+
+  exec('script.sh', (error : TypeError, stdout: unknown, stderr: any) => {
+    if (error) {
+      console.error(`Erreur d'exécution: ${error}`);
+      return res.status(500).send('Erreur lors du déploiement');
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+    res.send('Déploiement en cours');
+  });
+
+  res.send('Déploiement en cours');
+});
 
 app.get('/', (req, res) => {
   res.send('Hello !');
