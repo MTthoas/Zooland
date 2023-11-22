@@ -39,10 +39,6 @@ var storage = multer.diskStorage({
 }
 })
 
-var upload = multer({ storage: storage })
-
-// Define /health
-
 app.get('/healthcheck', (req, res) => {
   res.send('OK');
 });
