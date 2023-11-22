@@ -56,7 +56,7 @@ jobs:
           
         - name: Notify Listener server
           run: |
-            curl -X POST -H "Content-Type: application/json" -d '{"image_name": "${{ env.IMAGE_NAME }}", "tag": "latest"}' http://localhost:3000/healthcheck
+            curl -X POST -H "Content-Type: application/json" -d '{"image_name": "${{ env.IMAGE_NAME }}", "tag": "latest"}' http://localhost:8080/healthcheck
 
 
 
