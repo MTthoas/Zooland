@@ -8,26 +8,17 @@ on:
 jobs: 
   build:
     runs-on: ubuntu-latest
-    steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
-        
-        - name : Docker login
+      steps:
+        - uses: actions/checkout@v2
+        - name: Docker login
           uses: docker/login-action@v1
           env: 
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          run: |
+          run : |
             docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        - name: Build image
+        - name: Build docker image
           run: |
-            docker build -t . --file Dockerfile . 
-
-        
-            
-
-
-
-        
-            
-
+            docker build -t zooland .
+            docker tag zooland $DOCKER_USERNAME/zooland
+            docker push $DOCKER_USERNAME/zooland
