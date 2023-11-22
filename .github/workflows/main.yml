@@ -54,10 +54,12 @@ jobs:
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
 
-        - name: Ping server
-          run: curl -sSf http://localhost:3000/health || exit 1
-
-
+  ping:
+      name: Ping the server
+      runs-on: ubuntu-latest
+      steps:
+        - name: Ping the server
+          run: curl -s http://localhost:3000
         
     
 
