@@ -58,7 +58,7 @@ jobs:
 
         - name: Health Check
           run: |
-            curl -X POST ${{ env.APP_URL }}/deploy \
+            curl -X POST ${{ env.APP_URL }}/webhook \
             -H "Content-Type: application/json" \
             -d "{\"event\": \"image_pushed\", \"image\": \"${{ env.IMAGE_NAME }}\"}"
 
