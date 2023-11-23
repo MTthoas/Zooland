@@ -5,7 +5,6 @@ const { exec } = require('child_process');
 const app = express();
 const port = 5111; 
 
-app.use(express.json());
 app.use(bodyParser.json());
 const repo = 'mtthoas/zooland:main';
 
@@ -14,10 +13,7 @@ app.post('/dockerhub-webhook', (req: Request, res: Response) => {
 
     const event = req.headers['x-docker-hub-event'];
 
-    if(event !== 'push') {
-        res.status(200).send('Notification ignorée');
-        return;
-    }else{
+    if(event && event === 'push') {
         console.log('Notification reçue:', req.body);
         console.log('Pulling image... : ', repo)
     }
@@ -25,19 +21,19 @@ app.post('/dockerhub-webhook', (req: Request, res: Response) => {
     res.status(200).send('Notification reçue');
 });
 
-setInterval(() => {
-    console.log('Je suis toujours vivant');
+// setInterval(() => {
+//     console.log('Je suis toujours vivant');
 
-    exec(`docker pull ${repo}`, (err: any, stdout: any, stderr: any) => {
-        if(err) {
-            console.error(`Erreur lors de la mise à jour de l'image ${repo}:`, err);
-            return;
-        }
+//     exec(`docker pull ${repo}`, (err: any, stdout: any, stderr: any) => {
+//         if(err) {
+//             console.error(`Erreur lors de la mise à jour de l'image ${repo}:`, err);
+//             return;
+//         }
 
-        console.log(`Image ${repo} mise à jour`);
-    });
+//         console.log(`Image ${repo} mise à jour`);
+//     });
     
-}, 1000 * 60 * 5);
+// }, 25000);
 
 
 app.listen(port, () => {
