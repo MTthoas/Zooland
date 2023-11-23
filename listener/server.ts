@@ -18,6 +18,7 @@ function pullImage() {
 }
 
 // Cas d'utilisation 1: Pull de l'image si on reçoit une notification de Docker Hub, utile quand on a une adresse publique
+// Dans ce cas d'usage, décommenter le healthcheck dans le workflow/main.yaml
 
 app.post('/dockerhub-webhook', (req: Request, res: Response) => {
     console.log('Notification reçue:', req.body);
