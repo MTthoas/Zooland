@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
-  APP_URL: http://localhost:3000
+  APP_URL: http://localhost:5111
     
 jobs: 
   build: 
