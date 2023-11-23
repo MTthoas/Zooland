@@ -6,7 +6,9 @@ const app = express();
 const port = 5111; 
 
 app.use(bodyParser.json());
-const repo = 'mtthoas/zooland:main';
+// docker pull mtthoas/zooland:master
+const repo = 'mtthoas/zooland:master';
+
 
 function pullImage() {
     exec(`docker pull ${repo}`, (err: any, stdout: any, stderr: any) => {
