@@ -8,6 +8,17 @@ const port = 5111;
 app.use(bodyParser.json());
 const repo = 'mtthoas/zooland:main';
 
+function pullImage() {
+    exec(`docker pull ${repo}`, (err: any, stdout: any, stderr: any) => {
+        if(err) {
+            return;
+        }
+        console.log(`Image ${repo} mise à jour`);
+    });
+}
+
+// Cas d'utilisation 1: Pull de l'image si on reçoit une notification de Docker Hub, utile quand on a une adresse publique
+
 app.post('/dockerhub-webhook', (req: Request, res: Response) => {
     console.log('Notification reçue:', req.body);
 
@@ -16,24 +27,19 @@ app.post('/dockerhub-webhook', (req: Request, res: Response) => {
     if(event && event === 'push') {
         console.log('Notification reçue:', req.body);
         console.log('Pulling image... : ', repo)
+        pullImage();
     }
 
     res.status(200).send('Notification reçue');
 });
 
-// setInterval(() => {
-//     console.log('Je suis toujours vivant');
+// Cas d'utilisation 2: Pull de l'image toutes les 25 secondes, utile quand on a une adresse privée
 
-//     exec(`docker pull ${repo}`, (err: any, stdout: any, stderr: any) => {
-//         if(err) {
-//             console.error(`Erreur lors de la mise à jour de l'image ${repo}:`, err);
-//             return;
-//         }
-
-//         console.log(`Image ${repo} mise à jour`);
-//     });
+setInterval(() => {
+    console.log('Je suis toujours vivant');
+    pullImage()
     
-// }, 25000);
+}, 30000);
 
 
 app.listen(port, () => {
