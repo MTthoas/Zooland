@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
-  APP_URL: http://localhost:3000
+  APP_URL: http://localhost:5111
     
 jobs: 
   build: 
@@ -58,7 +58,7 @@ jobs:
 
         - name: Health Check
           run: |
-            curl -X POST ${{ env.APP_URL }}/deploy \
+            curl -X POST ${{ env.APP_URL }}/webhook \
             -H "Content-Type: application/json" \
             -d "{\"event\": \"image_pushed\", \"image\": \"${{ env.IMAGE_NAME }}\"}"
 
