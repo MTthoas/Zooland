@@ -1,10 +1,12 @@
 import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
 const { exec } = require('child_process');
 
 const app = express();
-const port = 3000; 
+const port = 5111; 
 
 app.use(express.json());
+app.use(bodyParser.json());
 const repo = 'mtthoas/zooland:main';
 
 app.post('/dockerhub-webhook', (req: Request, res: Response) => {
@@ -17,6 +19,7 @@ app.post('/dockerhub-webhook', (req: Request, res: Response) => {
         return;
     }else{
         console.log('Notification reçue:', req.body);
+        console.log('Pulling image... : ', repo)
     }
 
     res.status(200).send('Notification reçue');
