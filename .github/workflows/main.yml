@@ -8,6 +8,7 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ${{ github.repository }}
+  APP_URL: http://localhost:3000
     
 jobs: 
   build: 
@@ -25,6 +26,7 @@ jobs:
           run: docker-compose up -d
 
   push_registry:
+    needs: [build, test]
     name: Push to Docker Hub
     runs-on: ubuntu-latest
     steps:
@@ -54,15 +56,12 @@ jobs:
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
 
-  ping:
-      needs: push_registry
-      name: Ping the server
-      runs-on: ubuntu-latest
-      steps:
-        - name: Ping the server
-          run: curl -s http://localhost:3000
-        
-    
+        - name: Health Check
+          run: |
+            curl -X POST ${{ env.APP_URL }}/deploy \
+            -H "Content-Type: application/json" \
+            -d "{\"event\": \"image_pushed\", \"image\": \"${{ env.IMAGE_NAME }}\"}"
+
 
         
             

@@ -12,6 +12,7 @@ import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
 
+const { exec } = require('child_process');
 
 require('dotenv').config();
 
@@ -43,7 +44,7 @@ var upload = multer({ storage: storage })
 
 // Define /health
 
-app.get('/health', (req, res) => {
+app.get('/healthcheck', (req, res) => {
   res.send('OK');
 });
 
@@ -117,38 +118,53 @@ app.post('/spaces/:nom/treatments', ZooController.ensureZooOpen, AuthController.
 app.post('/users/add-all', AuthController.addAllUsers);
 app.get('/users', AuthController.getAllUsers);
 
+app.post('/deploy', (req, res) => {
+
+  exec('script.sh', (error : TypeError, stdout: unknown, stderr: any) => {
+    if (error) {
+      console.error(`Erreur d'exécution: ${error}`);
+      return res.status(500).send('Erreur lors du déploiement');
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+    res.send('Déploiement en cours');
+  });
+
+  res.send('Déploiement en cours');
+});
+
 app.get('/', (req, res) => {
   res.send('Hello !');
 });
 
-mongoose
-   .connect(process.env.MONGODB_URI as string, {
-    authSource: 'admin',
-   })
-   .then(() => {
-   console.log('Successfully connected to MongoDB.');
+// mongoose
+//    .connect(process.env.MONGODB_URI as string, {
+//     authSource: 'admin',
+//    })
+//    .then(() => {
+//    console.log('Successfully connected to MongoDB.');
     
-    // Initialisation du zoo
-   ZooModel.findOne({ nom: 'LaFaille' }) 
-      .then((zoo) => {
-        if (!zoo) {
-          const newZoo = new ZooModel({
-            nom: 'LaFaille', // Nom de votre zoo
-            adresse: '20 rue de la bagarre', // Adresse de votre zoo
-            isOpen: false,
-            espaces: [],
-            employees: []
-          });
-          newZoo.save().then(() => {
-            console.log('Zoo créé avec succès.');
-          });
-        }
-      });
-  })
-  .catch((error) => {
-    console.log('Unable to connect to MongoDB.');
-    console.error(error);
-  });
+//     // Initialisation du zoo
+//    ZooModel.findOne({ nom: 'LaFaille' }) 
+//       .then((zoo) => {
+//         if (!zoo) {
+//           const newZoo = new ZooModel({
+//             nom: 'LaFaille', // Nom de votre zoo
+//             adresse: '20 rue de la bagarre', // Adresse de votre zoo
+//             isOpen: false,
+//             espaces: [],
+//             employees: []
+//           });
+//           newZoo.save().then(() => {
+//             console.log('Zoo créé avec succès.');
+//           });
+//         }
+//       });
+//   })
+//   .catch((error) => {
+//     console.log('Unable to connect to MongoDB.');
+//     console.error(error);
+//   });
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}.`);
